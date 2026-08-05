@@ -1,0 +1,9 @@
+bin/*
+!bin/.gitkeep
+
+godot/.godot/
+
+godot/lib/*
+!godot/lib/.gitkeep
+
+rust/target/
