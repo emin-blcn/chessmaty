@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://bwj4opff1w5kr"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/gui.theme" id="1_bs7qj"]
+[ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/move_history_table.gd" id="2_oa6ig"]
+[ext_resource type="FontFile" uid="uid://dus4p88ofw44e" path="res://assets/fonts/m5x7.ttf" id="2_sf5ti"]
+[ext_resource type="Texture2D" uid="uid://dy7krqxhopg6t" path="res://assets/graphics/gui/panel.png" id="3_m3kb6"]
+
+[sub_resource type="Gradient" id="Gradient_m3kb6"]
+colors = PackedColorArray(0.6509804, 0.7294118, 0.76862746, 1, 0.4392157, 0.2, 0.29803923, 1)
+metadata/_snap_count = 2
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5xl1b"]
+gradient = SubResource("Gradient_m3kb6")
+width = 2
+
+[node name="ColorRect" type="ColorRect" unique_id=1759565238]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -68.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 76.0
+grow_horizontal = 0
+theme = ExtResource("1_bs7qj")
+color = Color(0.08235294, 0.16470589, 0.14901961, 1)
+script = ExtResource("2_oa6ig")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=2138708983]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_m3kb6")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+metadata/_edit_lock_ = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="NinePatchRect" unique_id=2071611855]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="elements" type="VBoxContainer" parent="NinePatchRect/ScrollContainer" unique_id=996557453]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 2
+
+[node name="instance_element" type="HBoxContainer" parent="NinePatchRect/ScrollContainer/elements" unique_id=1803863932]
+visible = false
+custom_maximum_size = Vector2(57, -1)
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="move_number" type="Label" parent="NinePatchRect/ScrollContainer/elements/instance_element" unique_id=196452811]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_sf5ti")
+theme_override_font_sizes/font_size = 8
+text = "0000."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="NinePatchRect/ScrollContainer/elements/instance_element" unique_id=612339756]
+layout_mode = 2
+size_flags_horizontal = 3
+texture = SubResource("GradientTexture1D_5xl1b")
+
+[node name="white_move" type="Label" parent="NinePatchRect/ScrollContainer/elements/instance_element/TextureRect" unique_id=1899986765]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.5
+anchor_bottom = 1.0
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_sf5ti")
+theme_override_font_sizes/font_size = 8
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="black_move" type="Label" parent="NinePatchRect/ScrollContainer/elements/instance_element/TextureRect" unique_id=328300879]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_sf5ti")
+theme_override_font_sizes/font_size = 8
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

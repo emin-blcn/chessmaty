@@ -20,7 +20,8 @@ struct ChessLogic
     player_color: Enums::ChessColor,
     chess: Chess,
     chess_engine: Option<ChessEngine>,
-    board_hash_history: Vec<u64>,
+    chess_history: Vec<Chess>,
+    repeated_board_hash_history: Vec<u64>,
     move_history: Vec<UciMove>
 }
 
@@ -31,7 +32,7 @@ impl IRefCounted for ChessLogic
 {
     fn init(base: Base<RefCounted>) -> Self
     {
-        let mut new = Self
+        Self
         {
             base: base,
             opponent: Enums::Opponent::LocalHuman,
@@ -39,12 +40,10 @@ impl IRefCounted for ChessLogic
             player_color: Enums::ChessColor::White,
             chess: Chess::new(),
             chess_engine: None,
-            board_hash_history: Vec::<u64>::new(),
+            chess_history: Vec::<Chess>::new(),
+            repeated_board_hash_history: Vec::<u64>::new(),
             move_history: Vec::<UciMove>::new()
-        };
-
-        new.update_board_hash_history();
-        new
+        }
     }
 }
 
@@ -54,11 +53,11 @@ impl IRefCounted for ChessLogic
 impl ChessLogic
 {
     #[signal]
-    fn move_applied(move_type: GString, from: GString, to: GString, ai_selected_new_promotion_role: GString);
+    fn move_applied(move_type: GString, from: GString, to: GString, ai_selected_new_promotion_role: Enums::Piece);
 
 
     #[func]
-    fn configure_from_godot_and_get_board_fen(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, _chess960_random_number: i64, ai_binary_path: GString) -> GString
+    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, _chess960_random_number: i64, ai_binary_path: GString)
     {
         self.opponent = opponent;
         self.game_mode = game_mode;
@@ -92,19 +91,50 @@ impl ChessLogic
             }
         }
 
-        self.chess.board().board_fen().to_string().to_gstring()
+        self.update_repeated_board_hash_history();
     }
 
 
     #[func]
-    fn get_piece_from_square(&self, square: String) -> GString // return "empty" or "King_black", "Castle_black", "Queen_white"...
+    fn get_piece_from_square(&self, square: String) -> Enums::Piece
     {
         let square = Square::from_ascii(&square.as_bytes()).unwrap();
 
         match self.chess.board().piece_at(square)
         {
-            Some(piece) => GString::from(&format!("{:?}_{}", piece.role, piece.color)),
-            None => GString::from("empty")
+            Some(piece) =>
+            {
+                match piece.role
+                {
+                    Role::King => Enums::Piece::King,
+                    Role::Queen => Enums::Piece::Queen,
+                    Role::Bishop => Enums::Piece::Bishop,
+                    Role::Knight => Enums::Piece::Knight,
+                    Role::Rook => Enums::Piece::Rook,
+                    Role::Pawn => Enums::Piece::Pawn
+                }
+            }
+            None => Enums::Piece::Empty
+        }
+    }
+
+
+    #[func]
+    fn get_piece_color_from_square(&self, square: String) -> Enums::ChessColor
+    {
+        let square = Square::from_ascii(&square.as_bytes()).unwrap();
+
+        match self.chess.board().piece_at(square)
+        {
+            Some(piece) =>
+            {
+                match piece.color
+                {
+                    Color::White => Enums::ChessColor::White,
+                    Color::Black => Enums::ChessColor::Black
+                }
+            }
+            _ => panic!()
         }
     }
 
@@ -121,62 +151,53 @@ impl ChessLogic
 
 
     #[func]
-    fn get_legal_moves_from_square(&mut self, square: String) -> Array<GString>
+    fn get_legal_moves_from_square(&mut self, square: String) -> Dictionary<GString, Enums::MoveType>
     {
-        let mut legal_moves_from_square_for_godot = Array::<GString>::new();
+        let mut legal_moves_for_godot = Dictionary::<GString, Enums::MoveType>::new();
 
         for legal_move in self.chess.legal_moves()
         {
             if legal_move.from().unwrap().to_string() == square
             {
                 // yasal hamlenin başlangıç karesi ve bizim parametre olarak verdiğimiz kare aynı, bu hamleyi godot yasal hamle listemize ekliyoruz
-                let mut to_square = String::new();
+                let to_square = legal_move.to().to_string().to_gstring();
 
-                match legal_move
+                if !legal_moves_for_godot.contains_key(&to_square)
                 {
-                    Move::Normal {..} =>
+                    match legal_move
                     {
-                        if legal_move.is_promotion()
+                        Move::Normal {..} =>
                         {
-                            // yasal hamle promosyon, string "p_" ile başlayacak
-                            to_square = format!("p_{}", legal_move.to().to_string());
+                            if legal_move.is_promotion()
+                            {
+                                legal_moves_for_godot.insert(&to_square,Enums::MoveType::Promotion);
+                            }
+                            else
+                            {
+                                legal_moves_for_godot.insert(&to_square,Enums::MoveType::Normal);
+                            }
                         }
-                        else
+                        Move::EnPassant {..} =>
                         {
-                            // yasal hamle normal, string "n_" ile başlayacak
-                            to_square = format!("n_{}", legal_move.to().to_string());
+                            legal_moves_for_godot.insert(&to_square,Enums::MoveType::EnPassant);
                         }
-                    }
-                    Move::EnPassant {..} =>
-                    {
-                        // yasal hamle, en passant, string "e_" ile başlayacak
-                        to_square = format!("e_{}", legal_move.to().to_string());
-                    }
-                    Move::Castle{..} =>
-                    {
-                        // yasal hamle rok, string "r_" ile başlayacak
-                        to_square = format!("r_{}", legal_move.to().to_string());
-                    }
-                    _ => {}
-                };
-
-                let to_square_gstring = GString::from(&to_square);
-
-                if !legal_moves_from_square_for_godot.contains(&to_square_gstring)
-                {
-                    legal_moves_from_square_for_godot.push(&to_square_gstring);
+                        Move::Castle{..} =>
+                        {
+                            legal_moves_for_godot.insert(&to_square,Enums::MoveType::Castling);
+                        }
+                        _ => {}
+                    };
                 }
             }
         }
-        
-        legal_moves_from_square_for_godot
+
+        legal_moves_for_godot
     }
 
 
     #[func]
     fn apply_normal_move(&mut self, from: String, to: String)
     {
-
         let from_square = Square::from_ascii(from.as_bytes()).unwrap();
         let to_square = Square::from_ascii(to.as_bytes()).unwrap();
         let mut play_move_option: Option<Move> = None;
@@ -192,14 +213,15 @@ impl ChessLogic
             }
         }
 
+        self.update_chess_history();
+
         let play_move = play_move_option.unwrap();
-        
         self.chess = self.chess.clone().play(play_move).unwrap();
-        self.update_board_hash_history();
         self.update_move_history(play_move);
+        self.update_repeated_board_hash_history();
 
         // godot sinyalini tetikliyoruz
-        self.base_mut().emit_signal("move_applied", &["normal".to_variant(), from.to_variant(), to.to_variant(), GString::new().to_variant()]);
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Normal.to_variant(), from.to_variant(), to.to_variant(), Enums::Piece::Empty.to_variant()]);
     }
 
 
@@ -222,19 +244,20 @@ impl ChessLogic
             }
         }
 
-        let play_move = play_move_option.unwrap();
+        self.update_chess_history();
 
+        let play_move = play_move_option.unwrap();
         self.chess = self.chess.clone().play(play_move).unwrap();
-        self.update_board_hash_history();
         self.update_move_history(play_move);
+        self.update_repeated_board_hash_history();
 
         // godot sinyalini tetikliyoruz
-        self.base_mut().emit_signal("move_applied", &["en_passant".to_variant(), from.to_variant(), to.to_variant(), GString::new().to_variant()]);
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::EnPassant.to_variant(), from.to_variant(), to.to_variant(), Enums::Piece::Empty.to_variant()]);
     }
 
 
     #[func]
-    fn apply_rook_move(&mut self, from: String, to: String)
+    fn apply_castling_move(&mut self, from: String, to: String)
     {
         let from_square = Square::from_ascii(from.as_bytes()).unwrap();
         let to_square = Square::from_ascii(to.as_bytes()).unwrap();
@@ -250,30 +273,31 @@ impl ChessLogic
                 break;
             }
         }
-        
-        let play_move = play_move_option.unwrap();
 
+        self.update_chess_history();
+
+        let play_move = play_move_option.unwrap();
         self.chess = self.chess.clone().play(play_move).unwrap();
-        self.update_board_hash_history();
         self.update_move_history(play_move);
+        self.update_repeated_board_hash_history();
 
         // godot sinyalini tetikliyoruz
-        self.base_mut().emit_signal("move_applied", &["rook".to_variant(), from.to_variant(), to.to_variant(), GString::new().to_variant()]);
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Castling.to_variant(), from.to_variant(), to.to_variant(), Enums::Piece::Empty.to_variant()]);
     }
 
 
     #[func]
-    fn apply_promotion_move(&mut self, from: String, to: String, new_role: String)
+    fn apply_promotion_move(&mut self, from: String, to: String, new_role: Enums::Piece)
     {
         let from_square = Square::from_ascii(from.as_bytes()).unwrap();
         let to_square = Square::from_ascii(to.as_bytes()).unwrap();
         let mut play_move_option: Option<Move> = None;
-        let role = match new_role.as_str()
+        let role = match new_role
         {
-            "Queen" => Role::Queen,
-            "Bishop" => Role::Bishop,
-            "Knight" => Role::Knight,
-            "Rook" => Role::Rook,
+            Enums::Piece::Queen => Role::Queen,
+            Enums::Piece::Bishop => Role::Bishop,
+            Enums::Piece::Knight => Role::Knight,
+            Enums::Piece::Rook => Role::Rook,
             _ => panic!()
         };
 
@@ -288,31 +312,61 @@ impl ChessLogic
             }
         }
 
+        self.update_chess_history();
+
         let play_move = play_move_option.unwrap();
         self.chess = self.chess.clone().play(play_move).unwrap();
-        self.update_board_hash_history();
         self.update_move_history(play_move);
+        self.update_repeated_board_hash_history();
 
         // burada godot sinyalini tetiklemiyoruz çünkü sinyali oyuncu, godot'tan tetikledi ya da AI, play_ai_move() fonksiyonu içinde tetikledi
         // godot hamle animasyonunu oynattıktan sonra bu fonsksiyonu çağırdı, hamleyi shakmaty'de güncelliyoruz
     }
 
 
-    fn update_board_hash_history(&mut self)
-    {
-        if self.chess.halfmoves() == 0
-        {
-            self.board_hash_history.clear();
-        }
-
-        let new_board_hash = self.chess.zobrist_hash::<Zobrist64>(EnPassantMode::Legal).0;
-        self.board_hash_history.push(new_board_hash);
-    }
-
-
     fn update_move_history(&mut self, new_move: Move)
     {
         self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
+    }
+
+
+    fn update_chess_history(&mut self)
+    {
+        self.chess_history.push(self.chess.clone());
+    }
+
+
+    fn update_repeated_board_hash_history(&mut self)
+    {
+        if self.chess.halfmoves() == 0
+        {
+            self.repeated_board_hash_history.clear();
+        }
+
+        let new_board_hash = self.chess.zobrist_hash::<Zobrist64>(EnPassantMode::Legal).0;
+        self.repeated_board_hash_history.push(new_board_hash);
+    }
+
+
+    #[func]
+    fn is_undoable(&self) -> bool
+    {
+        if self.chess_history.is_empty()
+        {
+            return false;
+        }
+
+        true
+    }
+
+
+    #[func]
+    fn undo_last_move(&mut self)
+    {
+        self.move_history.pop().unwrap();
+        self.chess = self.chess_history.pop().unwrap();
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Undo.to_variant(), "".to_variant(), "".to_variant(), Enums::Piece::Empty.to_variant()]);
+
     }
 
 
@@ -345,15 +399,15 @@ impl ChessLogic
                 {
                     let new_role = match play_move.promotion().unwrap()
                     {
-                        Role::Queen => GString::from("Queen"),
-                        Role::Rook => GString::from("Rook"),
-                        Role::Bishop => GString::from("Bishop"),
-                        Role::Knight => GString::from("Knight"),
-                        _ => GString::from("Queen")
+                        Role::Queen => Enums::Piece::Queen,
+                        Role::Rook => Enums::Piece::Rook,
+                        Role::Bishop => Enums::Piece::Bishop,
+                        Role::Knight => Enums::Piece::Knight,
+                        _ => Enums::Piece::Queen
                     };
 
                     // AI, promosyon hamlesi yaptı, apply_promotion_move() fonksiyonunu çağırmıyoruz, godot sinyalini tetikliyoruz, apply_promotion_move() fonksiyonunu godot çağıracak
-                    self.base_mut().emit_signal("move_applied", &["promotion_by_ai".to_variant(), from.to_variant(), to.to_variant(), new_role.to_variant()]);
+                    self.base_mut().emit_signal("move_applied", &[Enums::MoveType::PromotionByAI.to_variant(), from.to_variant(), to.to_variant(), new_role.to_variant()]);
                 }
                 else
                 {
@@ -361,7 +415,7 @@ impl ChessLogic
                 }
             }
             Move::EnPassant {..} => self.apply_en_passant_move(from, to),
-            Move::Castle {..} => self.apply_rook_move(from, to),
+            Move::Castle {..} => self.apply_castling_move(from, to),
             _ => panic!()
         }
     }
@@ -384,14 +438,14 @@ impl ChessLogic
 
 
     #[func]
-    fn get_match_finished_state(&self) -> GString
+    fn get_match_finished_state(&self) -> Enums::MatchFinishedState
     {
         let mut repeated_board_count: u8 = 0;
 
-        for board_hash in &self.board_hash_history
+        for board_hash in &self.repeated_board_hash_history
         {
             // 3 dizilim tekrarı kontrolü için, hash geçmişini kontol ediyoruz
-            if !self.board_hash_history.is_empty() && board_hash == self.board_hash_history.last().unwrap()
+            if !self.repeated_board_hash_history.is_empty() && board_hash == self.repeated_board_hash_history.last().unwrap()
             {
                 repeated_board_count += 1;
             };
@@ -400,20 +454,20 @@ impl ChessLogic
         if self.chess.is_checkmate()
         {
             // biri mat yaptı
-            return GString::from(match self.chess.turn()
+            return match self.chess.turn()
             {
-                // mat yapılınca hamle sırası kaybeden tarafa geçti, bu yüzden kazanan, aktif sırası olanın zıttı renk
-                Color::White => "finished_black",
-                Color::Black => "finished_white"
-            });
+                // mat hamlesinden sonra sıra karşıya geçti, bu yüzden kazanan, aktif sırası olanın zıttı renk
+                Color::White => Enums::MatchFinishedState::BlackWon,
+                Color::Black => Enums::MatchFinishedState::WhiteWon
+            };
         }
 
         if self.chess.is_stalemate() || self.chess.is_insufficient_material() || self.chess.halfmoves() >= 100 || repeated_board_count >= 3
         {
             // maç berabere bitti
-            return GString::from("finished_draw");
+            return Enums::MatchFinishedState::FinishedDraw;
         }
 
-        GString::from("not_finished")
+        Enums::MatchFinishedState::NotFinished
     }
 }

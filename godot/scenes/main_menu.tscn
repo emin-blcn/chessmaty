@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dwnbfraut6h7t"]
 
-[ext_resource type="Script" uid="uid://d16fsx6xym0xf" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/gui.theme" id="1_ekxnf"]
+[ext_resource type="Script" uid="uid://d16fsx6xym0xf" path="res://src/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="3_bqqt6"]
 
 [node name="main_menu" type="Control" unique_id=2106559667]
 layout_mode = 3
@@ -9,7 +11,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_ekxnf")
 script = ExtResource("1_l6cm7")
+metadata/_edit_lock_ = true
+
+[node name="bg" type="TextureRect" parent="." unique_id=1393657427]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_bqqt6")
+stretch_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1794703044]
@@ -19,31 +33,22 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -68.0
-offset_top = -43.0
-offset_right = 68.0
-offset_bottom = 43.0
+offset_left = -58.285713
+offset_top = -28.0
+offset_right = 58.285706
+offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_group_ = true
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=1579627879]
+[node name="local_game_button" type="Button" parent="VBoxContainer" unique_id=1579627879]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 8
-text = "Local Game Human vs Human"
-
-[node name="Button2" type="Button" parent="VBoxContainer" unique_id=1473816892]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 8
-text = "Local Game Human vs AI"
+text = "Local Game"
 
 [node name="Button3" type="Button" parent="VBoxContainer" unique_id=1933418096]
 layout_mode = 2
-theme_override_font_sizes/font_size = 8
 text = "Exit"
 
-[connection signal="button_up" from="VBoxContainer/Button" to="." method="_on_button_button_up"]
-[connection signal="button_up" from="VBoxContainer/Button2" to="." method="_on_button_2_button_up"]
+[connection signal="pressed" from="VBoxContainer/local_game_button" to="." method="_on_local_game_button_pressed"]
 [connection signal="button_up" from="VBoxContainer/Button3" to="." method="_on_button_3_button_up"]

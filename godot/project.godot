@@ -35,11 +35,12 @@ window/stretch/scale_mode="integer"
 
 folder_colors={
 "res://assets/": "red",
-"res://gdextensions/": "teal",
+"res://gdextensions/": "orange",
+"res://lib/": "yellow",
 "res://libraries/": "green",
-"res://objects/": "orange",
-"res://scenes/": "blue",
-"res://scripts/": "gray"
+"res://objects/": "green",
+"res://scenes/": "teal",
+"res://src/": "blue"
 }
 
 [physics]
