@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cmwwvuydl32bg" path="res://src/local_game.gd" id="1_5r6l5"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="2_fw8ns"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/gui.theme" id="3_3r2ld"]
 [ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://objects/chess_board.tscn" id="3_4oel6"]
 [ext_resource type="Texture2D" uid="uid://cfi88xmcwl8xv" path="res://assets/graphics/chess_pieces/queen_white.png" id="4_5hoaj"]
 [ext_resource type="Texture2D" uid="uid://cnkaj6a1nvawt" path="res://assets/graphics/chess_pieces/bishop_white.png" id="5_hc21h"]
@@ -12,6 +13,9 @@
 [ext_resource type="Texture2D" uid="uid://b1qiry1fgwq7y" path="res://assets/graphics/chess_pieces/knight_black.png" id="10_r00br"]
 [ext_resource type="Texture2D" uid="uid://cdw8mxfjy7wn3" path="res://assets/graphics/chess_pieces/rook_black.png" id="11_judqd"]
 [ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://objects/move_history_table.tscn" id="12_fw8ns"]
+[ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/undo_icon.png" id="13_4oel6"]
+[ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="13_5hoaj"]
+[ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="15_hc21h"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
 texture = ExtResource("4_5hoaj")
@@ -69,6 +73,28 @@ texture = ExtResource("11_judqd")
 texture = ExtResource("11_judqd")
 modulate_color = Color(1, 1, 1, 0.5882353)
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
+texture = ExtResource("13_4oel6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3r2ld"]
+texture = ExtResource("13_4oel6")
+modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5hoaj"]
+texture = ExtResource("13_4oel6")
+modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwkho"]
+texture = ExtResource("15_hc21h")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oksyj"]
+texture = ExtResource("15_hc21h")
+modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_upx7y"]
+texture = ExtResource("15_hc21h")
+modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+
 [node name="Control" type="Control" unique_id=876092718]
 layout_mode = 3
 anchors_preset = 15
@@ -90,10 +116,26 @@ texture = ExtResource("2_fw8ns")
 stretch_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="chess_board" parent="." unique_id=578451742 instance=ExtResource("3_4oel6")]
+[node name="game_content" type="Control" parent="." unique_id=1601696168]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_lock_ = true
+
+[node name="chess_board" parent="game_content" unique_id=578451742 instance=ExtResource("3_4oel6")]
 layout_mode = 1
 
-[node name="promotion_selection" type="Control" parent="." unique_id=36715584]
+[node name="promotion_selection" type="Control" parent="game_content" unique_id=36715584]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -109,7 +151,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="ColorRect" type="ColorRect" parent="promotion_selection" unique_id=96756945]
+[node name="ColorRect" type="ColorRect" parent="game_content/promotion_selection" unique_id=96756945]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -124,7 +166,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8235294)
 
-[node name="Label" type="Label" parent="promotion_selection" unique_id=402282395]
+[node name="Label" type="Label" parent="game_content/promotion_selection" unique_id=402282395]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -141,7 +183,7 @@ theme_override_font_sizes/font_size = 8
 text = "Promotion Selection"
 horizontal_alignment = 1
 
-[node name="white" type="HBoxContainer" parent="promotion_selection" unique_id=15464293]
+[node name="white" type="HBoxContainer" parent="game_content/promotion_selection" unique_id=15464293]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -156,35 +198,35 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_group_ = true
 
-[node name="1" type="Button" parent="promotion_selection/white" unique_id=39272056]
+[node name="1" type="Button" parent="game_content/promotion_selection/white" unique_id=39272056]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_5xl1b")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_5xl1b")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jq8ee")
 
-[node name="2" type="Button" parent="promotion_selection/white" unique_id=1489267422]
+[node name="2" type="Button" parent="game_content/promotion_selection/white" unique_id=1489267422]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_nsm0t")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_nsm0t")
 theme_override_styles/hover = SubResource("StyleBoxTexture_16d88")
 
-[node name="3" type="Button" parent="promotion_selection/white" unique_id=1146183973]
+[node name="3" type="Button" parent="game_content/promotion_selection/white" unique_id=1146183973]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_52il0")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_52il0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_uwq6v")
 
-[node name="4" type="Button" parent="promotion_selection/white" unique_id=755321385]
+[node name="4" type="Button" parent="game_content/promotion_selection/white" unique_id=755321385]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_gvac2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gvac2")
 theme_override_styles/hover = SubResource("StyleBoxTexture_lpq8d")
 
-[node name="black" type="HBoxContainer" parent="promotion_selection" unique_id=265086047]
+[node name="black" type="HBoxContainer" parent="game_content/promotion_selection" unique_id=265086047]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -199,34 +241,230 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_group_ = true
 
-[node name="1" type="Button" parent="promotion_selection/black" unique_id=1459354414]
+[node name="1" type="Button" parent="game_content/promotion_selection/black" unique_id=1459354414]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_3ym7h")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3ym7h")
 theme_override_styles/hover = SubResource("StyleBoxTexture_7awpv")
 
-[node name="2" type="Button" parent="promotion_selection/black" unique_id=612496482]
+[node name="2" type="Button" parent="game_content/promotion_selection/black" unique_id=612496482]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_ij4bn")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ij4bn")
 theme_override_styles/hover = SubResource("StyleBoxTexture_abhhs")
 
-[node name="3" type="Button" parent="promotion_selection/black" unique_id=1279094014]
+[node name="3" type="Button" parent="game_content/promotion_selection/black" unique_id=1279094014]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_un7px")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_un7px")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sb5ba")
 
-[node name="4" type="Button" parent="promotion_selection/black" unique_id=889957275]
+[node name="4" type="Button" parent="game_content/promotion_selection/black" unique_id=889957275]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_ilxgh")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ilxgh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_is6od")
 
-[node name="move_history_table" parent="." unique_id=1759565238 instance=ExtResource("12_fw8ns")]
+[node name="move_history_table" parent="game_content" unique_id=736317109 instance=ExtResource("12_fw8ns")]
 layout_mode = 1
-offset_bottom = 90.0
+
+[node name="undo_button" type="Button" parent="game_content" unique_id=1857265176]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -14.0
+offset_top = 98.0
+offset_right = -6.0
+offset_bottom = 106.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("13_5hoaj")
+theme_override_styles/normal = SubResource("StyleBoxTexture_hc21h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3r2ld")
+theme_override_styles/hover = SubResource("StyleBoxTexture_5hoaj")
+alignment = 2
+
+[node name="undo_message_label" type="Label" parent="game_content" unique_id=1583861356]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -67.0
+offset_top = 98.0
+offset_right = -16.0
+offset_bottom = 106.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("13_5hoaj")
+theme_override_font_sizes/font_size = 8
+text = "Undo last move"
+horizontal_alignment = 2
+
+[node name="leave_button" type="Button" parent="game_content" unique_id=865488424]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -14.0
+offset_top = 112.0
+offset_right = -6.0
+offset_bottom = 120.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("13_5hoaj")
+theme_override_styles/normal = SubResource("StyleBoxTexture_lwkho")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_oksyj")
+theme_override_styles/hover = SubResource("StyleBoxTexture_upx7y")
+alignment = 2
+
+[node name="leave_message_label" type="Label" parent="game_content" unique_id=1375898115]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -67.0
+offset_top = 112.0
+offset_right = -16.0
+offset_bottom = 120.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("13_5hoaj")
+theme_override_font_sizes/font_size = 8
+text = "Leave match"
+horizontal_alignment = 2
+
+[node name="game_config" type="Panel" parent="." unique_id=733147589]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -70.0
+offset_right = 93.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_3r2ld")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="game_config" unique_id=460877339]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 5.0
+offset_bottom = 18.0
+grow_horizontal = 2
+text = "Local Game"
+horizontal_alignment = 1
+
+[node name="game_mode_button" type="Button" parent="game_config" unique_id=937174034]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -46.0
+offset_right = 47.0
+offset_bottom = -34.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Game mode: Standard"
+
+[node name="player_color_button" type="Button" parent="game_config" unique_id=1440786161]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -32.0
+offset_right = 47.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Player side: White"
+
+[node name="opponent_button" type="Button" parent="game_config" unique_id=1976706466]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -18.0
+offset_right = 47.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Opponent: Human"
+
+[node name="ai_config" type="Control" parent="game_config" unique_id=1688543066]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -4.0
+offset_right = 93.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="skill_level_button" type="Button" parent="game_config/ai_config" unique_id=2094836394]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -21.0
+offset_right = 47.0
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "AI Skill Level: 20"
+
+[node name="start_button" type="Button" parent="game_config" unique_id=1949548078]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.0
+offset_top = 44.0
+offset_right = 39.0
+offset_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Start"
+
+[connection signal="mouse_entered" from="game_content/undo_button" to="." method="_on_undo_button_mouse_entered"]
+[connection signal="mouse_exited" from="game_content/undo_button" to="." method="_on_undo_button_mouse_exited"]
+[connection signal="pressed" from="game_content/undo_button" to="." method="_on_undo_button_pressed"]
+[connection signal="mouse_entered" from="game_content/leave_button" to="." method="_on_leave_button_mouse_entered"]
+[connection signal="mouse_exited" from="game_content/leave_button" to="." method="_on_leave_button_mouse_exited"]
+[connection signal="pressed" from="game_content/leave_button" to="." method="_on_leave_button_pressed"]
+[connection signal="pressed" from="game_config/game_mode_button" to="." method="_on_game_mode_button_pressed"]
+[connection signal="pressed" from="game_config/player_color_button" to="." method="_on_player_color_button_pressed"]
+[connection signal="pressed" from="game_config/opponent_button" to="." method="_on_opponent_button_pressed"]
+[connection signal="pressed" from="game_config/ai_config/skill_level_button" to="." method="_on_skill_level_button_pressed"]
+[connection signal="pressed" from="game_config/start_button" to="." method="_on_start_button_pressed"]

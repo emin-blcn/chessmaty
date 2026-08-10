@@ -36,10 +36,12 @@ var opponent: Enums.Opponent
 var game_mode: Enums.GameMode
 var player_color: Enums.ChessColor
 var ai_binary_path: String
+var ai_skill_level: int
 var legal_moves: Dictionary[String, int] # [String, (Enums.MoveType)]
 var king_in_dangered_square: String
 var promotion_pawn_from_to_square: String
 var ai_selected_promotion_role: Enums.Piece
+var move_animation_is_playing: bool
 var any_piece_selected: bool
 var board: Dictionary[String, TextureRect] = {
 	"a8": null, "b8": null, "c8": null, "d8": null, "e8": null, "f8": null, "g8": null, "h8": null,
@@ -57,7 +59,7 @@ func _ready() -> void:
 
 
 func initialize_board():
-	chess_logic.configure_from_godot(opponent, game_mode, player_color, 518, ai_binary_path)
+	chess_logic.configure_from_godot(opponent, game_mode, player_color, ai_binary_path, ai_skill_level)
 	update_all_pieces()
 	
 	# reverse numbers and letters if player color is black
@@ -108,12 +110,25 @@ func new_piece_node(piece: Enums.Piece, piece_color: Enums.ChessColor, square: S
 	return new_node
 
 
-func _input(_event: InputEvent) -> void:
-	if Input.is_action_just_pressed("ui_accept"):
-		if chess_logic.is_undoable():
+func undo_last_move() -> void:
+	if move_animation_is_playing or chess_logic.get_move_count() <= 0 or !chess_logic.is_undoable():
+		return
+	
+	clear_move_markers()
+	any_piece_selected = false
+	
+	if opponent == Enums.Opponent.LOCAL_AI:
+		if chess_logic.get_move_count() == 1:
 			chess_logic.undo_last_move()
 			update_all_pieces()
-			print("geri alındı")
+			play_ai_move()
+		else:
+			chess_logic.undo_last_move()
+			chess_logic.undo_last_move()
+			update_all_pieces()
+	else:
+		chess_logic.undo_last_move()
+		update_all_pieces()
 
 
 func _on_input_conrol_mouse_exited() -> void:
@@ -141,7 +156,7 @@ func _on_input_conrol_gui_input(event: InputEvent) -> void:
 
 
 func hovering_on_board_event(new_square: String) -> void:
-	if any_piece_selected or new_square == active_square:
+	if any_piece_selected or new_square == active_square or move_animation_is_playing:
 		return
 	
 	var old_marker_node: TextureRect = move_marker_nodes.get_node_or_null(active_square)
@@ -164,6 +179,9 @@ func hovering_on_board_event(new_square: String) -> void:
 
 
 func selected_piece_event(new_square: String) -> void:
+	if move_animation_is_playing:
+		return
+	
 	if !any_piece_selected:
 		var piece: Enums.Piece = chess_logic.get_piece_from_square(new_square) as Enums.Piece
 		if piece != Enums.Piece.EMPTY:
@@ -240,6 +258,7 @@ func get_rook_target_square_in_castling_move(king_from_square: String, rook_from
 
 func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, ai_selected_new_promotion_role: Enums.Piece):
 	move_animation_started.emit(move_type, from, to)
+	move_animation_is_playing = true
 	
 	if move_type == Enums.MoveType.UNDO:
 		_on_move_animation_tween_finished(move_type)
@@ -326,6 +345,14 @@ func apply_promotion_move(new_role: Enums.Piece):
 func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 	move_animation_finished.emit(move_type)
 	
+	if opponent == Enums.Opponent.LOCAL_HUMAN:
+		move_animation_is_playing = false
+	elif opponent == Enums.Opponent.LOCAL_AI:
+		if player_color == chess_logic.get_turn():
+			move_animation_is_playing = false
+	else:
+		move_animation_is_playing = false
+	
 	if move_type == Enums.MoveType.PROMOTION_REQUEST:
 		# biten hamle animasyonu promosyon hamlesi ve insan tarafından yapıldı, üst sahneden promosyon taş seçimi istiyoruz
 		# seçim yapıldığında apply_promotion_move() fonksiyonunu üst sahne çağıracak
@@ -340,7 +367,9 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 		# önceki hamlede tehlikede olan bir şah vardı ve yeni hamlede tehlike geçti
 		var old_king_in_danger: String = king_in_dangered_square
 		king_in_dangered_square = ""
-		move_marker_nodes.get_node(old_king_in_danger).queue_free()
+		var old_king_in_danger_marker_node = move_marker_nodes.get_node_or_null(old_king_in_danger)
+		if old_king_in_danger_marker_node != null:
+			move_marker_nodes.get_node(old_king_in_danger).queue_free()
 	
 	king_in_dangered_square = new_king_in_dangered_squre
 	
@@ -387,14 +416,14 @@ func add_legal_move_markers():
 			add_move_marker(active_square, "white")
 	
 	for legal_move_square: String in legal_moves.keys():
-		
 		var piece: Enums.Piece = chess_logic.get_piece_from_square(legal_move_square) as Enums.Piece
 		var move_type: Enums.MoveType = legal_moves[legal_move_square] as Enums.MoveType
+		
 		if move_type == Enums.MoveType.CASTLING:
 			add_move_marker(legal_move_square, "yellow")
 			var king_target_square: String = get_king_target_square_in_castling_move(active_square, legal_move_square)
 			
-			if king_target_square != active_square:
+			if king_target_square != active_square and legal_moves[king_target_square] != Enums.MoveType.NORMAL:
 				add_move_marker(king_target_square, "yellow")
 		elif move_type ==  Enums.MoveType.EN_PASSANT or move_type == Enums.MoveType.PROMOTION:
 			add_move_marker(legal_move_square, "yellow")

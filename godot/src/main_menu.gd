@@ -1,6 +1,6 @@
 extends Control
 
-const GAME_LOCAL_SCENE = preload("uid://ccx66rc44ejbv")
+const GAME_LOCAL_SCENE: PackedScene = preload("uid://ccx66rc44ejbv")
 
 
 func _on_local_game_button_pressed() -> void:

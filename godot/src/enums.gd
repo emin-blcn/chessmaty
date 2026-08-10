@@ -47,3 +47,8 @@ enum MatchFinishedState
 	BLACK_WON,
 	FINISHED_DRAW
 }
+
+enum ChessEngine
+{
+	STOCKFISH
+}

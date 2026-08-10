@@ -1,6 +1,5 @@
 use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
-use godot::global::godot_print;
 use shakmaty::uci::UciMove;
 
 use crate::enums as Enums;
@@ -18,7 +17,7 @@ pub struct ChessEngine
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String) -> Self
+    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64) -> Self
     {
         let mut child = Command::new(ai_binary_path)
             .stdin(Stdio::piped())
@@ -50,6 +49,9 @@ impl ChessEngine
             writeln!(stdin, "setoption name UCI_Chess960 value true").unwrap();
             stdin.flush().unwrap();
         }
+
+        writeln!(stdin, "setoption name Skill Level value {}", ai_skill_level).unwrap();
+        stdin.flush().unwrap();
 
         writeln!(stdin, "isready").unwrap();
         stdin.flush().unwrap();
@@ -84,7 +86,7 @@ impl ChessEngine
             uci_moves_string.push_str(&uci_move.to_string());
             uci_moves_string.push(' ');
         }
-        godot_print!("{}", self.fen_string);
+
         match self.game_mode
         {
             Enums::GameMode::Standard =>

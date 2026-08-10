@@ -1,5 +1,6 @@
 use godot::prelude::*;
 use godot::classes::{IRefCounted, RefCounted};
+use godot::global::randi_range;
 use shakmaty::uci::UciMove;
 use shakmaty::{Chess, Color, EnPassantMode, CastlingMode, Move, Position, Role, Square};
 use shakmaty::fen::Fen;
@@ -7,7 +8,6 @@ use shakmaty::zobrist::Zobrist64;
 
 use crate::chess_engine::ChessEngine;
 use crate::enums as Enums;
-
 
 
 #[derive(GodotClass)]
@@ -24,7 +24,6 @@ struct ChessLogic
     repeated_board_hash_history: Vec<u64>,
     move_history: Vec<UciMove>
 }
-
 
 
 #[godot_api]
@@ -48,7 +47,6 @@ impl IRefCounted for ChessLogic
 }
 
 
-
 #[godot_api]
 impl ChessLogic
 {
@@ -57,7 +55,7 @@ impl ChessLogic
 
 
     #[func]
-    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, _chess960_random_number: i64, ai_binary_path: GString)
+    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, ai_binary_path: GString, ai_skill_level: i64)
     {
         self.opponent = opponent;
         self.game_mode = game_mode;
@@ -71,7 +69,7 @@ impl ChessLogic
             }
             (Enums::Opponent::LocalHuman, Enums::GameMode::Chess960) =>
             { // rakip yerel insan ve oyun modu Chess960
-                let fen_string = String::from("nbnrbqkr/pppppppp/8/8/8/8/PPPPPPPP/NBNRBQKR w KQkq - 0 1");
+                let fen_string = self.get_random_fen();
                 let fen: Fen = fen_string.parse().unwrap();
 
                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
@@ -79,19 +77,35 @@ impl ChessLogic
             (Enums::Opponent::LocalAI, Enums::GameMode::Standard) =>
             { // rakip yerel AI ve oyun modu klasik
                 self.chess = Chess::default();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new()));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level));
             }
             (Enums::Opponent::LocalAI, Enums::GameMode::Chess960) =>
             { // rakip yerel AI ve oyun modu satranç960
-                let fen_string = String::from("nbnrbqkr/pppppppp/8/8/8/8/PPPPPPPP/NBNRBQKR w KQkq - 0 1");
+                let fen_string = self.get_random_fen();
                 let fen: Fen = fen_string.parse().unwrap();
 
                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level));
             }
         }
-
+    
         self.update_repeated_board_hash_history();
+    }
+
+
+    fn get_random_fen(&self) -> String
+    {
+        let all_fens: Vec<&str> = include_str!("fens.txt").lines().collect();
+        let random_number = randi_range(0, 960 - 1) as usize;
+
+        format!("{}/pppppppp/8/8/8/8/PPPPPPPP/{} w KQkq - 0 1", all_fens[random_number], all_fens[random_number].to_uppercase())
+    }
+
+
+    #[func]
+    fn get_move_count(&self) -> i64
+    {
+        self.chess_history.len() as i64
     }
 
 
@@ -170,20 +184,20 @@ impl ChessLogic
                         {
                             if legal_move.is_promotion()
                             {
-                                legal_moves_for_godot.insert(&to_square,Enums::MoveType::Promotion);
+                                let _ = legal_moves_for_godot.insert(&to_square,Enums::MoveType::Promotion);
                             }
                             else
                             {
-                                legal_moves_for_godot.insert(&to_square,Enums::MoveType::Normal);
+                                let _ = legal_moves_for_godot.insert(&to_square,Enums::MoveType::Normal);
                             }
                         }
                         Move::EnPassant {..} =>
                         {
-                            legal_moves_for_godot.insert(&to_square,Enums::MoveType::EnPassant);
+                            let _ = legal_moves_for_godot.insert(&to_square,Enums::MoveType::EnPassant);
                         }
                         Move::Castle{..} =>
                         {
-                            legal_moves_for_godot.insert(&to_square,Enums::MoveType::Castling);
+                            let _ = legal_moves_for_godot.insert(&to_square,Enums::MoveType::Castling);
                         }
                         _ => {}
                     };
@@ -326,7 +340,29 @@ impl ChessLogic
 
     fn update_move_history(&mut self, new_move: Move)
     {
-        self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
+        match self.game_mode
+        {
+            Enums::GameMode::Standard =>
+            {
+                godot_print!("standart mod");
+                self.move_history.push(UciMove::from_move(new_move, CastlingMode::Standard));
+            }
+            Enums::GameMode::Chess960 =>
+            {
+                godot_print!("chess960 mod");
+                self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
+            }
+        }
+        
+        let mut msg = String::new();
+
+        for i in &self.move_history
+        {
+            msg += &i.to_string();
+            msg += &" ".to_string();
+        }
+
+        godot_print!("moves: {}", msg);
     }
 
 
