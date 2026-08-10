@@ -19,7 +19,8 @@ config/icon="uid://now0q7mcsy7a"
 
 [autoload]
 
-Global="*uid://ds8wqudbsyb10"
+Global="*uid://c16uoaj0yfneu"
+Sounds="*uid://d34byqbjnoepx"
 
 [display]
 
@@ -30,6 +31,7 @@ window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
+mouse_cursor/custom_image="uid://dkowp2vku6tfa"
 
 [file_customization]
 
