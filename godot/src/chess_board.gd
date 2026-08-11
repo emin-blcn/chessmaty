@@ -32,9 +32,14 @@ const KINGS_POSSIBLE_TARGET_SQUARES_IN_CASTLING_MOVE: PackedStringArray = ["g1",
 
 var chess_logic: ChessLogic = ChessLogic.new()
 var active_square: String
+var current_turn: Enums.ChessColor
 var opponent: Enums.Opponent
 var game_mode: Enums.GameMode
 var player_color: Enums.ChessColor
+var minute_per_side: int
+var increment_second: int
+var white_time_left_second: int
+var black_time_left_second: int
 var ai_binary_path: String
 var ai_skill_level: int
 var legal_moves: Dictionary[String, int] # [String, (Enums.MoveType)]
@@ -59,7 +64,7 @@ func _ready() -> void:
 
 
 func initialize_board():
-	chess_logic.configure_from_godot(opponent, game_mode, player_color, ai_binary_path, ai_skill_level)
+	chess_logic.configure_from_godot(opponent, game_mode, player_color, minute_per_side, increment_second, ai_binary_path, ai_skill_level)
 	update_all_pieces()
 	
 	# reverse numbers and letters if player color is black
@@ -169,7 +174,8 @@ func hovering_on_board_event(new_square: String) -> void:
 	var piece: Enums.Piece = chess_logic.get_piece_from_square(new_square) as Enums.Piece
 	if piece != Enums.Piece.EMPTY:
 		var piece_color: Enums.ChessColor = chess_logic.get_piece_color_from_square(new_square) as Enums.ChessColor
-		if piece_color == chess_logic.get_turn() and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
+		current_turn = chess_logic.get_turn() as Enums.ChessColor
+		if piece_color == current_turn and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
 			if new_square == king_in_dangered_square:
 				move_marker_nodes.get_node(new_square).texture = MOVE_MARKER_TEXTURES["white"]
 			else:
@@ -186,7 +192,8 @@ func selected_piece_event(new_square: String) -> void:
 		var piece: Enums.Piece = chess_logic.get_piece_from_square(new_square) as Enums.Piece
 		if piece != Enums.Piece.EMPTY:
 			var piece_color: Enums.ChessColor = chess_logic.get_piece_color_from_square(new_square) as Enums.ChessColor
-			if piece_color == chess_logic.get_turn() and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
+			current_turn = chess_logic.get_turn() as Enums.ChessColor
+			if piece_color == current_turn and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
 				any_piece_selected = true
 				active_square = new_square
 				legal_moves = chess_logic.get_legal_moves_from_square(new_square)
@@ -225,7 +232,7 @@ func selected_piece_event(new_square: String) -> void:
 				var piece: Enums.Piece = chess_logic.get_piece_from_square(new_square) as Enums.Piece
 				if piece != Enums.Piece.EMPTY:
 					var piece_color: Enums.ChessColor = chess_logic.get_piece_color_from_square(new_square) as Enums.ChessColor
-					if piece_color == chess_logic.get_turn() and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
+					if piece_color == current_turn and (piece_color == player_color or opponent == Enums.Opponent.LOCAL_HUMAN):
 						active_square = new_square
 						legal_moves = chess_logic.get_legal_moves_from_square(new_square)
 						clear_move_markers()
@@ -334,8 +341,9 @@ func apply_promotion_move(new_role: Enums.Piece):
 	var array: PackedStringArray = promotion_pawn_from_to_square.split("_")
 	promotion_pawn_from_to_square = ""
 	
+	current_turn = chess_logic.get_turn() as Enums.ChessColor
 	var to_square: String = array[1]
-	var color: Enums.ChessColor = Enums.ChessColor.WHITE if chess_logic.get_turn() == Enums.ChessColor.WHITE else Enums.ChessColor.BLACK
+	var color: Enums.ChessColor = Enums.ChessColor.WHITE if current_turn == Enums.ChessColor.WHITE else Enums.ChessColor.BLACK
 	board[to_square].texture = PIECE_TEXTURES[ [new_role, color] ]
 	
 	var from_square: String = array[0]
@@ -343,12 +351,14 @@ func apply_promotion_move(new_role: Enums.Piece):
 
 
 func _on_move_animation_tween_finished(move_type: Enums.MoveType):
+	current_turn = chess_logic.get_turn() as Enums.ChessColor
 	move_animation_finished.emit(move_type)
 	
 	if opponent == Enums.Opponent.LOCAL_HUMAN:
 		move_animation_is_playing = false
 	elif opponent == Enums.Opponent.LOCAL_AI:
-		if player_color == chess_logic.get_turn():
+		current_turn = chess_logic.get_turn() as Enums.ChessColor
+		if player_color == current_turn:
 			move_animation_is_playing = false
 	else:
 		move_animation_is_playing = false
@@ -392,7 +402,8 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 		input_control_node.show()
 	else:
 		# rakip AI
-		if player_color == chess_logic.get_turn():
+		current_turn = chess_logic.get_turn() as Enums.ChessColor
+		if player_color == current_turn:
 			# sıra insanda, hamle yapmaya izin veriyoruz
 			input_control_node.show()
 		else:
@@ -403,7 +414,7 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 func play_ai_move():
 	WorkerThreadPool.add_task(
 		func():
-			var best_ai_move: String = chess_logic.get_best_ai_move()
+			var best_ai_move: String = chess_logic.get_best_ai_move(white_time_left_second, black_time_left_second)
 			chess_logic.call_deferred("play_ai_move", best_ai_move)
 	)
 
@@ -423,7 +434,7 @@ func add_legal_move_markers():
 			add_move_marker(legal_move_square, "yellow")
 			var king_target_square: String = get_king_target_square_in_castling_move(active_square, legal_move_square)
 			
-			if king_target_square != active_square and legal_moves[king_target_square] != Enums.MoveType.NORMAL:
+			if king_target_square != active_square and !legal_moves.has(king_target_square):
 				add_move_marker(king_target_square, "yellow")
 		elif move_type ==  Enums.MoveType.EN_PASSANT or move_type == Enums.MoveType.PROMOTION:
 			add_move_marker(legal_move_square, "yellow")

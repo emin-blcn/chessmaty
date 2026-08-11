@@ -55,7 +55,7 @@ impl ChessLogic
 
 
     #[func]
-    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, ai_binary_path: GString, ai_skill_level: i64)
+    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, minute_per_side: i64, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
     {
         self.opponent = opponent;
         self.game_mode = game_mode;
@@ -77,7 +77,7 @@ impl ChessLogic
             (Enums::Opponent::LocalAI, Enums::GameMode::Standard) =>
             { // rakip yerel AI ve oyun modu klasik
                 self.chess = Chess::default();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, minute_per_side, increment_second));
             }
             (Enums::Opponent::LocalAI, Enums::GameMode::Chess960) =>
             { // rakip yerel AI ve oyun modu satranç960
@@ -85,7 +85,7 @@ impl ChessLogic
                 let fen: Fen = fen_string.parse().unwrap();
 
                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, minute_per_side, increment_second));
             }
         }
     
@@ -344,25 +344,13 @@ impl ChessLogic
         {
             Enums::GameMode::Standard =>
             {
-                godot_print!("standart mod");
                 self.move_history.push(UciMove::from_move(new_move, CastlingMode::Standard));
             }
             Enums::GameMode::Chess960 =>
             {
-                godot_print!("chess960 mod");
                 self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
             }
         }
-        
-        let mut msg = String::new();
-
-        for i in &self.move_history
-        {
-            msg += &i.to_string();
-            msg += &" ".to_string();
-        }
-
-        godot_print!("moves: {}", msg);
     }
 
 
@@ -407,11 +395,11 @@ impl ChessLogic
 
 
     #[func]
-    fn get_best_ai_move(&mut self) -> GString
+    fn get_best_ai_move(&mut self, white_time_left: i64, black_time_left: i64) -> GString
     {
         let best_move = match &mut self.chess_engine
         {
-            Some(engine) => engine.best_move(&self.move_history),
+            Some(engine) => engine.best_move(&self.move_history, white_time_left, black_time_left),
             None => panic!()
         };
 

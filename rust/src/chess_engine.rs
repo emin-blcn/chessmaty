@@ -1,5 +1,6 @@
 use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
+use godot::global::godot_print;
 use shakmaty::uci::UciMove;
 
 use crate::enums as Enums;
@@ -10,14 +11,16 @@ pub struct ChessEngine
     stdin: std::process::ChildStdin,
     stdout: BufReader<ChildStdout>,
     game_mode: Enums::GameMode,
-    fen_string: String
+    fen_string: String,
+    minute_per_side: i64,
+    increment_second: i64
 }
 
 
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64) -> Self
+    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, minute_per_side: i64, increment_second: i64) -> Self
     {
         let mut child = Command::new(ai_binary_path)
             .stdin(Stdio::piped())
@@ -72,12 +75,14 @@ impl ChessEngine
             stdin: stdin,
             stdout: reader,
             game_mode: game_mode,
-            fen_string: fen_string
+            fen_string: fen_string,
+            minute_per_side: minute_per_side,
+            increment_second: increment_second
         }
     }
 
 
-    pub fn best_move(&mut self, move_history: &Vec<UciMove>) -> String
+    pub fn best_move(&mut self, move_history: &Vec<UciMove>, white_time_left: i64, black_time_left: i64) -> String
     {
         let mut uci_moves_string = String::new();
         
@@ -117,8 +122,15 @@ impl ChessEngine
             }
         }
 
-
-        writeln!(self.stdin, "go movetime 1000").unwrap();
+        if self.minute_per_side == 181
+        {
+            writeln!(self.stdin, "go movetime 1000").unwrap();
+        }
+        else
+        {
+            godot_print!("go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000);
+            writeln!(self.stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
+        }
         self.stdin.flush().unwrap();
 
         let best_move: String;
