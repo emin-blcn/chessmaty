@@ -18,33 +18,41 @@
 [ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="15_hc21h"]
 [ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="17_lwkho"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
-texture = ExtResource("4_5hoaj")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
+texture = ExtResource("13_4oel6")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jq8ee"]
-texture = ExtResource("4_5hoaj")
-modulate_color = Color(1, 1, 1, 0.5882353)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3r2ld"]
+texture = ExtResource("13_4oel6")
+modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nsm0t"]
-texture = ExtResource("5_hc21h")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5hoaj"]
+texture = ExtResource("13_4oel6")
+modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16d88"]
-texture = ExtResource("5_hc21h")
-modulate_color = Color(1, 1, 1, 0.5882353)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwkho"]
+texture = ExtResource("15_hc21h")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_52il0"]
-texture = ExtResource("6_3r2ld")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oksyj"]
+texture = ExtResource("15_hc21h")
+modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uwq6v"]
-texture = ExtResource("6_3r2ld")
-modulate_color = Color(1, 1, 1, 0.5882353)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_upx7y"]
+texture = ExtResource("15_hc21h")
+modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gvac2"]
-texture = ExtResource("7_lwkho")
+[sub_resource type="Gradient" id="Gradient_lwkho"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+metadata/_snap_enabled = true
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lpq8d"]
-texture = ExtResource("7_lwkho")
-modulate_color = Color(1, 1, 1, 0.5882353)
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5xl1b"]
+gradient = SubResource("Gradient_lwkho")
+width = 320
+height = 180
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ym7h"]
 texture = ExtResource("8_oksyj")
@@ -74,27 +82,33 @@ texture = ExtResource("11_judqd")
 texture = ExtResource("11_judqd")
 modulate_color = Color(1, 1, 1, 0.5882353)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
-texture = ExtResource("13_4oel6")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
+texture = ExtResource("4_5hoaj")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3r2ld"]
-texture = ExtResource("13_4oel6")
-modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jq8ee"]
+texture = ExtResource("4_5hoaj")
+modulate_color = Color(1, 1, 1, 0.5882353)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5hoaj"]
-texture = ExtResource("13_4oel6")
-modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nsm0t"]
+texture = ExtResource("5_hc21h")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwkho"]
-texture = ExtResource("15_hc21h")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16d88"]
+texture = ExtResource("5_hc21h")
+modulate_color = Color(1, 1, 1, 0.5882353)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oksyj"]
-texture = ExtResource("15_hc21h")
-modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_52il0"]
+texture = ExtResource("6_3r2ld")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_upx7y"]
-texture = ExtResource("15_hc21h")
-modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uwq6v"]
+texture = ExtResource("6_3r2ld")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gvac2"]
+texture = ExtResource("7_lwkho")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lpq8d"]
+texture = ExtResource("7_lwkho")
+modulate_color = Color(1, 1, 1, 0.5882353)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r00br"]
 texture = ExtResource("17_lwkho")
@@ -149,6 +163,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5r6l5")
 metadata/_edit_lock_ = true
+metadata/_edit_horizontal_guides_ = [90.0]
+metadata/_edit_vertical_guides_ = [160.0]
 
 [node name="bg" type="TextureRect" parent="." unique_id=1544648892]
 layout_mode = 1
@@ -164,15 +180,9 @@ metadata/_edit_lock_ = true
 [node name="game_content" type="Control" parent="." unique_id=1601696168]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -160.0
-offset_top = -90.0
-offset_right = 160.0
-offset_bottom = 90.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
@@ -180,142 +190,9 @@ metadata/_edit_lock_ = true
 [node name="chess_board" parent="game_content" unique_id=578451742 instance=ExtResource("3_4oel6")]
 layout_mode = 1
 
-[node name="promotion_selection" type="Control" parent="game_content" unique_id=36715584]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.0
-offset_top = -65.0
-offset_right = 65.0
-offset_bottom = 65.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_lock_ = true
-
-[node name="ColorRect" type="ColorRect" parent="game_content/promotion_selection" unique_id=96756945]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -56.0
-offset_top = -24.0
-offset_right = 56.0
-offset_bottom = 24.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.8235294)
-
-[node name="Label" type="Label" parent="game_content/promotion_selection" unique_id=402282395]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -56.0
-offset_top = -22.0
-offset_right = 56.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 8
-text = "Promotion Selection"
-horizontal_alignment = 1
-
-[node name="white" type="HBoxContainer" parent="game_content/promotion_selection" unique_id=15464293]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -38.0
-offset_top = -16.0
-offset_right = 38.0
-offset_bottom = 16.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_group_ = true
-
-[node name="1" type="Button" parent="game_content/promotion_selection/white" unique_id=39272056]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_5xl1b")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_5xl1b")
-theme_override_styles/hover = SubResource("StyleBoxTexture_jq8ee")
-
-[node name="2" type="Button" parent="game_content/promotion_selection/white" unique_id=1489267422]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_nsm0t")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_nsm0t")
-theme_override_styles/hover = SubResource("StyleBoxTexture_16d88")
-
-[node name="3" type="Button" parent="game_content/promotion_selection/white" unique_id=1146183973]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_52il0")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_52il0")
-theme_override_styles/hover = SubResource("StyleBoxTexture_uwq6v")
-
-[node name="4" type="Button" parent="game_content/promotion_selection/white" unique_id=755321385]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_gvac2")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_gvac2")
-theme_override_styles/hover = SubResource("StyleBoxTexture_lpq8d")
-
-[node name="black" type="HBoxContainer" parent="game_content/promotion_selection" unique_id=265086047]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -38.0
-offset_top = -16.0
-offset_right = 38.0
-offset_bottom = 16.0
-grow_horizontal = 2
-grow_vertical = 2
-metadata/_edit_group_ = true
-
-[node name="1" type="Button" parent="game_content/promotion_selection/black" unique_id=1459354414]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_3ym7h")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_3ym7h")
-theme_override_styles/hover = SubResource("StyleBoxTexture_7awpv")
-
-[node name="2" type="Button" parent="game_content/promotion_selection/black" unique_id=612496482]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_ij4bn")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ij4bn")
-theme_override_styles/hover = SubResource("StyleBoxTexture_abhhs")
-
-[node name="3" type="Button" parent="game_content/promotion_selection/black" unique_id=1279094014]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_un7px")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_un7px")
-theme_override_styles/hover = SubResource("StyleBoxTexture_sb5ba")
-
-[node name="4" type="Button" parent="game_content/promotion_selection/black" unique_id=889957275]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_ilxgh")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ilxgh")
-theme_override_styles/hover = SubResource("StyleBoxTexture_is6od")
-
 [node name="move_history_table" parent="game_content" unique_id=736317109 instance=ExtResource("12_fw8ns")]
 layout_mode = 1
+metadata/_edit_lock_ = true
 
 [node name="undo_button" type="Button" parent="game_content" unique_id=1857265176]
 layout_mode = 1
@@ -333,17 +210,14 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_3r2ld")
 theme_override_styles/hover = SubResource("StyleBoxTexture_5hoaj")
 alignment = 2
 
-[node name="undo_message_label" type="Label" parent="game_content" unique_id=1583861356]
+[node name="undo_message_label" type="Label" parent="game_content/undo_button" unique_id=1583861356]
 visible = false
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -67.0
-offset_top = 98.0
-offset_right = -16.0
-offset_bottom = 106.0
-grow_horizontal = 0
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -44.0
+offset_right = -2.0
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("13_5hoaj")
 theme_override_font_sizes/font_size = 8
 text = "Undo last move"
@@ -365,21 +239,182 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_oksyj")
 theme_override_styles/hover = SubResource("StyleBoxTexture_upx7y")
 alignment = 2
 
-[node name="leave_message_label" type="Label" parent="game_content" unique_id=1375898115]
+[node name="leave_message_label" type="Label" parent="game_content/leave_button" unique_id=1375898115]
 visible = false
 layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -67.0
-offset_top = 112.0
-offset_right = -16.0
-offset_bottom = 120.0
-grow_horizontal = 0
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_right = -2.0
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("13_5hoaj")
 theme_override_font_sizes/font_size = 8
 text = "Leave match"
 horizontal_alignment = 2
+
+[node name="promotion_selection" type="TextureRect" parent="game_content" unique_id=1543873840]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_3r2ld")
+texture = SubResource("GradientTexture2D_5xl1b")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="game_content/promotion_selection" unique_id=39706155]
+self_modulate = Color(1, 1, 1, 0.8627451)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -23.0
+offset_right = 45.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="game_content/promotion_selection/Panel" unique_id=402282395]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 10.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 8
+text = "Promotion Selection"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="black" type="HBoxContainer" parent="game_content/promotion_selection/Panel" unique_id=265086047]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -16.0
+offset_right = 38.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="1" type="Button" parent="game_content/promotion_selection/Panel/black" unique_id=1459354414]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_3ym7h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3ym7h")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7awpv")
+
+[node name="2" type="Button" parent="game_content/promotion_selection/Panel/black" unique_id=612496482]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_ij4bn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ij4bn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_abhhs")
+
+[node name="3" type="Button" parent="game_content/promotion_selection/Panel/black" unique_id=1279094014]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_un7px")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_un7px")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sb5ba")
+
+[node name="4" type="Button" parent="game_content/promotion_selection/Panel/black" unique_id=889957275]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_ilxgh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ilxgh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_is6od")
+
+[node name="white" type="HBoxContainer" parent="game_content/promotion_selection/Panel" unique_id=15464293]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -16.0
+offset_right = 38.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="1" type="Button" parent="game_content/promotion_selection/Panel/white" unique_id=39272056]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_5xl1b")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_5xl1b")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jq8ee")
+
+[node name="2" type="Button" parent="game_content/promotion_selection/Panel/white" unique_id=1489267422]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_nsm0t")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_nsm0t")
+theme_override_styles/hover = SubResource("StyleBoxTexture_16d88")
+
+[node name="3" type="Button" parent="game_content/promotion_selection/Panel/white" unique_id=1146183973]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_52il0")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_52il0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_uwq6v")
+
+[node name="4" type="Button" parent="game_content/promotion_selection/Panel/white" unique_id=755321385]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_gvac2")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gvac2")
+theme_override_styles/hover = SubResource("StyleBoxTexture_lpq8d")
+
+[node name="match_finished" type="Control" parent="game_content" unique_id=178576473]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 91.0
+offset_top = 21.0
+offset_right = -91.0
+offset_bottom = -21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_3r2ld")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="game_content/match_finished" unique_id=1828064968]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -91.0
+offset_top = -18.0
+offset_right = -19.0
+offset_bottom = -2.0
+grow_vertical = 2
+text = "Game Drawn"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="rematch_button" type="Button" parent="game_content/match_finished" unique_id=394995769]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -84.0
+offset_top = 2.0
+offset_right = -26.0
+offset_bottom = 15.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Rematch"
 
 [node name="top_time_message_label" type="Label" parent="game_content" unique_id=1920954439]
 visible = false
@@ -462,11 +497,12 @@ theme = ExtResource("3_3r2ld")
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 5.0
-offset_bottom = 18.0
+offset_top = 2.0
+offset_bottom = 17.0
 grow_horizontal = 2
 text = "Local Game"
 horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="game_mode_button" type="Button" parent="game_config" unique_id=937174034]
 layout_mode = 1
@@ -538,15 +574,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -48.0
+offset_left = -28.0
 offset_top = -7.5
-offset_right = 48.0
+offset_right = 28.0
 offset_bottom = -0.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 8
 text = "AI skill level: 0"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ai_skill_level_bar" type="HScrollBar" parent="game_config/ai_config" unique_id=463294735]
@@ -576,14 +611,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -96.0
+offset_left = -89.0
 offset_top = 12.0
+offset_right = -7.0
 offset_bottom = 19.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 8
 text = "Minutes per side: Unlimited"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="minute_per_side_bar" type="HScrollBar" parent="game_config" unique_id=1503850047]
@@ -603,10 +638,9 @@ theme_override_styles/scroll = SubResource("StyleBoxTexture_r00br")
 theme_override_styles/grabber = SubResource("StyleBoxTexture_judqd")
 theme_override_styles/grabber_highlight = SubResource("StyleBoxTexture_iua75")
 theme_override_styles/grabber_pressed = SubResource("StyleBoxTexture_hs4rj")
-min_value = 1.0
-max_value = 181.0
+max_value = 38.0
 step = 1.0
-value = 181.0
+value = 38.0
 
 [node name="increment_second_label" type="Label" parent="game_config" unique_id=379856082]
 modulate = Color(1, 1, 1, 0.49803922)
@@ -616,14 +650,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = 10.0
 offset_top = 12.0
-offset_right = 96.0
+offset_right = 86.0
 offset_bottom = 19.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 8
 text = "Increment in seconds: 0"
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="increment_second_bar" type="HScrollBar" parent="game_config" unique_id=1696817331]
@@ -645,8 +679,8 @@ theme_override_styles/scroll = SubResource("StyleBoxTexture_r00br")
 theme_override_styles/grabber = SubResource("StyleBoxTexture_judqd")
 theme_override_styles/grabber_highlight = SubResource("StyleBoxTexture_iua75")
 theme_override_styles/grabber_pressed = SubResource("StyleBoxTexture_hs4rj")
-max_value = 180.0
-step = 5.0
+max_value = 30.0
+step = 1.0
 
 [node name="start_button" type="Button" parent="game_config" unique_id=1949548078]
 layout_mode = 1
@@ -672,6 +706,7 @@ text = "Start"
 [connection signal="mouse_entered" from="game_content/leave_button" to="." method="_on_leave_button_mouse_entered"]
 [connection signal="mouse_exited" from="game_content/leave_button" to="." method="_on_leave_button_mouse_exited"]
 [connection signal="pressed" from="game_content/leave_button" to="." method="_on_leave_button_pressed"]
+[connection signal="pressed" from="game_content/match_finished/rematch_button" to="." method="_on_rematch_button_pressed"]
 [connection signal="pressed" from="game_config/game_mode_button" to="." method="_on_game_mode_button_pressed"]
 [connection signal="pressed" from="game_config/player_color_button" to="." method="_on_player_color_button_pressed"]
 [connection signal="pressed" from="game_config/opponent_button" to="." method="_on_opponent_button_pressed"]

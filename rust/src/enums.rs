@@ -45,8 +45,8 @@ pub enum MoveType
     EnPassant,
     Castling,
     Promotion,
-    PromotionRequest,
-    PromotionByAI,
+    PromotionRequestByHuman,
+    PromotionRequestByAI,
     Undo
 }
 
