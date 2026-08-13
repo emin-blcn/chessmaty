@@ -55,7 +55,7 @@ impl ChessLogic
 
 
     #[func]
-    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, minute_per_side: i64, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
+    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, is_timed_game: bool, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
     {
         self.opponent = opponent;
         self.game_mode = game_mode;
@@ -77,7 +77,7 @@ impl ChessLogic
             (Enums::Opponent::LocalAI, Enums::GameMode::Standard) =>
             { // rakip yerel AI ve oyun modu klasik
                 self.chess = Chess::default();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, minute_per_side, increment_second));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, is_timed_game, increment_second));
             }
             (Enums::Opponent::LocalAI, Enums::GameMode::Chess960) =>
             { // rakip yerel AI ve oyun modu satranç960
@@ -85,7 +85,7 @@ impl ChessLogic
                 let fen: Fen = fen_string.parse().unwrap();
 
                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, minute_per_side, increment_second));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, is_timed_game, increment_second));
             }
         }
     
@@ -333,8 +333,7 @@ impl ChessLogic
         self.update_move_history(play_move);
         self.update_repeated_board_hash_history();
 
-        // burada godot sinyalini tetiklemiyoruz çünkü sinyali oyuncu, godot'tan tetikledi ya da AI, play_ai_move() fonksiyonu içinde tetikledi
-        // godot hamle animasyonunu oynattıktan sonra bu fonsksiyonu çağırdı, hamleyi shakmaty'de güncelliyoruz
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Promotion.to_variant(), from.to_variant(), to.to_variant(), Enums::Piece::Empty.to_variant()]);
     }
 
 
@@ -429,9 +428,8 @@ impl ChessLogic
                         Role::Knight => Enums::Piece::Knight,
                         _ => Enums::Piece::Queen
                     };
-
                     // AI, promosyon hamlesi yaptı, apply_promotion_move() fonksiyonunu çağırmıyoruz, godot sinyalini tetikliyoruz, apply_promotion_move() fonksiyonunu godot çağıracak
-                    self.base_mut().emit_signal("move_applied", &[Enums::MoveType::PromotionByAI.to_variant(), from.to_variant(), to.to_variant(), new_role.to_variant()]);
+                    self.base_mut().emit_signal("move_applied", &[Enums::MoveType::PromotionRequestByAI.to_variant(), from.to_variant(), to.to_variant(), new_role.to_variant()]);
                 }
                 else
                 {

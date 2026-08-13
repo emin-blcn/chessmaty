@@ -12,7 +12,7 @@ pub struct ChessEngine
     stdout: BufReader<ChildStdout>,
     game_mode: Enums::GameMode,
     fen_string: String,
-    minute_per_side: i64,
+    is_timed_game: bool,
     increment_second: i64
 }
 
@@ -20,7 +20,7 @@ pub struct ChessEngine
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, minute_per_side: i64, increment_second: i64) -> Self
+    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, is_timed_game: bool, increment_second: i64) -> Self
     {
         let mut child = Command::new(ai_binary_path)
             .stdin(Stdio::piped())
@@ -76,7 +76,7 @@ impl ChessEngine
             stdout: reader,
             game_mode: game_mode,
             fen_string: fen_string,
-            minute_per_side: minute_per_side,
+            is_timed_game: is_timed_game,
             increment_second: increment_second
         }
     }
@@ -122,14 +122,14 @@ impl ChessEngine
             }
         }
 
-        if self.minute_per_side == 181
-        {
-            writeln!(self.stdin, "go movetime 1000").unwrap();
-        }
-        else
+        if self.is_timed_game
         {
             godot_print!("go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000);
             writeln!(self.stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
+        }
+        else
+        {
+            writeln!(self.stdin, "go movetime 1000").unwrap();
         }
         self.stdin.flush().unwrap();
 

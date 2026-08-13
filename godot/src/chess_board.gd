@@ -36,7 +36,7 @@ var current_turn: Enums.ChessColor
 var opponent: Enums.Opponent
 var game_mode: Enums.GameMode
 var player_color: Enums.ChessColor
-var minute_per_side: int
+var is_timed_game: bool
 var increment_second: int
 var white_time_left_second: int
 var black_time_left_second: int
@@ -64,7 +64,7 @@ func _ready() -> void:
 
 
 func initialize_board():
-	chess_logic.configure_from_godot(opponent, game_mode, player_color, minute_per_side, increment_second, ai_binary_path, ai_skill_level)
+	chess_logic.configure_from_godot(opponent, game_mode, player_color, is_timed_game, increment_second, ai_binary_path, ai_skill_level)
 	update_all_pieces()
 	
 	# reverse numbers and letters if player color is black
@@ -214,7 +214,7 @@ func selected_piece_event(new_square: String) -> void:
 					Enums.MoveType.EN_PASSANT:
 						chess_logic.apply_en_passant_move(active_square, new_square)
 					Enums.MoveType.PROMOTION:
-						_on_chess_logic_move_applied(Enums.MoveType.PROMOTION_REQUEST, active_square, new_square, Enums.Piece.EMPTY)
+						_on_chess_logic_move_applied(Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN, active_square, new_square, Enums.Piece.EMPTY)
 					Enums.MoveType.CASTLING:
 						chess_logic.apply_castling_move(active_square, new_square)
 			else:
@@ -267,7 +267,7 @@ func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: S
 	move_animation_started.emit(move_type, from, to)
 	move_animation_is_playing = true
 	
-	if move_type == Enums.MoveType.UNDO:
+	if move_type == Enums.MoveType.UNDO or move_type == Enums.MoveType.PROMOTION:
 		_on_move_animation_tween_finished(move_type)
 		return
 	
@@ -281,12 +281,12 @@ func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: S
 			apply_en_passant_move(from, to, tween)
 		Enums.MoveType.CASTLING:
 			apply_castling_move(from, to, tween)
-		Enums.MoveType.PROMOTION_REQUEST:
+		Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
 			promotion_pawn_from_to_square = from + "_" + to
 			apply_normal_move(from, to, tween)
-		Enums.MoveType.PROMOTION_BY_AI:
-			ai_selected_promotion_role = ai_selected_new_promotion_role
+		Enums.MoveType.PROMOTION_REQUEST_BY_AI:
 			promotion_pawn_from_to_square = from + "_" + to
+			ai_selected_promotion_role = ai_selected_new_promotion_role
 			apply_normal_move(from, to, tween)
 	tween.play()
 
@@ -363,11 +363,11 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 	else:
 		move_animation_is_playing = false
 	
-	if move_type == Enums.MoveType.PROMOTION_REQUEST:
+	if move_type == Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
 		# biten hamle animasyonu promosyon hamlesi ve insan tarafından yapıldı, üst sahneden promosyon taş seçimi istiyoruz
 		# seçim yapıldığında apply_promotion_move() fonksiyonunu üst sahne çağıracak
 		promotion_selection_required.emit()
-	elif move_type == Enums.MoveType.PROMOTION_BY_AI:
+	elif move_type == Enums.MoveType.PROMOTION_REQUEST_BY_AI:
 		# biten hamle animasyonu promosyon hamlesi ve AI tarafından yapıldı
 		apply_promotion_move(ai_selected_promotion_role)
 		ai_selected_promotion_role = Enums.Piece.EMPTY
