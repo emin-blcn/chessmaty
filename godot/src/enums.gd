@@ -3,7 +3,8 @@ class_name Enums
 enum Opponent
 {
 	LOCAL_HUMAN,
-	LOCAL_AI
+	LOCAL_AI,
+	LAN_HUMAN
 }
 
 enum GameMode
@@ -46,9 +47,4 @@ enum MatchFinishedState
 	WHITE_WON,
 	BLACK_WON,
 	FINISHED_DRAW
-}
-
-enum ChessEngine
-{
-	STOCKFISH
 }

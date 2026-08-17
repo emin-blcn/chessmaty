@@ -5,7 +5,8 @@ use godot::prelude::*;
 pub enum Opponent
 {
     LocalHuman,
-    LocalAI
+    LocalAI,
+    LanHuman
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]

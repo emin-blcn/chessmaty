@@ -36,7 +36,7 @@ var current_turn: Enums.ChessColor
 var opponent: Enums.Opponent
 var game_mode: Enums.GameMode
 var player_color: Enums.ChessColor
-var is_timed_game: bool
+var minute_per_side: float
 var increment_second: int
 var white_time_left_second: int
 var black_time_left_second: int
@@ -63,8 +63,8 @@ func _ready() -> void:
 	chess_logic.move_applied.connect(_on_chess_logic_move_applied)
 
 
-func initialize_board():
-	chess_logic.configure_from_godot(opponent, game_mode, player_color, is_timed_game, increment_second, ai_binary_path, ai_skill_level)
+func config():
+	chess_logic.configure_from_godot(opponent, game_mode, player_color, minute_per_side, increment_second, ai_binary_path, ai_skill_level)
 	update_all_pieces()
 	
 	# reverse numbers and letters if player color is black
@@ -415,6 +415,7 @@ func play_ai_move():
 	WorkerThreadPool.add_task(
 		func():
 			var best_ai_move: String = chess_logic.get_best_ai_move(white_time_left_second, black_time_left_second)
+			print(best_ai_move)
 			chess_logic.call_deferred("play_ai_move", best_ai_move)
 	)
 

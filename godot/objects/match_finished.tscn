@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://dcexr08yr4d6g"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_r3cf6"]
+
+[sub_resource type="Gradient" id="Gradient_lwkho"]
+offsets = PackedFloat32Array(0.3, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5xl1b"]
+gradient = SubResource("Gradient_lwkho")
+width = 320
+height = 180
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
+
+[node name="match_finished" type="TextureRect" unique_id=129727042]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_r3cf6")
+texture = SubResource("GradientTexture2D_5xl1b")
+metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="." unique_id=1621229476]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -34.0
+offset_right = 72.0
+offset_bottom = -18.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "Game Drawn"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="rematch_button" type="Button" parent="." unique_id=1282986072]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = -14.0
+offset_right = 65.0
+offset_bottom = -1.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Rematch"
+
+[node name="undo_button" type="Button" parent="." unique_id=1003296897]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_right = 65.0
+offset_bottom = 13.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Undo last move"
+
+[node name="leave_button" type="Button" parent="." unique_id=860316151]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = 15.0
+offset_right = 65.0
+offset_bottom = 28.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Leave game"

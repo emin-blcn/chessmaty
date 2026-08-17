@@ -1,0 +1,203 @@
+[gd_scene format=3 uid="uid://cfsjp52ilwb18"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_00y83"]
+[ext_resource type="Script" uid="uid://b5ycxv76dgi5l" path="res://src/promotion_selection.gd" id="2_8nila"]
+[ext_resource type="Texture2D" uid="uid://cp7h3f6nl280m" path="res://assets/graphics/chess_pieces/queen_black.png" id="2_fdcw6"]
+[ext_resource type="Texture2D" uid="uid://dnip4r75iln63" path="res://assets/graphics/chess_pieces/bishop_black.png" id="3_8nila"]
+[ext_resource type="Texture2D" uid="uid://b1qiry1fgwq7y" path="res://assets/graphics/chess_pieces/knight_black.png" id="4_s2y7c"]
+[ext_resource type="Texture2D" uid="uid://cdw8mxfjy7wn3" path="res://assets/graphics/chess_pieces/rook_black.png" id="5_ct4o7"]
+[ext_resource type="Texture2D" uid="uid://cfi88xmcwl8xv" path="res://assets/graphics/chess_pieces/queen_white.png" id="6_lgkni"]
+[ext_resource type="Texture2D" uid="uid://cnkaj6a1nvawt" path="res://assets/graphics/chess_pieces/bishop_white.png" id="7_gu8hf"]
+[ext_resource type="Texture2D" uid="uid://bb6wpbdxlg4jl" path="res://assets/graphics/chess_pieces/knight_white.png" id="8_vpkif"]
+[ext_resource type="Texture2D" uid="uid://b43npdubwnbj" path="res://assets/graphics/chess_pieces/rook_white.png" id="9_uqhvl"]
+
+[sub_resource type="Gradient" id="Gradient_lwkho"]
+offsets = PackedFloat32Array(0.3, 0.9)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5xl1b"]
+gradient = SubResource("Gradient_lwkho")
+width = 320
+height = 180
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ym7h"]
+texture = ExtResource("2_fdcw6")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7awpv"]
+texture = ExtResource("2_fdcw6")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ij4bn"]
+texture = ExtResource("3_8nila")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_abhhs"]
+texture = ExtResource("3_8nila")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_un7px"]
+texture = ExtResource("4_s2y7c")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sb5ba"]
+texture = ExtResource("4_s2y7c")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ilxgh"]
+texture = ExtResource("5_ct4o7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_is6od"]
+texture = ExtResource("5_ct4o7")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
+texture = ExtResource("6_lgkni")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jq8ee"]
+texture = ExtResource("6_lgkni")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nsm0t"]
+texture = ExtResource("7_gu8hf")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16d88"]
+texture = ExtResource("7_gu8hf")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_52il0"]
+texture = ExtResource("8_vpkif")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uwq6v"]
+texture = ExtResource("8_vpkif")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gvac2"]
+texture = ExtResource("9_uqhvl")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lpq8d"]
+texture = ExtResource("9_uqhvl")
+modulate_color = Color(1, 1, 1, 0.5882353)
+
+[node name="promotion_selection" type="TextureRect" unique_id=1667121682]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_00y83")
+texture = SubResource("GradientTexture2D_5xl1b")
+script = ExtResource("2_8nila")
+metadata/_edit_lock_ = true
+
+[node name="Panel" type="Panel" parent="." unique_id=1685340136]
+self_modulate = Color(1, 1, 1, 0.8627451)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -45.0
+offset_top = -23.0
+offset_right = 45.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel" unique_id=1042016587]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 10.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 8
+text = "Promotion Selection"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="black" type="HBoxContainer" parent="Panel" unique_id=1478454893]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -16.0
+offset_right = 38.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="1" type="Button" parent="Panel/black" unique_id=809664592]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_3ym7h")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3ym7h")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7awpv")
+
+[node name="2" type="Button" parent="Panel/black" unique_id=291179454]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_ij4bn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ij4bn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_abhhs")
+
+[node name="3" type="Button" parent="Panel/black" unique_id=217875587]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_un7px")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_un7px")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sb5ba")
+
+[node name="4" type="Button" parent="Panel/black" unique_id=1490168791]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_ilxgh")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ilxgh")
+theme_override_styles/hover = SubResource("StyleBoxTexture_is6od")
+
+[node name="white" type="HBoxContainer" parent="Panel" unique_id=2002371477]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = -16.0
+offset_right = 38.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="1" type="Button" parent="Panel/white" unique_id=782503378]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_5xl1b")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_5xl1b")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jq8ee")
+
+[node name="2" type="Button" parent="Panel/white" unique_id=663925100]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_nsm0t")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_nsm0t")
+theme_override_styles/hover = SubResource("StyleBoxTexture_16d88")
+
+[node name="3" type="Button" parent="Panel/white" unique_id=89840008]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_52il0")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_52il0")
+theme_override_styles/hover = SubResource("StyleBoxTexture_uwq6v")
+
+[node name="4" type="Button" parent="Panel/white" unique_id=200715295]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxTexture_gvac2")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gvac2")
+theme_override_styles/hover = SubResource("StyleBoxTexture_lpq8d")

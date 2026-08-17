@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dwnbfraut6h7t"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/gui.theme" id="1_ekxnf"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_ekxnf"]
 [ext_resource type="Script" uid="uid://d16fsx6xym0xf" path="res://src/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="3_bqqt6"]
-[ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="4_wu84c"]
+[ext_resource type="PackedScene" uid="uid://cxwdf1f42na5x" path="res://objects/settings_gui.tscn" id="4_wu84c"]
 
 [node name="main_menu" type="Control" unique_id=2106559667]
 layout_mode = 3
@@ -35,114 +35,33 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -58.285713
-offset_top = -24.0
+offset_top = -39.0
 offset_right = 58.285706
-offset_bottom = 24.0
+offset_bottom = 39.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_group_ = true
 
-[node name="local_game_button" type="Button" parent="main_buttons" unique_id=1579627879]
+[node name="start_button" type="Button" parent="main_buttons" unique_id=1579627879]
 layout_mode = 2
 size_flags_vertical = 3
-text = "Local Game"
+theme_override_font_sizes/font_size = 16
+text = "Start Game"
 
 [node name="settings_button" type="Button" parent="main_buttons" unique_id=426949305]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 16
 text = "Settings"
 
 [node name="exit_button" type="Button" parent="main_buttons" unique_id=1933418096]
 layout_mode = 2
+theme_override_font_sizes/font_size = 16
 text = "Exit"
 
-[node name="settings" type="Panel" parent="." unique_id=1230821383]
+[node name="settings_gui" parent="." unique_id=80842764 instance=ExtResource("4_wu84c")]
 visible = false
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -76.0
-offset_top = -54.0
-offset_right = 76.0
-offset_bottom = 54.0
-grow_horizontal = 2
-grow_vertical = 2
 
-[node name="Label" type="Label" parent="settings" unique_id=1534763315]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 17.0
-grow_horizontal = 2
-text = "Settings"
-horizontal_alignment = 1
-vertical_alignment = 2
-
-[node name="resolution_button" type="Button" parent="settings" unique_id=1935474446]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -49.0
-offset_top = 40.0
-offset_right = 49.0
-offset_bottom = 54.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 8
-text = "Resolution: 1280x720"
-
-[node name="NinePatchRect" type="NinePatchRect" parent="settings" unique_id=40883723]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -33.0
-offset_top = 22.0
-offset_right = 33.0
-offset_bottom = 36.0
-grow_horizontal = 2
-texture = ExtResource("4_wu84c")
-region_rect = Rect2(0, 0, 8, 8)
-patch_margin_left = 2
-patch_margin_top = 3
-patch_margin_right = 2
-patch_margin_bottom = 3
-
-[node name="fullscreen_check_button" type="CheckButton" parent="settings" unique_id=809395409]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -33.0
-offset_top = 22.0
-offset_right = 31.0
-offset_bottom = 36.0
-grow_horizontal = 2
-theme_override_font_sizes/font_size = 8
-text = "Fullscreen"
-alignment = 1
-
-[node name="okay_button" type="Button" parent="settings" unique_id=991526543]
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -29.0
-offset_top = -20.0
-offset_right = 29.0
-offset_bottom = -6.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_font_sizes/font_size = 8
-text = "Okay"
-
-[connection signal="pressed" from="main_buttons/local_game_button" to="." method="_on_local_game_button_pressed"]
+[connection signal="pressed" from="main_buttons/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="main_buttons/settings_button" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="main_buttons/exit_button" to="." method="_on_exit_button_pressed"]
-[connection signal="pressed" from="settings/resolution_button" to="." method="_on_resolution_button_pressed"]
-[connection signal="toggled" from="settings/fullscreen_check_button" to="." method="_on_fullscreen_check_button_toggled"]
-[connection signal="pressed" from="settings/okay_button" to="." method="_on_okay_button_pressed"]

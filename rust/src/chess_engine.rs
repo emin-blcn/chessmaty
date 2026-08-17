@@ -1,6 +1,6 @@
 use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
-use godot::global::godot_print;
+use godot::global::{godot_print, is_equal_approx};
 use shakmaty::uci::UciMove;
 
 use crate::enums as Enums;
@@ -12,7 +12,7 @@ pub struct ChessEngine
     stdout: BufReader<ChildStdout>,
     game_mode: Enums::GameMode,
     fen_string: String,
-    is_timed_game: bool,
+    minute_per_side: f64,
     increment_second: i64
 }
 
@@ -20,7 +20,7 @@ pub struct ChessEngine
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, is_timed_game: bool, increment_second: i64) -> Self
+    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, minute_per_side: f64, increment_second: i64) -> Self
     {
         let mut child = Command::new(ai_binary_path)
             .stdin(Stdio::piped())
@@ -76,7 +76,7 @@ impl ChessEngine
             stdout: reader,
             game_mode: game_mode,
             fen_string: fen_string,
-            is_timed_game: is_timed_game,
+            minute_per_side: minute_per_side,
             increment_second: increment_second
         }
     }
@@ -84,6 +84,8 @@ impl ChessEngine
 
     pub fn best_move(&mut self, move_history: &Vec<UciMove>, white_time_left: i64, black_time_left: i64) -> String
     {
+        godot_print!("Gelen dakika: {}, Esit mi: {}", self.minute_per_side, is_equal_approx(self.minute_per_side, 999.0));
+        
         let mut uci_moves_string = String::new();
         
         for uci_move in move_history
@@ -121,15 +123,15 @@ impl ChessEngine
                 }
             }
         }
-
-        if self.is_timed_game
+        
+        if is_equal_approx(self.minute_per_side, 999.0)
         {
-            godot_print!("go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000);
-            writeln!(self.stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
+            writeln!(self.stdin, "go movetime 1000").unwrap();
         }
         else
         {
-            writeln!(self.stdin, "go movetime 1000").unwrap();
+            godot_print!("go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000);
+            writeln!(self.stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
         }
         self.stdin.flush().unwrap();
 
