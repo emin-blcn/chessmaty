@@ -1,6 +1,6 @@
 use godot::prelude::*;
-use godot::classes::{IRefCounted, RefCounted};
 use godot::global::randi_range;
+use godot::classes::{IRefCounted, RefCounted};
 use shakmaty::uci::UciMove;
 use shakmaty::{Chess, Color, EnPassantMode, CastlingMode, Move, Position, Role, Square};
 use shakmaty::fen::Fen;
@@ -55,7 +55,7 @@ impl ChessLogic
 
 
     #[func]
-    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, is_timed_game: bool, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
+    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, minute_per_side: f64, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
     {
         self.opponent = opponent;
         self.game_mode = game_mode;
@@ -77,7 +77,7 @@ impl ChessLogic
             (Enums::Opponent::LocalAI, Enums::GameMode::Standard) =>
             { // rakip yerel AI ve oyun modu klasik
                 self.chess = Chess::default();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, is_timed_game, increment_second));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, minute_per_side, increment_second));
             }
             (Enums::Opponent::LocalAI, Enums::GameMode::Chess960) =>
             { // rakip yerel AI ve oyun modu satranç960
@@ -85,10 +85,21 @@ impl ChessLogic
                 let fen: Fen = fen_string.parse().unwrap();
 
                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, is_timed_game, increment_second));
+                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, minute_per_side, increment_second));
+            }
+            (Enums::Opponent::LanHuman, Enums::GameMode::Standard) =>
+            { // rakip LAN insan ve oyun modu klasik
+                self.chess = Chess::default();
+            }
+            (Enums::Opponent::LanHuman, Enums::GameMode::Chess960) =>
+            { // rakip LAN insan ve oyun modu Chess960
+                let fen_string = self.get_random_fen();
+                let fen: Fen = fen_string.parse().unwrap();
+
+                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
             }
         }
-    
+
         self.update_repeated_board_hash_history();
     }
 
@@ -402,7 +413,6 @@ impl ChessLogic
             None => panic!()
         };
 
-        godot_print!("AI best move: {}", best_move);
         GString::from(&best_move)
     }
 
