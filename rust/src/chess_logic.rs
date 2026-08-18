@@ -405,15 +405,26 @@ impl ChessLogic
 
 
     #[func]
-    fn get_best_ai_move(&mut self, white_time_left: i64, black_time_left: i64) -> GString
+    fn get_best_ai_move(&self, white_time_left: i64, black_time_left: i64) -> GString
     {
-        let best_move = match &mut self.chess_engine
+        let best_move = match &self.chess_engine
         {
             Some(engine) => engine.best_move(&self.move_history, white_time_left, black_time_left),
             None => panic!()
         };
 
         GString::from(&best_move)
+    }
+
+
+    #[func]
+    fn stop_ai_thinking(&self)
+    {
+        match &self.chess_engine
+        {
+            Some(engine) => engine.stop_ai_thinking(),
+            None => panic!()
+        };
     }
 
 

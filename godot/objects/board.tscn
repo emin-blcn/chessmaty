@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c8liaimbtivw6"]
 
-[ext_resource type="Script" uid="uid://bx4vi8mswwye" path="res://src/chess_board.gd" id="1_c5s35"]
+[ext_resource type="Script" uid="uid://bx4vi8mswwye" path="res://src/board.gd" id="1_c5s35"]
 [ext_resource type="FontFile" uid="uid://bfynth8idup1h" path="res://assets/fonts/BoldPixels.otf" id="2_ubtoo"]
 [ext_resource type="Texture2D" uid="uid://ds5tjc7lh2yyt" path="res://assets/graphics/chess_board/board.png" id="3_s07tm"]
 [ext_resource type="Texture2D" uid="uid://bushm83uhla8x" path="res://assets/graphics/chess_board/board_border.png" id="4_gptsx"]

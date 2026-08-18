@@ -10,35 +10,29 @@ signal black_times_up()
 @onready var bottom_time_left_label: Label = $bottom_time_message_label/bottom_time_left_label
 @onready var timer: Timer = $Timer
 
-var config_data: Dictionary = {
-	"player_color": Enums.ChessColor.WHITE,
-	"opponent": Enums.Opponent.LOCAL_HUMAN,
-	"minute_per_side": 999.0,
-	"increment_second": 0}
-
+var config_data: Dictionary
 var white_time_left_second: int = 0
 var black_time_left_second: int = 0
 var time_left_seconds_in_moves: Array[Vector2i]
 
 
-func config(player_color: Enums.ChessColor, opponent: Enums.Opponent, minute_per_side: float, increment_second: int):
-	if is_equal_approx(minute_per_side, 999.0):
+func config(new_config_data: Dictionary):
+	config_data = new_config_data
+	
+	if is_equal_approx(config_data["minute_per_side"], 999.0):
 		queue_free()
 	else:
-		config_data["player_color"] = player_color
-		config_data["opponent"] = opponent
-		config_data["minute_per_side"] = minute_per_side
-		config_data["increment_second"] = increment_second
+		white_time_left_second = int(config_data["minute_per_side"] * 60)
+		black_time_left_second = int(config_data["minute_per_side"] * 60)
 		
-		white_time_left_second = int(minute_per_side * 60)
-		black_time_left_second = int(minute_per_side * 60)
-		
-		top_time_message_label.text = "White time left:"
-		top_time_message_label.add_theme_color_override("font_color", Color("a6bac4ff"))
-		bottom_time_message_label.text = "Black time left:"
-		bottom_time_message_label.add_theme_color_override("font_color", Color("70334cff"))
+		if config_data["player_color"] == Enums.ChessColor.BLACK:
+			top_time_message_label.text = "White time left:"
+			top_time_message_label.add_theme_color_override("font_color", Color("a6bac4ff"))
+			bottom_time_message_label.text = "Black time left:"
+			bottom_time_message_label.add_theme_color_override("font_color", Color("70334cff"))
+		update_white_time_gui()
+		update_black_time_gui()
 		show()
-		timer.start()
 
 
 func _on_timer_timeout() -> void:
@@ -58,7 +52,8 @@ func _on_timer_timeout() -> void:
 		black_times_up.emit()
 
 
-func _on_move_animation_started(move_type: Enums.MoveType):
+func _on_move_animation_started(move_type: Enums.MoveType, _from: String, _to: String):
+	timer.stop()
 	if move_type == Enums.MoveType.UNDO:
 		if time_left_seconds_in_moves.is_empty():
 			var full_seconds = config_data["minute_per_side"] * 60
@@ -83,8 +78,10 @@ func _on_move_animation_started(move_type: Enums.MoveType):
 					update_black_time_gui()
 
 
-func _on_move_animation_finished():
-	if time_left_seconds_in_moves.size() >= 2:
+func _on_move_animation_finished(_move_type: Enums.MoveType):
+	if master_scene.get_match_finished_state() == Enums.MatchFinishedState.NOT_FINISHED:
+		return
+	if time_left_seconds_in_moves.size() >= 2 and white_time_left_second > 0 and black_time_left_second > 0:
 		timer.start()
 
 
@@ -114,3 +111,11 @@ func update_black_time_gui():
 		label_node.text = "%02d:%02d:%02d" % [hour, minute, second]
 	else:
 		label_node.text = "%02d:%02d" % [minute, second]
+
+
+func get_white_time_left_second() -> int:
+	return white_time_left_second
+
+
+func get_black_time_left_second() -> int:
+	return black_time_left_second

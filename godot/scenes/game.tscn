@@ -2,15 +2,15 @@
 
 [ext_resource type="Script" uid="uid://cmwwvuydl32bg" path="res://src/game.gd" id="2_kvuet"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="3_ir15t"]
-[ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://objects/chess_board.tscn" id="4_ca42v"]
+[ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://objects/board.tscn" id="4_ca42v"]
 [ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://objects/move_history_table.tscn" id="5_rysoc"]
 [ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/hud.gd" id="6_ssvqc"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="7_264po"]
 [ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/undo_icon.png" id="8_1kice"]
 [ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="9_5newe"]
-[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/promotion_selection.tscn" id="10_37s47"]
-[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/match_finished.tscn" id="10_dinhu"]
-[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/time_control.tscn" id="11_dinhu"]
+[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/promotion_selection_gui.tscn" id="10_37s47"]
+[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/match_finished_gui.tscn" id="10_dinhu"]
+[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/time_control_gui.tscn" id="11_dinhu"]
 [ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config_gui.tscn" id="12_dinhu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
@@ -59,6 +59,7 @@ stretch_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="game_content" type="Control" parent="." unique_id=1601696168]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,7 +68,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="chess_board" parent="game_content" unique_id=578451742 instance=ExtResource("4_ca42v")]
+[node name="board" parent="game_content" unique_id=578451742 instance=ExtResource("4_ca42v")]
 layout_mode = 1
 
 [node name="hud" type="Control" parent="game_content" unique_id=1015186951]
@@ -77,6 +78,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("6_ssvqc")
 metadata/_edit_lock_ = true
 
@@ -84,6 +86,7 @@ metadata/_edit_lock_ = true
 layout_mode = 1
 offset_left = -68.0
 offset_right = -2.0
+metadata/_edit_lock_ = true
 
 [node name="undo_button" type="Button" parent="game_content/hud" unique_id=1857265176]
 layout_mode = 1
@@ -100,6 +103,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_hc21h")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3r2ld")
 theme_override_styles/hover = SubResource("StyleBoxTexture_5hoaj")
 alignment = 2
+metadata/_edit_lock_ = true
 
 [node name="undo_message_label" type="Label" parent="game_content/hud/undo_button" unique_id=1583861356]
 visible = false
@@ -129,6 +133,7 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_lwkho")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_oksyj")
 theme_override_styles/hover = SubResource("StyleBoxTexture_upx7y")
 alignment = 2
+metadata/_edit_lock_ = true
 
 [node name="leave_message_label" type="Label" parent="game_content/hud/leave_button" unique_id=1375898115]
 visible = false
@@ -143,11 +148,11 @@ theme_override_font_sizes/font_size = 8
 text = "Leave match"
 horizontal_alignment = 2
 
-[node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
+[node name="promotion_selection_gui" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
 visible = false
 layout_mode = 1
 
-[node name="match_finished" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
+[node name="match_finished_gui" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
 visible = false
 layout_mode = 0
 anchors_preset = 0
@@ -156,13 +161,12 @@ anchor_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="time_control" parent="game_content/hud" unique_id=614857075 instance=ExtResource("11_dinhu")]
+[node name="time_control_gui" parent="game_content/hud" unique_id=614857075 instance=ExtResource("11_dinhu")]
 visible = false
 layout_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="game_config_gui" parent="." unique_id=1807799992 instance=ExtResource("12_dinhu")]
-visible = false
 layout_mode = 1
 offset_top = -87.0
 offset_bottom = 87.0

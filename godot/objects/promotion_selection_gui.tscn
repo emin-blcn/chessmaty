@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cfsjp52ilwb18"]
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_00y83"]
-[ext_resource type="Script" uid="uid://b5ycxv76dgi5l" path="res://src/promotion_selection.gd" id="2_8nila"]
+[ext_resource type="Script" uid="uid://b5ycxv76dgi5l" path="res://src/promotion_selection_gui.gd" id="2_8nila"]
 [ext_resource type="Texture2D" uid="uid://cp7h3f6nl280m" path="res://assets/graphics/chess_pieces/queen_black.png" id="2_fdcw6"]
 [ext_resource type="Texture2D" uid="uid://dnip4r75iln63" path="res://assets/graphics/chess_pieces/bishop_black.png" id="3_8nila"]
 [ext_resource type="Texture2D" uid="uid://b1qiry1fgwq7y" path="res://assets/graphics/chess_pieces/knight_black.png" id="4_s2y7c"]
@@ -81,7 +81,7 @@ texture = ExtResource("9_uqhvl")
 texture = ExtResource("9_uqhvl")
 modulate_color = Color(1, 1, 1, 0.5882353)
 
-[node name="promotion_selection" type="TextureRect" unique_id=1667121682]
+[node name="TextureRect" type="TextureRect" unique_id=1667121682]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
