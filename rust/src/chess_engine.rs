@@ -1,6 +1,7 @@
 use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
-use godot::global::{godot_print, is_equal_approx};
+use std::sync::Mutex;
+use godot::global::{is_equal_approx};
 use shakmaty::uci::UciMove;
 
 use crate::enums as Enums;
@@ -8,14 +9,14 @@ use crate::enums as Enums;
 
 pub struct ChessEngine
 {
-    stdin: std::process::ChildStdin,
-    stdout: BufReader<ChildStdout>,
+    child: Mutex<std::process::Child>,
+    stdin: Mutex<std::process::ChildStdin>,
+    reader: Mutex<BufReader<ChildStdout>>,
     game_mode: Enums::GameMode,
     fen_string: String,
     minute_per_side: f64,
     increment_second: i64
 }
-
 
 
 impl ChessEngine
@@ -35,7 +36,6 @@ impl ChessEngine
         stdin.flush().unwrap();
 
         let mut line = String::new();
-
         loop
         {
             line.clear();
@@ -72,8 +72,9 @@ impl ChessEngine
 
         Self
         {
-            stdin: stdin,
-            stdout: reader,
+            child: Mutex::new(child),
+            stdin: Mutex::new(stdin),
+            reader: Mutex::new(reader),
             game_mode: game_mode,
             fen_string: fen_string,
             minute_per_side: minute_per_side,
@@ -82,10 +83,8 @@ impl ChessEngine
     }
 
 
-    pub fn best_move(&mut self, move_history: &Vec<UciMove>, white_time_left: i64, black_time_left: i64) -> String
-    {
-        godot_print!("Gelen dakika: {}, Esit mi: {}", self.minute_per_side, is_equal_approx(self.minute_per_side, 999.0));
-        
+    pub fn best_move(&self, move_history: &Vec<UciMove>, white_time_left: i64, black_time_left: i64) -> String
+    {   
         let mut uci_moves_string = String::new();
         
         for uci_move in move_history
@@ -94,62 +93,108 @@ impl ChessEngine
             uci_moves_string.push(' ');
         }
 
-        match self.game_mode
         {
-            Enums::GameMode::Standard =>
-            { // oyun modu standart, AI'dan normal formatta hamle istiyoruz
-                if move_history.is_empty()
-                { // hamle listesi boş, ilk hamleyi AI yapacak
-                    writeln!(self.stdin, "position startpos").unwrap();
-                    self.stdin.flush().unwrap();
-                }
-                else
-                { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
-                    writeln!(self.stdin, "position startpos moves {}", uci_moves_string.trim_end()).unwrap();
-                    self.stdin.flush().unwrap();
-                }
-            }
-            Enums::GameMode::Chess960 =>
-            { // oyun modu satranç960, AI'dan fen formatında hamle istiyoruz
-                if move_history.is_empty()
-                { // hamle listesi boş, ilk hamleyi AI yapacak
-                    writeln!(self.stdin, "position fen {}", self.fen_string).unwrap();
-                    self.stdin.flush().unwrap();
-                }
-                else
-                { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
-                    writeln!(self.stdin, "position fen {} moves {}", self.fen_string, uci_moves_string.trim_end()).unwrap();
-                    self.stdin.flush().unwrap();
-                }
-            }
-        }
-        
-        if is_equal_approx(self.minute_per_side, 999.0)
-        {
-            writeln!(self.stdin, "go movetime 1000").unwrap();
-        }
-        else
-        {
-            godot_print!("go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000);
-            writeln!(self.stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
-        }
-        self.stdin.flush().unwrap();
+            let mut stdin = self.stdin.lock().unwrap();
 
-        let best_move: String;
+            match self.game_mode
+            {
+                Enums::GameMode::Standard =>
+                { // oyun modu standart, AI'dan normal formatta hamle istiyoruz
+                    if move_history.is_empty()
+                    { // hamle listesi boş, ilk hamleyi AI yapacak
+                        writeln!(stdin, "position startpos").unwrap();
+                        stdin.flush().unwrap();
+                    }
+                    else
+                    { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
+                        writeln!(stdin, "position startpos moves {}", uci_moves_string.trim_end()).unwrap();
+                        stdin.flush().unwrap();
+                    }
+                }
+                Enums::GameMode::Chess960 =>
+                { // oyun modu satranç960, AI'dan fen formatında hamle istiyoruz
+                    if move_history.is_empty()
+                    { // hamle listesi boş, ilk hamleyi AI yapacak
+                        writeln!(stdin, "position fen {}", self.fen_string).unwrap();
+                        stdin.flush().unwrap();
+                    }
+                    else
+                    { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
+                        writeln!(stdin, "position fen {} moves {}", self.fen_string, uci_moves_string.trim_end()).unwrap();
+                        stdin.flush().unwrap();
+                    }
+                }
+            }
+            
+            if is_equal_approx(self.minute_per_side, 999.0)
+            {
+                writeln!(stdin, "go movetime 1000").unwrap();
+            }
+            else
+            {
+                writeln!(stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
+            }
+            stdin.flush().unwrap();
+        }
+
+        let mut reader = self.reader.lock().unwrap();
+        let mut best_move = String::new();
         let mut line = String::new();
 
         loop
         {
             line.clear();
-            self.stdout.read_line(&mut line).unwrap();
 
-            if line.starts_with("bestmove")
+            match reader.read_line(&mut line)
             {
-                best_move = line.split_whitespace().nth(1).unwrap().to_string();
-                break;
+                Ok(read_size) =>
+                {
+                    if read_size == 0
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        if line.starts_with("bestmove")
+                        {
+                            best_move = line.split_whitespace().nth(1).unwrap().to_string();
+                            break;
+                        }
+                    }
+                }
+                Err(_) =>
+                {
+                    break;
+                }
             }
         }
 
         best_move
+    }
+
+
+    pub fn stop_ai_thinking(&self)
+    {
+        let mut stdin = self.stdin.lock().unwrap();
+        let _ = writeln!(stdin, "stop").unwrap();
+        let _ = stdin.flush().unwrap();
+    }
+}
+
+
+impl Drop for ChessEngine
+{
+    fn drop(&mut self)
+    {
+        if let Ok(mut stdin) = self.stdin.lock()
+        {
+            let _ = writeln!(stdin, "quit");
+            let _ = stdin.flush().unwrap();
+        }
+        if let Ok(mut child) = self.child.lock()
+        {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
     }
 }

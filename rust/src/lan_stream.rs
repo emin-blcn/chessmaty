@@ -1,4 +1,4 @@
-use std::net::{UdpSocket, IpAddr, Ipv4Addr};
+use std::net::{UdpSocket};
 use std::sync::Arc;
 use godot::prelude::*;
 use godot::classes::{IRefCounted, RefCounted};
@@ -36,7 +36,7 @@ impl LanStream
 
 
     #[func]
-    fn create_game(&self, player_name: GString, player_color: Enums::ChessColor, game_mode: Enums::GameMode, minute_per_side: f64, increment_second: i64)
+    fn create_game(&self, _player_name: GString, _player_color: Enums::ChessColor, _game_mode: Enums::GameMode, _minute_per_side: f64, _increment_second: i64)
     {
         let socket = Arc::new(UdpSocket::bind(("0.0.0.0", PORT)).unwrap());
         let mut buffer = [0u8; 128];
