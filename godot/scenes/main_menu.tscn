@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://d16fsx6xym0xf" path="res://src/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="3_bqqt6"]
 [ext_resource type="FontFile" uid="uid://bfynth8idup1h" path="res://assets/fonts/BoldPixels.otf" id="4_8ln24"]
-[ext_resource type="PackedScene" uid="uid://cxwdf1f42na5x" path="res://objects/settings_gui.tscn" id="4_wu84c"]
+[ext_resource type="PackedScene" uid="uid://cxwdf1f42na5x" path="res://objects/settings.tscn" id="4_wu84c"]
 
 [node name="main_menu" type="Control" unique_id=2106559667]
 layout_mode = 3
@@ -32,13 +32,13 @@ metadata/_edit_lock_ = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 42.0
+offset_bottom = 55.0
 grow_horizontal = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = -2
-theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_offset_x = -3
+theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/font = ExtResource("4_8ln24")
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 48
 text = "Chessmaty"
 horizontal_alignment = 1
 vertical_alignment = 2

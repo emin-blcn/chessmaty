@@ -9,6 +9,7 @@ func _on_start_button_pressed() -> void:
 
 
 func _on_settings_button_pressed() -> void:
+	get_node("bg/Label").hide()
 	settings_gui_node.show()
 
 

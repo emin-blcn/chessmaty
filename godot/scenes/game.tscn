@@ -8,10 +8,10 @@
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="7_264po"]
 [ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/undo_icon.png" id="8_1kice"]
 [ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="9_5newe"]
-[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/promotion_selection_gui.tscn" id="10_37s47"]
-[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/match_finished_gui.tscn" id="10_dinhu"]
-[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/time_control_gui.tscn" id="11_dinhu"]
-[ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config_gui.tscn" id="12_dinhu"]
+[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/promotion_selection.tscn" id="10_37s47"]
+[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/match_finished.tscn" id="10_dinhu"]
+[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/time_control.tscn" id="11_dinhu"]
+[ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config.tscn" id="12_dinhu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
 texture = ExtResource("8_1kice")
@@ -86,7 +86,6 @@ metadata/_edit_lock_ = true
 layout_mode = 1
 offset_left = -68.0
 offset_right = -2.0
-metadata/_edit_lock_ = true
 
 [node name="undo_button" type="Button" parent="game_content/hud" unique_id=1857265176]
 layout_mode = 1
@@ -151,6 +150,7 @@ horizontal_alignment = 2
 [node name="promotion_selection_gui" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
 visible = false
 layout_mode = 1
+anchors_preset = 15
 
 [node name="match_finished_gui" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
 visible = false

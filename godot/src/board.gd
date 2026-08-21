@@ -29,7 +29,7 @@ const KINGS_POSSIBLE_TARGET_SQUARES_IN_CASTLING_MOVE: PackedStringArray = ["g1",
 @onready var move_marker_nodes: Control = $move_marker_nodes
 @onready var input_control_node: Control = $input_conrol
 
-var config_data: Dictionary
+var config_data: Dictionary[String, Variant] = {}
 var active_square: String
 var current_turn: Enums.ChessColor
 var legal_moves: Dictionary[String, int] # [String, (Enums.MoveType)]
@@ -48,7 +48,12 @@ var board: Dictionary[String, TextureRect] = {
 
 
 func config(new_config_data: Dictionary):
-	config_data = new_config_data
+	config_data["player_color"] = new_config_data["player_color"]
+	config_data["game_mode"] = new_config_data["game_mode"]
+	config_data["connection_type"] = new_config_data["connection_type"]
+	
+	if new_config_data["connection_type"] == Enums.ConnectionType.LOCAL:
+		config_data["local_opponent"] = new_config_data["local_opponent"]
 	
 	update_all_pieces()
 	
@@ -59,13 +64,10 @@ func config(new_config_data: Dictionary):
 			$numbers_right.get_child(i).text = "12345678"[i]
 			$letters_top.get_child(i).text = "HGFEDCBA"[i]
 			$letters_bottom.get_child(i).text = "HGFEDCBA"[i]
-	
-	if config_data["player_color"] == Enums.ChessColor.WHITE or config_data["opponent"] == Enums.Opponent.LOCAL_HUMAN:
-		input_control_node.show()
 
 
 func update_all_pieces():
-	# Synchronize Godot with Rust
+	# synchronize Godot with Rust
 	for number in "87654321":
 		for letter in "abcdefgh":
 			var square: String = letter + number
@@ -137,9 +139,7 @@ func hovering_on_board_event(new_square: String) -> void:
 	var piece: Enums.Piece = master_scene.get_piece_from_square(new_square)
 	if piece != Enums.Piece.EMPTY:
 		current_turn = master_scene.get_turn()
-		var piece_color: Enums.ChessColor = master_scene.get_piece_color_from_square(new_square)
-		
-		if piece_color == current_turn and (piece_color == config_data["player_color"] or config_data["opponent"] == Enums.Opponent.LOCAL_HUMAN):
+		if piece_in_this_square_is_playable(new_square):
 			if new_square == king_in_dangered_square:
 				move_marker_nodes.get_node(new_square).texture = MOVE_MARKER_TEXTURES["white"]
 			else:
@@ -156,9 +156,7 @@ func selected_piece_event(new_square: String) -> void:
 		var piece: Enums.Piece = master_scene.get_piece_from_square(new_square)
 		if piece != Enums.Piece.EMPTY:
 			current_turn = master_scene.get_turn()
-			var piece_color: Enums.ChessColor = master_scene.get_piece_color_from_square(new_square)
-			
-			if piece_color == current_turn and (piece_color == config_data["player_color"] or config_data["opponent"] == Enums.Opponent.LOCAL_HUMAN):
+			if piece_in_this_square_is_playable(new_square):
 				any_piece_selected = true
 				active_square = new_square
 				legal_moves = master_scene.get_legal_moves_from_square(new_square)
@@ -170,7 +168,7 @@ func selected_piece_event(new_square: String) -> void:
 			clear_move_markers()
 		else:
 			if legal_moves.has(new_square):
-				input_control_node.hide()
+				hide_input_control_node()
 				any_piece_selected = false
 				clear_move_markers()
 				match legal_moves[new_square] as Enums.MoveType:
@@ -188,7 +186,7 @@ func selected_piece_event(new_square: String) -> void:
 					var rook_from_square_in_castling_move: String = get_rook_from_square_in_castling_move(new_square)
 					if legal_moves.has(rook_from_square_in_castling_move):
 						if legal_moves[rook_from_square_in_castling_move] as Enums.MoveType == Enums.MoveType.CASTLING:
-							input_control_node.hide()
+							hide_input_control_node()
 							any_piece_selected = false
 							clear_move_markers()
 							master_scene.apply_castling_move(active_square, rook_from_square_in_castling_move)
@@ -196,9 +194,7 @@ func selected_piece_event(new_square: String) -> void:
 				# switch selection if clicked square contains a piece and piece's owner is current player
 				var piece: Enums.Piece = master_scene.get_piece_from_square(new_square)
 				if piece != Enums.Piece.EMPTY:
-					var piece_color: Enums.ChessColor = master_scene.get_piece_color_from_square(new_square)
-					
-					if piece_color == current_turn and (piece_color == config_data["player_color"] or config_data["opponent"] == Enums.Opponent.LOCAL_HUMAN):
+					if piece_in_this_square_is_playable(new_square):
 						active_square = new_square
 						legal_moves = master_scene.get_legal_moves_from_square(new_square)
 						clear_move_markers()
@@ -227,6 +223,19 @@ func get_king_target_square_in_castling_move(king_from_square: String, rook_from
 func get_rook_target_square_in_castling_move(king_from_square: String, rook_from_square: String) -> String:
 	var is_king_side: bool = rook_from_square[0] > king_from_square[0]
 	return ("f" if is_king_side else "d") + king_from_square[1]
+
+
+func piece_in_this_square_is_playable(square: String) -> bool:
+	var piece_color: Enums.ChessColor = master_scene.get_piece_color_from_square(square)
+	if piece_color == current_turn:
+		if piece_color == config_data["player_color"]:
+			return true
+		elif config_data["connection_type"] == Enums.ConnectionType.LOCAL and config_data["local_opponent"] == Enums.LocalOpponent.HUMAN:
+			return true
+		else:
+			return false
+	else:
+		return false
 
 
 func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, ai_selected_new_promotion_role: Enums.Piece):
@@ -284,7 +293,7 @@ func apply_en_passant_move(pawn_from_square: String, pawn_to_square: String, twe
 
 
 func apply_castling_move(king_from_square: String, rook_from_square: String, tween: Tween):
-	# rok hamlesi chess960 formatında geldi, godot için şahın ve kalenin hedef karesini tespit ediyoruz
+	# castling move came chess960 format, get king and rook target squares for godot
 	var king_node: TextureRect = board[king_from_square]
 	var rook_node: TextureRect = board[rook_from_square]
 	board[king_from_square] = null
@@ -309,17 +318,9 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 	current_turn = master_scene.get_turn()
 	move_animation_finished.emit(move_type)
 	
-	if config_data["opponent"] == Enums.Opponent.LOCAL_HUMAN:
-		move_animation_is_playing = false
-	elif config_data["opponent"] == Enums.Opponent.LOCAL_AI:
-		if config_data["player_color"] == current_turn:
-			move_animation_is_playing = false
-	else:
-		move_animation_is_playing = false
-	
 	var new_king_in_dangered_squre: String = master_scene.get_king_in_dangered_square()
 	if !king_in_dangered_square.is_empty() and king_in_dangered_square != new_king_in_dangered_squre:
-		# önceki hamlede tehlikede olan bir şah vardı ve yeni hamlede tehlike geçti
+		# a king was in danger in previous move and king's not dangered in new move
 		var old_king_in_danger: String = king_in_dangered_square
 		king_in_dangered_square = ""
 		var old_king_in_danger_marker_node = move_marker_nodes.get_node_or_null(old_king_in_danger)
@@ -329,8 +330,14 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 	king_in_dangered_square = new_king_in_dangered_squre
 	
 	if !king_in_dangered_square.is_empty():
-		# yeni hamlede tehlikede bir şah var
+		# a king in danger in new move
 		add_move_marker(new_king_in_dangered_squre, "red")
+	
+	move_animation_is_playing = false
+
+
+func hide_input_control_node():
+	input_control_node.hide()
 
 
 func show_input_control_node():

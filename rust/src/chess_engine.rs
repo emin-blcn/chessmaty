@@ -1,7 +1,6 @@
 use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
 use std::sync::Mutex;
-use godot::global::{is_equal_approx};
 use shakmaty::uci::UciMove;
 
 use crate::enums as Enums;
@@ -14,14 +13,14 @@ pub struct ChessEngine
     reader: Mutex<BufReader<ChildStdout>>,
     game_mode: Enums::GameMode,
     fen_string: String,
-    minute_per_side: f64,
-    increment_second: i64
+    time_per_side: i64,
+    time_increment: i64
 }
 
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, minute_per_side: f64, increment_second: i64) -> Self
+    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
     {
         let mut child = Command::new(ai_binary_path)
             .stdin(Stdio::piped())
@@ -75,15 +74,15 @@ impl ChessEngine
             child: Mutex::new(child),
             stdin: Mutex::new(stdin),
             reader: Mutex::new(reader),
-            game_mode: game_mode,
-            fen_string: fen_string,
-            minute_per_side: minute_per_side,
-            increment_second: increment_second
+            game_mode,
+            fen_string,
+            time_per_side,
+            time_increment
         }
     }
 
 
-    pub fn best_move(&self, move_history: &Vec<UciMove>, white_time_left: i64, black_time_left: i64) -> String
+    pub fn best_move(&self, move_history: &Vec<UciMove>, white_time_left_ms: i64, black_time_left_ms: i64) -> String
     {   
         let mut uci_moves_string = String::new();
         
@@ -126,13 +125,13 @@ impl ChessEngine
                 }
             }
             
-            if is_equal_approx(self.minute_per_side, 999.0)
+            if self.time_per_side == -60_000
             {
                 writeln!(stdin, "go movetime 1000").unwrap();
             }
             else
             {
-                writeln!(stdin, "go wtime {} btime {} winc {} binc {}", white_time_left * 1000, black_time_left * 1000, self.increment_second * 1000, self.increment_second * 1000).unwrap();
+                writeln!(stdin, "go wtime {} btime {} winc {} binc {}", white_time_left_ms, black_time_left_ms, self.time_increment, self.time_increment).unwrap();
             }
             stdin.flush().unwrap();
         }
@@ -176,8 +175,8 @@ impl ChessEngine
     pub fn stop_ai_thinking(&self)
     {
         let mut stdin = self.stdin.lock().unwrap();
-        let _ = writeln!(stdin, "stop").unwrap();
-        let _ = stdin.flush().unwrap();
+        let _ = writeln!(stdin, "stop");
+        let _ = stdin.flush();
     }
 }
 
@@ -189,7 +188,7 @@ impl Drop for ChessEngine
         if let Ok(mut stdin) = self.stdin.lock()
         {
             let _ = writeln!(stdin, "quit");
-            let _ = stdin.flush().unwrap();
+            let _ = stdin.flush();
         }
         if let Ok(mut child) = self.child.lock()
         {

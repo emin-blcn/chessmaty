@@ -15,9 +15,8 @@ use crate::enums as Enums;
 struct ChessLogic
 {
     base: Base<RefCounted>,
-    opponent: Enums::Opponent,
-    game_mode: Enums::GameMode,
     player_color: Enums::ChessColor,
+    game_mode: Enums::GameMode,
     chess: Chess,
     chess_engine: Option<ChessEngine>,
     chess_history: Vec<Chess>,
@@ -33,10 +32,9 @@ impl IRefCounted for ChessLogic
     {
         Self
         {
-            base: base,
-            opponent: Enums::Opponent::LocalHuman,
-            game_mode: Enums::GameMode::Standard,
+            base,
             player_color: Enums::ChessColor::White,
+            game_mode: Enums::GameMode::Standard,
             chess: Chess::new(),
             chess_engine: None,
             chess_history: Vec::<Chess>::new(),
@@ -55,48 +53,69 @@ impl ChessLogic
 
 
     #[func]
-    fn configure_from_godot(&mut self, opponent: Enums::Opponent, game_mode: Enums::GameMode, player_color: Enums::ChessColor, minute_per_side: f64, increment_second: i64, ai_binary_path: GString, ai_skill_level: i64)
+    fn config(&mut self, config_data: Dictionary<GString, Variant>)
     {
-        self.opponent = opponent;
-        self.game_mode = game_mode;
+        let player_color = config_data.get("player_color").unwrap().to::<Enums::ChessColor>();
+        let game_mode = config_data.get("game_mode").unwrap().to::<Enums::GameMode>();
+        let connection_type = config_data.get("connection_type").unwrap().to::<Enums::ConnectionType>();
+        let time_per_side = config_data.get("time_per_side").unwrap().to::<i64>();
+        let time_increment = config_data.get("time_increment").unwrap().to::<i64>();
+
         self.player_color = player_color;
+        self.game_mode = game_mode;
 
-        match (opponent, game_mode)
+        match connection_type
         {
-            (Enums::Opponent::LocalHuman, Enums::GameMode::Standard) =>
-            { // rakip yerel insan ve oyun modu klasik
-                self.chess = Chess::default();
-            }
-            (Enums::Opponent::LocalHuman, Enums::GameMode::Chess960) =>
-            { // rakip yerel insan ve oyun modu Chess960
-                let fen_string = self.get_random_fen();
-                let fen: Fen = fen_string.parse().unwrap();
+            Enums::ConnectionType::Local =>
+            {
+                let local_opponent = config_data.get("local_opponent").unwrap().to::<Enums::LocalOpponent>();
 
-                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-            }
-            (Enums::Opponent::LocalAI, Enums::GameMode::Standard) =>
-            { // rakip yerel AI ve oyun modu klasik
-                self.chess = Chess::default();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, minute_per_side, increment_second));
-            }
-            (Enums::Opponent::LocalAI, Enums::GameMode::Chess960) =>
-            { // rakip yerel AI ve oyun modu satranç960
-                let fen_string = self.get_random_fen();
-                let fen: Fen = fen_string.parse().unwrap();
+                match local_opponent
+                {
+                    Enums::LocalOpponent::Human =>
+                    {
+                        match game_mode
+                        {
+                            Enums::GameMode::Standard =>
+                            {
+                                self.chess = Chess::default();
+                            }
+                            Enums::GameMode::Chess960 =>
+                            {
+                                let fen_string = self.get_random_fen();
+                                let fen: Fen = fen_string.parse().unwrap();
 
-                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
-                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, minute_per_side, increment_second));
-            }
-            (Enums::Opponent::LanHuman, Enums::GameMode::Standard) =>
-            { // rakip LAN insan ve oyun modu klasik
-                self.chess = Chess::default();
-            }
-            (Enums::Opponent::LanHuman, Enums::GameMode::Chess960) =>
-            { // rakip LAN insan ve oyun modu Chess960
-                let fen_string = self.get_random_fen();
-                let fen: Fen = fen_string.parse().unwrap();
+                                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
+                            }
+                        }
+                    }
+                    Enums::LocalOpponent::AI =>
+                    {
+                        let ai_binary_path = config_data.get("ai_binary_path").unwrap().to::<String>();
+                        let ai_skill_level = config_data.get("ai_skill_level").unwrap().to::<i64>();
 
-                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
+                        match game_mode
+                        {
+                            Enums::GameMode::Standard =>
+                            {
+                                self.chess = Chess::default();
+                                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, String::new(), ai_skill_level, time_per_side, time_increment));
+                            }
+                            Enums::GameMode::Chess960 =>
+                            {
+                                let fen_string = self.get_random_fen();
+                                let fen: Fen = fen_string.parse().unwrap();
+
+                                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
+                                self.chess_engine = Some(ChessEngine::new(ai_binary_path.to_string(), game_mode, fen_string, ai_skill_level, time_per_side, time_increment));
+                            }
+                        }
+                    }
+                }
+            }
+            Enums::ConnectionType::Lan =>
+            {
+
             }
         }
 
@@ -123,7 +142,7 @@ impl ChessLogic
     #[func]
     fn get_piece_from_square(&self, square: String) -> Enums::Piece
     {
-        let square = Square::from_ascii(&square.as_bytes()).unwrap();
+        let square = Square::from_ascii(square.as_bytes()).unwrap();
 
         match self.chess.board().piece_at(square)
         {
@@ -147,7 +166,7 @@ impl ChessLogic
     #[func]
     fn get_piece_color_from_square(&self, square: String) -> Enums::ChessColor
     {
-        let square = Square::from_ascii(&square.as_bytes()).unwrap();
+        let square = Square::from_ascii(square.as_bytes()).unwrap();
 
         match self.chess.board().piece_at(square)
         {
