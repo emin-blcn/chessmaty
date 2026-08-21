@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cxwdf1f42na5x"]
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_0s7aw"]
-[ext_resource type="Script" uid="uid://c5jprenw1jvhe" path="res://src/settings_gui.gd" id="1_ums2b"]
+[ext_resource type="Script" uid="uid://c5jprenw1jvhe" path="res://src/settings.gd" id="1_ums2b"]
 [ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="2_0s7aw"]
 
 [node name="settings_gui" type="Panel" unique_id=80842764]

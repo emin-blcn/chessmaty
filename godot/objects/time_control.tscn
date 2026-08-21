@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://j2sfhbf33tkg"]
 
-[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/time_control_gui.gd" id="1_c4b0o"]
+[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/time_control.gd" id="1_c4b0o"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="2_wsvgb"]
 
 [node name="Control" type="Control" unique_id=614857075]
@@ -11,7 +11,7 @@ anchor_bottom = 0.5
 grow_vertical = 2
 script = ExtResource("1_c4b0o")
 
-[node name="top_time_message_label" type="Label" parent="." unique_id=536607969]
+[node name="top_time_message_label" type="Label" parent="." unique_id=1572829658]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -28,22 +28,41 @@ text = "Black time left:"
 horizontal_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="top_time_left_label" type="Label" parent="top_time_message_label" unique_id=766365747]
+[node name="time_label" type="Label" parent="top_time_message_label" unique_id=1543642519]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 30.0
 offset_top = -20.0
+offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_wsvgb")
 theme_override_font_sizes/font_size = 16
-text = "00:00"
+text = "00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="bottom_time_message_label" type="Label" parent="." unique_id=1572829658]
+[node name="ms_label" type="Label" parent="top_time_message_label/time_label" unique_id=1078329561]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 7.0
+offset_right = 17.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_wsvgb")
+theme_override_font_sizes/font_size = 8
+text = ":00"
+vertical_alignment = 2
+
+[node name="bottom_time_message_label" type="Label" parent="." unique_id=1708945685]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -60,21 +79,36 @@ text = "White time left:"
 horizontal_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="bottom_time_left_label" type="Label" parent="bottom_time_message_label" unique_id=1543642519]
+[node name="time_label" type="Label" parent="bottom_time_message_label" unique_id=2104410264]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 30.0
 offset_top = -20.0
+offset_right = -30.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_wsvgb")
 theme_override_font_sizes/font_size = 16
-text = "00:00"
+text = "00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Timer" type="Timer" parent="." unique_id=94500203]
-
-[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[node name="ms_label" type="Label" parent="bottom_time_message_label/time_label" unique_id=1467186223]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 7.0
+offset_right = 17.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_wsvgb")
+theme_override_font_sizes/font_size = 8
+text = ":00"
+vertical_alignment = 2

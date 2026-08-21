@@ -8,7 +8,7 @@ func _ready() -> void:
 	var window_size: Vector2i = get_window().size
 	resolution_button.text = "Resolution: " + str(window_size.x) + "x" + str(window_size.y)
 	
-	if Global.settings_data["fullscreen"]:
+	if Global.user_data["fullscreen"]:
 		fullscreen_check_button.set_pressed_no_signal(true)
 		resolution_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		resolution_button.modulate.a = 0.5
@@ -16,17 +16,17 @@ func _ready() -> void:
 
 func _on_resolution_button_pressed() -> void:
 	if DisplayServer.screen_get_size() <= get_window().size:
-		Global.settings_data["resolution"] = 3
+		Global.user_data["resolution"] = 3
 	else:
-		Global.settings_data["resolution"] += 1
+		Global.user_data["resolution"] += 1
 	Global.apply_resolution_setting()
 	
-	var new_resolution: Vector2i =  Global.BASE_RESOLUTION * Global.settings_data["resolution"]
+	var new_resolution: Vector2i =  Global.BASE_RESOLUTION * Global.user_data["resolution"]
 	resolution_button.text = "Resolution: " + str(new_resolution.x) + "x" + str(new_resolution.y)
 
 
 func _on_fullscreen_check_button_toggled(toggled_on: bool) -> void:
-	Global.settings_data["fullscreen"] = toggled_on
+	Global.user_data["fullscreen"] = toggled_on
 	Global.apply_fullscreen_setting()
 	
 	if toggled_on:
@@ -40,7 +40,7 @@ func _on_fullscreen_check_button_toggled(toggled_on: bool) -> void:
 	Global.apply_fullscreen_setting()
 
 
-
 func _on_okay_button_pressed() -> void:
 	Global.save_settings_data()
 	hide()
+	get_node("../bg/Label").show()

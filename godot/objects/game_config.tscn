@@ -1,0 +1,559 @@
+[gd_scene format=3 uid="uid://b6eirlketnoai"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_rkeaw"]
+[ext_resource type="Script" uid="uid://dc08orrlqa8xo" path="res://src/local_game_config.gd" id="3_lijna"]
+[ext_resource type="Script" uid="uid://dffph05iunyv7" path="res://src/lan_game_config.gd" id="4_u3r3t"]
+
+[sub_resource type="Animation" id="Animation_7rcxa"]
+resource_name = "default"
+length = 1.2
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Label:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.90000004),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": ["Waiting for opponent", "Waiting for opponent.", "Waiting for opponent..", "Waiting for opponent..."]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_iuo5w"]
+_data = {
+&"default": SubResource("Animation_7rcxa")
+}
+
+[node name="game_config" type="TabContainer" unique_id=1807799992]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -115.0
+offset_top = -88.0
+offset_right = 115.0
+offset_bottom = 86.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_rkeaw")
+theme_override_constants/tab_separation = 1
+tab_alignment = 1
+current_tab = 0
+tab_0/title = " Local Game "
+tab_1/title = "  LAN Game  "
+tab_2/title = "..........12"
+metadata/_edit_lock_ = true
+metadata/_edit_vertical_guides_ = [160.0]
+
+[node name="local_game" type="Control" parent="." unique_id=743462533]
+layout_mode = 2
+script = ExtResource("3_lijna")
+metadata/_tab_index = 0
+metadata/_tab_name = " Local Game "
+
+[node name="player_color_button" type="Button" parent="local_game" unique_id=1088172606]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 27.0
+offset_right = 47.0
+offset_bottom = 40.0
+grow_horizontal = 2
+text = "Player side: White"
+
+[node name="game_mode_button" type="Button" parent="local_game" unique_id=976471616]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 43.0
+offset_right = 47.0
+offset_bottom = 56.0
+grow_horizontal = 2
+text = "Game mode: Standard"
+
+[node name="opponent_button" type="Button" parent="local_game" unique_id=2145262158]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 59.0
+offset_right = 47.0
+offset_bottom = 72.0
+grow_horizontal = 2
+text = "Opponent: Human"
+
+[node name="ai_config_control" type="Control" parent="local_game" unique_id=342507103]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -93.0
+offset_top = -9.0
+offset_right = 93.0
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ai_skill_level_label" type="Label" parent="local_game/ai_config_control" unique_id=608798720]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 7.0
+grow_horizontal = 2
+text = "AI skill level: 0"
+horizontal_alignment = 1
+
+[node name="ai_skill_level_bar" type="HScrollBar" parent="local_game/ai_config_control" unique_id=1679265001]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -55.0
+offset_top = -7.0
+offset_right = 55.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 20.0
+step = 1.0
+
+[node name="time_per_side_bar" type="HScrollBar" parent="local_game" unique_id=156149148]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -44.0
+offset_right = -16.0
+offset_bottom = -37.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 38.0
+step = 1.0
+value = 38.0
+
+[node name="time_per_side_label" type="Label" parent="local_game/time_per_side_bar" unique_id=1385838875]
+layout_mode = 1
+offset_top = -11.0
+offset_right = 82.0
+offset_bottom = -4.0
+text = "Minutes per side: Unlimited"
+vertical_alignment = 1
+
+[node name="time_increment_bar" type="HScrollBar" parent="local_game" unique_id=187122814]
+modulate = Color(1, 1, 1, 0.49803922)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -44.0
+offset_right = 96.0
+offset_bottom = -37.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+max_value = 30.0
+step = 1.0
+
+[node name="time_increment_label" type="Label" parent="local_game/time_increment_bar" unique_id=1769901688]
+modulate = Color(1, 1, 1, 0.49803922)
+layout_mode = 1
+offset_left = 2.0
+offset_top = -11.0
+offset_right = 78.0
+offset_bottom = -4.0
+text = "Increment in seconds: 0"
+vertical_alignment = 1
+
+[node name="start_button" type="Button" parent="local_game" unique_id=1033485721]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = -15.0
+offset_right = 39.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Start"
+
+[node name="lan_game" type="Control" parent="." unique_id=1260433913]
+visible = false
+layout_mode = 2
+script = ExtResource("4_u3r3t")
+metadata/_tab_index = 1
+metadata/_tab_name = "  LAN Game  "
+
+[node name="TabContainer" type="TabContainer" parent="lan_game" unique_id=1554132219]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 3.0
+offset_right = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/tab_separation = 54
+theme_override_font_sizes/font_size = 8
+tab_alignment = 2
+current_tab = 0
+tab_0/title = "      Join Match      "
+tab_1/title = "     Create Match     "
+
+[node name="join" type="Control" parent="lan_game/TabContainer" unique_id=604356518]
+layout_mode = 2
+metadata/_tab_index = 0
+metadata/_tab_name = "      Join Match      "
+
+[node name="refresh_stream_list_button" type="Button" parent="lan_game/TabContainer/join" unique_id=839904746]
+layout_mode = 1
+offset_top = 3.0
+offset_right = 29.0
+offset_bottom = 16.0
+text = "Refresh"
+
+[node name="Label" type="Label" parent="lan_game/TabContainer/join" unique_id=549005275]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -22.0
+offset_top = 9.0
+offset_right = 22.0
+offset_bottom = 17.0
+grow_horizontal = 2
+text = "Active Matches"
+horizontal_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="lan_game/TabContainer/join" unique_id=1982432420]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 17.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09375, 0.09375, 0.09375, 1)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="lan_game/TabContainer/join/ColorRect" unique_id=241848019]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -1.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="elements" type="VBoxContainer" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer" unique_id=1037454100]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="element_instance" type="ColorRect" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements" unique_id=43642470]
+visible = false
+custom_minimum_size = Vector2(0, 26)
+custom_maximum_size = Vector2(184, -1)
+layout_mode = 2
+color = Color(0.3046875, 0.3046875, 0.3046875, 1)
+
+[node name="ColorRect" type="ColorRect" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1143175702]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.21484375, 0.21484375, 0.21484375, 1)
+
+[node name="player_name_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1082131988]
+layout_mode = 1
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 141.0
+offset_bottom = 8.0
+text = "emin-blcn (white)"
+horizontal_alignment = 1
+
+[node name="game_mode_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1987499188]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = -15.0
+offset_right = 141.0
+offset_bottom = -8.0
+grow_vertical = 0
+text = "game mode (Standard)"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1995366011]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -8.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="minute_per_side_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=157564529]
+layout_mode = 2
+text = "minute per side (0.75)"
+vertical_alignment = 2
+
+[node name="increment_second_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=1475816524]
+layout_mode = 2
+text = "increment in seconds (180)"
+vertical_alignment = 2
+
+[node name="join_button" type="Button" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1626295457]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -31.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = 16.0
+grow_horizontal = 0
+text = "Join"
+
+[node name="create" type="Control" parent="lan_game/TabContainer" unique_id=1531671379]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+metadata/_tab_name = "     Create Match     "
+
+[node name="create_stream_config" type="Control" parent="lan_game/TabContainer/create" unique_id=1366108548]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="player_name_line_edit" type="LineEdit" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1267506649]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 21.0
+offset_right = 47.0
+offset_bottom = 34.0
+grow_horizontal = 2
+text = "Player"
+alignment = 1
+
+[node name="Label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/player_name_line_edit" unique_id=217167489]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -19.0
+offset_top = -9.0
+offset_right = 19.0
+offset_bottom = -2.0
+grow_horizontal = 2
+text = "Player name"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="game_mode_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1215569447]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 53.0
+offset_right = 47.0
+offset_bottom = 66.0
+grow_horizontal = 2
+text = "Game mode: Standard"
+
+[node name="player_color_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1036283056]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -47.0
+offset_top = 37.0
+offset_right = 47.0
+offset_bottom = 50.0
+grow_horizontal = 2
+text = "Player side: White"
+
+[node name="time_per_side_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_stream_config" unique_id=184106459]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -89.0
+offset_top = -34.0
+offset_right = -9.0
+offset_bottom = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 38.0
+step = 1.0
+value = 38.0
+
+[node name="time_per_side_label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/time_per_side_bar" unique_id=157302648]
+layout_mode = 1
+offset_top = -11.0
+offset_right = 82.0
+offset_bottom = -4.0
+text = "Minutes per side: Unlimited"
+vertical_alignment = 1
+
+[node name="time_increment_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1514973297]
+modulate = Color(1, 1, 1, 0.49803922)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = -34.0
+offset_right = 89.0
+offset_bottom = -27.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+max_value = 30.0
+step = 1.0
+
+[node name="time_increment_label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/time_increment_bar" unique_id=1458165468]
+modulate = Color(1, 1, 1, 0.49803922)
+layout_mode = 1
+offset_left = 2.0
+offset_top = -11.0
+offset_right = 78.0
+offset_bottom = -4.0
+text = "Increment in seconds: 0"
+vertical_alignment = 1
+
+[node name="crate_stream_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1929335243]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -39.0
+offset_top = -15.0
+offset_right = 39.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Create"
+
+[node name="wait_client" type="Control" parent="lan_game/TabContainer/create" unique_id=1718100444]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -65.0
+offset_top = -45.0
+offset_right = 65.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="lan_game/TabContainer/create/wait_client" unique_id=57534270]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -69.0
+offset_top = -7.75
+offset_right = 77.0
+offset_bottom = 7.75
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 16
+text = "Waiting for opponent.."
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="lan_game/TabContainer/create/wait_client" unique_id=1842939198]
+libraries/ = SubResource("AnimationLibrary_iuo5w")
+autoplay = &"default"
+
+[node name="cancel_wait_button" type="Button" parent="lan_game/TabContainer/create/wait_client" unique_id=1917933332]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -33.0
+offset_top = 19.0
+offset_right = 33.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Cancel"
+
+[node name="Control" type="Control" parent="." unique_id=2127080727]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+metadata/_tab_name = "..........12"
+
+[connection signal="tab_changed" from="." to="lan_game" method="_on_game_config_tab_changed"]
+[connection signal="pressed" from="local_game/player_color_button" to="local_game" method="_on_player_color_button_pressed"]
+[connection signal="pressed" from="local_game/game_mode_button" to="local_game" method="_on_game_mode_button_pressed"]
+[connection signal="pressed" from="local_game/opponent_button" to="local_game" method="_on_opponent_button_pressed"]
+[connection signal="value_changed" from="local_game/ai_config_control/ai_skill_level_bar" to="local_game" method="_on_ai_skill_level_bar_value_changed"]
+[connection signal="value_changed" from="local_game/time_per_side_bar" to="local_game" method="_on_time_per_side_bar_value_changed"]
+[connection signal="value_changed" from="local_game/time_increment_bar" to="local_game" method="_on_time_increment_bar_value_changed"]
+[connection signal="pressed" from="local_game/start_button" to="local_game" method="_on_start_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/join/refresh_stream_list_button" to="lan_game" method="_on_refresh_stream_list_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/game_mode_button" to="lan_game" method="_on_game_mode_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/player_color_button" to="lan_game" method="_on_player_color_button_pressed"]
+[connection signal="value_changed" from="lan_game/TabContainer/create/create_stream_config/time_per_side_bar" to="lan_game" method="_on_time_per_side_bar_value_changed"]
+[connection signal="value_changed" from="lan_game/TabContainer/create/create_stream_config/time_increment_bar" to="lan_game" method="_on_time_increment_bar_value_changed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/crate_stream_button" to="lan_game" method="_on_crate_stream_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/wait_client/cancel_wait_button" to="lan_game" method="_on_cancel_wait_button_pressed"]

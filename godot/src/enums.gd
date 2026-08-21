@@ -1,10 +1,9 @@
 class_name Enums
 
-enum Opponent
+enum ChessColor
 {
-	LOCAL_HUMAN,
-	LOCAL_AI,
-	LAN_HUMAN
+	WHITE,
+	BLACK
 }
 
 enum GameMode
@@ -13,10 +12,22 @@ enum GameMode
 	CHESS960
 }
 
-enum ChessColor
+enum ConnectionType
 {
-	WHITE,
-	BLACK
+	LOCAL,
+	LAN
+}
+
+enum LocalOpponent
+{
+	HUMAN,
+	AI
+}
+
+enum LanOpponentSide
+{
+	STREAM,
+	ClIENT
 }
 
 enum Piece

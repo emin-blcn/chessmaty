@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dcexr08yr4d6g"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_r3cf6"]
-[ext_resource type="Script" uid="uid://4pdab483krba" path="res://src/match_finished_gui.gd" id="2_7hr0r"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_wa353"]
+[ext_resource type="Script" uid="uid://4pdab483krba" path="res://src/match_finished.gd" id="2_y2r8k"]
 
 [sub_resource type="Gradient" id="Gradient_lwkho"]
 offsets = PackedFloat32Array(0.3, 1)
@@ -23,9 +23,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_r3cf6")
+theme = ExtResource("1_wa353")
 texture = SubResource("GradientTexture2D_5xl1b")
-script = ExtResource("2_7hr0r")
+script = ExtResource("2_y2r8k")
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="." unique_id=1621229476]

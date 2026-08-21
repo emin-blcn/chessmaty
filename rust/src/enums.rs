@@ -1,12 +1,28 @@
 use godot::prelude::*;
 
+
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
 #[godot(via = i32)]
-pub enum Opponent
+pub enum ConnectionType
 {
-    LocalHuman,
-    LocalAI,
-    LanHuman
+    Local,
+    Lan
+}
+
+#[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
+#[godot(via = i32)]
+pub enum LocalOpponent
+{
+    Human,
+    AI
+}
+
+#[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
+#[godot(via = i32)]
+pub enum LanOpponentSide
+{
+    Stream,
+    Client
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
