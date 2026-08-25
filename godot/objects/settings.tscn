@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://c5jprenw1jvhe" path="res://src/settings.gd" id="1_ums2b"]
 [ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="2_0s7aw"]
 
-[node name="settings_gui" type="Panel" unique_id=80842764]
+[node name="Panel" type="Panel" unique_id=80842764]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

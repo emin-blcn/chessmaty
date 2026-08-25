@@ -21,8 +21,8 @@ pub enum LocalOpponent
 #[godot(via = i32)]
 pub enum LanOpponentSide
 {
-    Stream,
-    Client
+    Host,
+    Peer
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]

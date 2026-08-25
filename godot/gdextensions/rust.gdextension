@@ -10,3 +10,6 @@ linux.release.x86_64 =   "res://lib/librust_linux_x86_64_release.so"
 
 windows.debug.x86_64 =   "res://lib/librust_windows_x86_64_debug.dll"
 windows.release.x86_64 = "res://lib/librust_windows_x86_64_release.dll"
+
+windows.debug.arm64 =    "res://lib/librust_windows_arm64_debug.dll"
+windows.release.arm64 =  "res://lib/librust_windows_arm64_release.dll"

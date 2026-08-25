@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://j2sfhbf33tkg"]
 
-[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/time_control.gd" id="1_c4b0o"]
+[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/hud_time_control.gd" id="1_c4b0o"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="2_wsvgb"]
 
 [node name="Control" type="Control" unique_id=614857075]
@@ -53,13 +53,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -1.0
 offset_top = 7.0
-offset_right = 17.0
+offset_right = 7.0
 offset_bottom = -5.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_wsvgb")
 theme_override_font_sizes/font_size = 8
-text = ":00"
+text = ":0"
 vertical_alignment = 2
 
 [node name="bottom_time_message_label" type="Label" parent="." unique_id=1708945685]
@@ -104,11 +104,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -1.0
 offset_top = 7.0
-offset_right = 17.0
+offset_right = 7.0
 offset_bottom = -5.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_wsvgb")
 theme_override_font_sizes/font_size = 8
-text = ":00"
+text = ":0"
 vertical_alignment = 2

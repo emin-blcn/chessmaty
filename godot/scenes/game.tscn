@@ -3,14 +3,14 @@
 [ext_resource type="Script" uid="uid://cmwwvuydl32bg" path="res://src/game.gd" id="2_kvuet"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="3_ir15t"]
 [ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://objects/board.tscn" id="4_ca42v"]
-[ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://objects/move_history_table.tscn" id="5_rysoc"]
+[ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://objects/hud_move_history_table.tscn" id="5_rysoc"]
 [ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/hud.gd" id="6_ssvqc"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="7_264po"]
 [ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/undo_icon.png" id="8_1kice"]
 [ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="9_5newe"]
-[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/promotion_selection.tscn" id="10_37s47"]
-[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/match_finished.tscn" id="10_dinhu"]
-[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/time_control.tscn" id="11_dinhu"]
+[ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/hud_promotion_selection.tscn" id="10_37s47"]
+[ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/hud_match_finished.tscn" id="10_dinhu"]
+[ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/hud_time_control.tscn" id="11_dinhu"]
 [ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config.tscn" id="12_dinhu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
@@ -84,8 +84,11 @@ metadata/_edit_lock_ = true
 
 [node name="move_history_table" parent="game_content/hud" unique_id=736317109 instance=ExtResource("5_rysoc")]
 layout_mode = 1
+anchors_preset = 1
 offset_left = -68.0
+offset_top = 0.0
 offset_right = -2.0
+offset_bottom = 84.0
 
 [node name="undo_button" type="Button" parent="game_content/hud" unique_id=1857265176]
 layout_mode = 1

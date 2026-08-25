@@ -9,8 +9,9 @@ extends Control
 @onready var time_control_node: Control = $game_content/hud/time_control_gui
 
 var chess_logic: ChessLogic = ChessLogic.new()
-var lan_stream: LanStream
-var lan_client: LanClient
+var listen_lan_opponent_thread: Thread = null
+var stream
+
 var config_data: Dictionary[String, Variant] = {}
 var promotion_pawn_from_to_square: String
 var ai_selected_promotion_role: Enums.Piece
@@ -19,6 +20,7 @@ var ai_is_thinking: bool
 
 func _ready() -> void:
 	game_config_node.get_node("local_game").config_finished.connect(_on_game_config_finished)
+	game_config_node.get_node("lan_game").config_finished.connect(_on_game_config_finished)
 	
 	board_node.move_animation_started.connect(self._on_move_animation_started)
 	board_node.move_animation_started.connect(move_history_table_node._on_move_animation_started)
@@ -58,14 +60,46 @@ func _on_game_config_finished(new_config_data: Dictionary[String, Variant]):
 						Enums.ChessColor.BLACK:
 							play_ai_move()
 		Enums.ConnectionType.LAN:
-			match config_data["lan_opponent_side"]:
-				Enums.LanOpponentSide.STREAM:
-					lan_stream = LanStream.new()
-				Enums.LanOpponentSide.ClIENT:
-					lan_client = LanClient.new()
 			match config_data["player_color"]:
 				Enums.ChessColor.WHITE:
 					board_node.show_input_control_node()
+				Enums.ChessColor.BLACK:
+					WorkerThreadPool.add_task(wait_for_opponent_msg)
+
+
+func init_stream(new_stream):
+	stream = new_stream
+
+
+func wait_for_opponent_msg():
+	var msg: String = stream.wait_for_opponent_msg()
+	call_deferred("_on_received_opponent_msg", msg)
+
+
+func _on_received_opponent_msg(msg: String):
+	if msg.is_empty():
+		return
+	
+	var msg_element_array: PackedStringArray = msg.split("|")
+	var move_type: Enums.MoveType = int(msg_element_array[1]) as Enums.MoveType
+	var from: String = msg_element_array[2]
+	var to: String = msg_element_array[3]
+	var promotion_new_role: Enums.Piece = int(msg_element_array[4]) as Enums.Piece
+	
+	match move_type:
+		Enums.MoveType.NORMAL:
+			apply_normal_move(from, to)
+		Enums.MoveType.EN_PASSANT:
+			apply_en_passant_move(from, to)
+		Enums.MoveType.CASTLING:
+			apply_castling_move(from, to)
+		Enums.MoveType.PROMOTION:
+			promotion_pawn_from_to_square = from + "_" + to
+			apply_promotion_move(promotion_new_role)
+
+
+func send_move_msg_to_lan_opponent(move_type: Enums.MoveType, from_square: String, to_square: String, promotion_new_role: Enums.Piece = Enums.Piece.QUEEN):
+	stream.send_move_to_opponent(move_type, from_square, to_square, promotion_new_role)
 
 
 func update_ai_selected_new_promotion_role(ai_selected_new_promotion_role: Enums.Piece):
@@ -73,14 +107,23 @@ func update_ai_selected_new_promotion_role(ai_selected_new_promotion_role: Enums
 
 
 func apply_normal_move(from: String, to: String):
+	if config_data["connection_type"] == Enums.ConnectionType.LAN and config_data["player_color"] == get_turn():
+		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.NORMAL, from, to))
+	
 	chess_logic.apply_normal_move(from, to)
 
 
 func apply_en_passant_move(from: String, to: String):
+	if config_data["connection_type"] == Enums.ConnectionType.LAN and config_data["player_color"] == get_turn():
+		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.EN_PASSANT, from, to))
+	
 	chess_logic.apply_en_passant_move(from, to)
 
 
 func apply_castling_move(from: String, to: String):
+	if config_data["connection_type"] == Enums.ConnectionType.LAN and config_data["player_color"] == get_turn():
+		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.CASTLING, from, to))
+	
 	chess_logic.apply_castling_move(from, to)
 
 
@@ -88,10 +131,13 @@ func apply_promotion_move(new_role: Enums.Piece):
 	var array: PackedStringArray = promotion_pawn_from_to_square.split("_")
 	promotion_pawn_from_to_square = ""
 	
-	var from_square: String = array[0]
-	var to_square: String = array[1]
-	board_node.update_promotion_piece(to_square, new_role)
-	chess_logic.apply_promotion_move(from_square, to_square, new_role)
+	var from: String = array[0]
+	var to: String = array[1]
+	
+	if config_data["connection_type"] == Enums.ConnectionType.LAN and config_data["player_color"] == get_turn():
+		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.PROMOTION, from, to, new_role))
+	
+	chess_logic.apply_promotion_move(from, to, new_role)
 
 
 func _on_move_animation_started(move_type: Enums.MoveType, from: String, to: String):
@@ -117,19 +163,25 @@ func _on_move_animation_finished(move_type: Enums.MoveType):
 		match_finished(match_finish_state)
 		return
 	
-	if config_data["connection_type"] == Enums.ConnectionType.LOCAL:
-		# local game
-		if config_data["local_opponent"] == Enums.LocalOpponent.HUMAN:
-			# opponenet is local human, turn isn't important, allow to make move
-			board_node.show_input_control_node()
-		else:
-			# opponent is AI
-			if config_data["player_color"] == get_turn():
-				# it'a human's turn, allow to make move
+	match config_data["connection_type"]:
+		Enums.ConnectionType.LOCAL:
+			# local game
+			if config_data["local_opponent"] == Enums.LocalOpponent.HUMAN:
+				# opponenet is local human, turn isn't important, allow to make move
 				board_node.show_input_control_node()
 			else:
-				# it'a AI's turn, don't allow to make move, AI will make move
-				play_ai_move()
+				# opponent is AI
+				if config_data["player_color"] == get_turn():
+					# it'a human's turn, allow to make move
+					board_node.show_input_control_node()
+				else:
+					# it'a AI's turn, don't allow to make move, AI will make move
+					play_ai_move()
+		Enums.ConnectionType.LAN:
+			if config_data["player_color"] == get_turn():
+				board_node.show_input_control_node()
+			else:
+				WorkerThreadPool.add_task(wait_for_opponent_msg)
 
 
 func play_ai_move():
@@ -205,6 +257,9 @@ func match_finished(finished_state: Enums.MatchFinishedState):
 			match_finished_node.get_node("Label").text = "Black Wins"
 	match_finished_node.show()
 
+
+func get_connection_type() -> Enums.ConnectionType:
+	return config_data["connection_type"]
 
 func get_turn() -> Enums.ChessColor:
 	return chess_logic.get_turn() as Enums.ChessColor

@@ -10,8 +10,8 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var player_color_button: Button = $player_color_button
 @onready var game_mode_button: Button = $game_mode_button
 @onready var opponent_button: Button = $opponent_button
-@onready var ai_config_control: Control = $ai_config_control
-@onready var ai_skill_level_label: Label = $ai_config_control/ai_skill_level_label
+@onready var ai_skill_level_bar: HScrollBar = $ai_skill_level_bar
+@onready var ai_skill_level_label: Label = $ai_skill_level_bar/ai_skill_level_label
 @onready var time_per_side_bar: HScrollBar = $time_per_side_bar
 @onready var time_per_side_label: Label = $time_per_side_bar/time_per_side_label
 @onready var time_increment_bar: HScrollBar = $time_increment_bar
@@ -20,6 +20,7 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 var config_data: Dictionary[String, Variant] = {
 	"player_color": Enums.ChessColor.WHITE,
 	"game_mode": Enums.GameMode.STANDARD,
+	"fen_string": "",
 	"connection_type": Enums.ConnectionType.LOCAL,
 	"local_opponent": Enums.LocalOpponent.HUMAN,
 	"time_per_side": -60_000,
@@ -53,11 +54,11 @@ func _on_opponent_button_pressed() -> void:
 		Enums.LocalOpponent.HUMAN:
 			config_data["local_opponent"] = Enums.LocalOpponent.AI
 			opponent_button.text = "Opponent: AI"
-			ai_config_control.show()
+			ai_skill_level_bar.show()
 		Enums.LocalOpponent.AI:
 			config_data["local_opponent"] = Enums.LocalOpponent.HUMAN
 			opponent_button.text = "Opponent: Human"
-			ai_config_control.hide()
+			ai_skill_level_bar.hide()
 
 
 func _on_ai_skill_level_bar_value_changed(value: float) -> void:
@@ -95,6 +96,9 @@ func _on_time_increment_bar_value_changed(value: float) -> void:
 func _on_start_button_pressed() -> void:
 	if config_data["local_opponent"] == Enums.LocalOpponent.AI:
 		config_data["ai_binary_path"] = get_ai_binary_path()
+	if config_data["game_mode"] == Enums.GameMode.CHESS960:
+		config_data["fen_string"] = ChessLogic.get_random_fen()
+	
 	config_finished.emit(config_data)
 
 
@@ -106,8 +110,9 @@ func get_ai_binary_path() -> String:
 		path = OS.get_executable_path().get_base_dir()
 	
 	var file_name: String
-	match OS.get_name():
-		"Linux": file_name = "stockfish_linux_x86_64_avx2"
-		"Windows": file_name = "stockfish_windows_x86_64_avx2.exe"
+	match [OS.get_name(), Engine.get_architecture_name()]:
+		["Linux", "x86_64"]: file_name = "stockfish_linux_x86_64_avx2"
+		["Windows", "x86_64"]: file_name = "stockfish_windows_x86_64_avx2.exe"
+		["Windows", "arm64"]: file_name = "stockfish_windows_arm64.exe"
 	
 	return path.path_join(file_name)

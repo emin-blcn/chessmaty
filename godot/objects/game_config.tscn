@@ -61,9 +61,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -47.0
-offset_top = 27.0
+offset_top = 12.0
 offset_right = 47.0
-offset_bottom = 40.0
+offset_bottom = 25.0
 grow_horizontal = 2
 text = "Player side: White"
 
@@ -73,9 +73,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -47.0
-offset_top = 43.0
+offset_top = 28.0
 offset_right = 47.0
-offset_bottom = 56.0
+offset_bottom = 41.0
 grow_horizontal = 2
 text = "Game mode: Standard"
 
@@ -85,37 +85,14 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -47.0
-offset_top = 59.0
+offset_top = 44.0
 offset_right = 47.0
-offset_bottom = 72.0
+offset_bottom = 57.0
 grow_horizontal = 2
 text = "Opponent: Human"
 
-[node name="ai_config_control" type="Control" parent="local_game" unique_id=342507103]
+[node name="ai_skill_level_bar" type="HScrollBar" parent="local_game" unique_id=1679265001]
 visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -93.0
-offset_top = -9.0
-offset_right = 93.0
-offset_bottom = 9.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ai_skill_level_label" type="Label" parent="local_game/ai_config_control" unique_id=608798720]
-layout_mode = 1
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 7.0
-grow_horizontal = 2
-text = "AI skill level: 0"
-horizontal_alignment = 1
-
-[node name="ai_skill_level_bar" type="HScrollBar" parent="local_game/ai_config_control" unique_id=1679265001]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -123,12 +100,21 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -55.0
-offset_top = -7.0
+offset_top = -72.0
 offset_right = 55.0
+offset_bottom = -65.0
 grow_horizontal = 2
 grow_vertical = 0
 max_value = 20.0
 step = 1.0
+
+[node name="ai_skill_level_label" type="Label" parent="local_game/ai_skill_level_bar" unique_id=608798720]
+layout_mode = 1
+offset_left = 28.0
+offset_top = -10.0
+offset_right = 82.0
+offset_bottom = -3.0
+text = "AI skill level: 0"
 
 [node name="time_per_side_bar" type="HScrollBar" parent="local_game" unique_id=156149148]
 layout_mode = 1
@@ -227,7 +213,7 @@ layout_mode = 2
 metadata/_tab_index = 0
 metadata/_tab_name = "      Join Match      "
 
-[node name="refresh_stream_list_button" type="Button" parent="lan_game/TabContainer/join" unique_id=839904746]
+[node name="refresh_host_list_button" type="Button" parent="lan_game/TabContainer/join" unique_id=839904746]
 layout_mode = 1
 offset_top = 3.0
 offset_right = 29.0
@@ -297,28 +283,18 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.21484375, 0.21484375, 0.21484375, 1)
 
-[node name="player_name_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1082131988]
+[node name="host_name_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1082131988]
 layout_mode = 1
-offset_left = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -61.0
 offset_top = 1.0
-offset_right = 141.0
+offset_right = 61.0
 offset_bottom = 8.0
-text = "emin-blcn (white)"
+grow_horizontal = 2
+text = "New Match"
 horizontal_alignment = 1
-
-[node name="game_mode_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1987499188]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -15.0
-offset_right = 141.0
-offset_bottom = -8.0
-grow_vertical = 0
-text = "game mode (Standard)"
-horizontal_alignment = 1
-vertical_alignment = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1995366011]
 layout_mode = 1
@@ -326,19 +302,45 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 5.0
+offset_left = 2.0
+offset_top = -15.0
+offset_right = -31.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="game_mode_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=1987499188]
+layout_mode = 2
+text = "game mode (Standard)"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="player_color_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=551357716]
+layout_mode = 2
+text = "Player side (white)"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1910146153]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
 offset_top = -8.0
 offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="minute_per_side_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=157564529]
+[node name="minute_per_side_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer2" unique_id=407790859]
 layout_mode = 2
 text = "minute per side (0.75)"
 vertical_alignment = 2
 
-[node name="increment_second_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=1475816524]
+[node name="increment_second_label" type="Label" parent="lan_game/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer2" unique_id=1544586484]
 layout_mode = 2
 text = "increment in seconds (180)"
 vertical_alignment = 2
@@ -361,7 +363,7 @@ layout_mode = 2
 metadata/_tab_index = 1
 metadata/_tab_name = "     Create Match     "
 
-[node name="create_stream_config" type="Control" parent="lan_game/TabContainer/create" unique_id=1366108548]
+[node name="create_host_config" type="Control" parent="lan_game/TabContainer/create" unique_id=1366108548]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -369,7 +371,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="player_name_line_edit" type="LineEdit" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1267506649]
+[node name="host_name_line_edit" type="LineEdit" parent="lan_game/TabContainer/create/create_host_config" unique_id=1267506649]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -379,10 +381,12 @@ offset_top = 21.0
 offset_right = 47.0
 offset_bottom = 34.0
 grow_horizontal = 2
-text = "Player"
+text = "New Match"
+placeholder_text = "Host Name"
 alignment = 1
+max_length = 30
 
-[node name="Label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/player_name_line_edit" unique_id=217167489]
+[node name="Label" type="Label" parent="lan_game/TabContainer/create/create_host_config/host_name_line_edit" unique_id=217167489]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -392,11 +396,11 @@ offset_top = -9.0
 offset_right = 19.0
 offset_bottom = -2.0
 grow_horizontal = 2
-text = "Player name"
+text = "Host name"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="game_mode_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1215569447]
+[node name="game_mode_button" type="Button" parent="lan_game/TabContainer/create/create_host_config" unique_id=1215569447]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -408,7 +412,7 @@ offset_bottom = 66.0
 grow_horizontal = 2
 text = "Game mode: Standard"
 
-[node name="player_color_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1036283056]
+[node name="player_color_button" type="Button" parent="lan_game/TabContainer/create/create_host_config" unique_id=1036283056]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -420,7 +424,7 @@ offset_bottom = 50.0
 grow_horizontal = 2
 text = "Player side: White"
 
-[node name="time_per_side_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_stream_config" unique_id=184106459]
+[node name="time_per_side_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_host_config" unique_id=184106459]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -437,7 +441,7 @@ max_value = 38.0
 step = 1.0
 value = 38.0
 
-[node name="time_per_side_label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/time_per_side_bar" unique_id=157302648]
+[node name="time_per_side_label" type="Label" parent="lan_game/TabContainer/create/create_host_config/time_per_side_bar" unique_id=157302648]
 layout_mode = 1
 offset_top = -11.0
 offset_right = 82.0
@@ -445,7 +449,7 @@ offset_bottom = -4.0
 text = "Minutes per side: Unlimited"
 vertical_alignment = 1
 
-[node name="time_increment_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1514973297]
+[node name="time_increment_bar" type="HScrollBar" parent="lan_game/TabContainer/create/create_host_config" unique_id=1514973297]
 modulate = Color(1, 1, 1, 0.49803922)
 layout_mode = 1
 anchors_preset = 7
@@ -463,7 +467,7 @@ mouse_filter = 2
 max_value = 30.0
 step = 1.0
 
-[node name="time_increment_label" type="Label" parent="lan_game/TabContainer/create/create_stream_config/time_increment_bar" unique_id=1458165468]
+[node name="time_increment_label" type="Label" parent="lan_game/TabContainer/create/create_host_config/time_increment_bar" unique_id=1458165468]
 modulate = Color(1, 1, 1, 0.49803922)
 layout_mode = 1
 offset_left = 2.0
@@ -473,7 +477,7 @@ offset_bottom = -4.0
 text = "Increment in seconds: 0"
 vertical_alignment = 1
 
-[node name="crate_stream_button" type="Button" parent="lan_game/TabContainer/create/create_stream_config" unique_id=1929335243]
+[node name="crate_host_button" type="Button" parent="lan_game/TabContainer/create/create_host_config" unique_id=1929335243]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -488,7 +492,7 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Create"
 
-[node name="wait_client" type="Control" parent="lan_game/TabContainer/create" unique_id=1718100444]
+[node name="wait_for_peer" type="Control" parent="lan_game/TabContainer/create" unique_id=1718100444]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -501,7 +505,7 @@ offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="lan_game/TabContainer/create/wait_client" unique_id=57534270]
+[node name="Label" type="Label" parent="lan_game/TabContainer/create/wait_for_peer" unique_id=57534270]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -517,11 +521,11 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 16
 text = "Waiting for opponent.."
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="lan_game/TabContainer/create/wait_client" unique_id=1842939198]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="lan_game/TabContainer/create/wait_for_peer" unique_id=1842939198]
 libraries/ = SubResource("AnimationLibrary_iuo5w")
 autoplay = &"default"
 
-[node name="cancel_wait_button" type="Button" parent="lan_game/TabContainer/create/wait_client" unique_id=1917933332]
+[node name="cancel_waiting_for_peer_button" type="Button" parent="lan_game/TabContainer/create/wait_for_peer" unique_id=1917933332]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -546,14 +550,14 @@ metadata/_tab_name = "..........12"
 [connection signal="pressed" from="local_game/player_color_button" to="local_game" method="_on_player_color_button_pressed"]
 [connection signal="pressed" from="local_game/game_mode_button" to="local_game" method="_on_game_mode_button_pressed"]
 [connection signal="pressed" from="local_game/opponent_button" to="local_game" method="_on_opponent_button_pressed"]
-[connection signal="value_changed" from="local_game/ai_config_control/ai_skill_level_bar" to="local_game" method="_on_ai_skill_level_bar_value_changed"]
+[connection signal="value_changed" from="local_game/ai_skill_level_bar" to="local_game" method="_on_ai_skill_level_bar_value_changed"]
 [connection signal="value_changed" from="local_game/time_per_side_bar" to="local_game" method="_on_time_per_side_bar_value_changed"]
 [connection signal="value_changed" from="local_game/time_increment_bar" to="local_game" method="_on_time_increment_bar_value_changed"]
 [connection signal="pressed" from="local_game/start_button" to="local_game" method="_on_start_button_pressed"]
-[connection signal="pressed" from="lan_game/TabContainer/join/refresh_stream_list_button" to="lan_game" method="_on_refresh_stream_list_button_pressed"]
-[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/game_mode_button" to="lan_game" method="_on_game_mode_button_pressed"]
-[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/player_color_button" to="lan_game" method="_on_player_color_button_pressed"]
-[connection signal="value_changed" from="lan_game/TabContainer/create/create_stream_config/time_per_side_bar" to="lan_game" method="_on_time_per_side_bar_value_changed"]
-[connection signal="value_changed" from="lan_game/TabContainer/create/create_stream_config/time_increment_bar" to="lan_game" method="_on_time_increment_bar_value_changed"]
-[connection signal="pressed" from="lan_game/TabContainer/create/create_stream_config/crate_stream_button" to="lan_game" method="_on_crate_stream_button_pressed"]
-[connection signal="pressed" from="lan_game/TabContainer/create/wait_client/cancel_wait_button" to="lan_game" method="_on_cancel_wait_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/join/refresh_host_list_button" to="lan_game" method="_on_refresh_host_list_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/game_mode_button" to="lan_game" method="_on_game_mode_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/player_color_button" to="lan_game" method="_on_player_color_button_pressed"]
+[connection signal="value_changed" from="lan_game/TabContainer/create/create_host_config/time_per_side_bar" to="lan_game" method="_on_time_per_side_bar_value_changed"]
+[connection signal="value_changed" from="lan_game/TabContainer/create/create_host_config/time_increment_bar" to="lan_game" method="_on_time_increment_bar_value_changed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/crate_host_button" to="lan_game" method="_on_crate_host_button_pressed"]
+[connection signal="pressed" from="lan_game/TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button" to="lan_game" method="_on_cancel_waiting_for_peer_button_pressed"]
