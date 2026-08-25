@@ -26,8 +26,8 @@ enum LocalOpponent
 
 enum LanOpponentSide
 {
-	STREAM,
-	ClIENT
+	HOST,
+	PEER
 }
 
 enum Piece

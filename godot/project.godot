@@ -45,7 +45,7 @@ folder_colors={
 
 [physics]
 
-3d/physics_engine="Jolt Physics"
+common/physics_ticks_per_second=30
 
 [rendering]
 

@@ -238,11 +238,11 @@ func piece_in_this_square_is_playable(square: String) -> bool:
 		return false
 
 
-func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, ai_selected_new_promotion_role: Enums.Piece):
+func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, ai_or_lan_opponent_promotion_role: Enums.Piece):
 	move_animation_started.emit(move_type, from, to)
 	move_animation_is_playing = true
 	
-	if move_type == Enums.MoveType.UNDO or move_type == Enums.MoveType.PROMOTION:
+	if move_type == Enums.MoveType.UNDO:
 		_on_move_animation_tween_finished(move_type)
 		return
 	
@@ -260,7 +260,15 @@ func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: S
 			apply_normal_move(from, to, tween)
 		Enums.MoveType.PROMOTION_REQUEST_BY_AI:
 			apply_normal_move(from, to, tween)
-			master_scene.update_ai_selected_new_promotion_role(ai_selected_new_promotion_role)
+			master_scene.update_ai_selected_new_promotion_role(ai_or_lan_opponent_promotion_role)
+		Enums.MoveType.PROMOTION:
+			if master_scene.get_connection_type() == Enums.ConnectionType.LAN and config_data["player_color"] != current_turn:
+				apply_normal_move(from, to, tween)
+				update_promotion_piece(to, ai_or_lan_opponent_promotion_role)
+			else:
+				update_promotion_piece(to, ai_or_lan_opponent_promotion_role)
+				_on_move_animation_tween_finished(move_type)
+				return
 	tween.play()
 
 
@@ -309,8 +317,11 @@ func apply_castling_move(king_from_square: String, rook_from_square: String, twe
 
 
 func update_promotion_piece(square: String, new_role: Enums.Piece):
-	current_turn = master_scene.get_turn()
-	var color: Enums.ChessColor = Enums.ChessColor.WHITE if current_turn == Enums.ChessColor.WHITE else Enums.ChessColor.BLACK
+	var color: Enums.ChessColor
+	match square[1]:
+		"8": color = Enums.ChessColor.WHITE
+		"1": color = Enums.ChessColor.BLACK
+	
 	board[square].texture = PIECE_TEXTURES[ [new_role, color] ]
 
 

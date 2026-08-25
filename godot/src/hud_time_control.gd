@@ -42,33 +42,36 @@ func config(new_config_data: Dictionary):
 		show()
 
 
+var last_time: int = Time.get_ticks_msec()
 var last_white_time: int
 var last_black_time: int
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# update hour-min-sec label per second and update millisecond label at 60 times at second
 	if time_is_ticking:
-		match active_turn:
-			Enums.ChessColor.WHITE:
-				white_time_left -= int(delta * 1000)
-				update_white_ms_time_gui()
-				if white_time_left % 1000 > last_white_time % 1000:
-					update_white_time_gui()
-				last_white_time = white_time_left
-			Enums.ChessColor.BLACK:
-				black_time_left -= int(delta * 1000)
-				update_black_ms_time_gui()
-				if black_time_left % 1000 > last_black_time % 1000:
-					update_black_time_gui()
-				last_black_time = black_time_left
-		
 		if white_time_left <= 0:
 			time_is_ticking = false
 			white_times_up.emit()
 		if black_time_left <= 0:
 			time_is_ticking = false
 			black_times_up.emit()
+		
+		match active_turn:
+			Enums.ChessColor.WHITE:
+				white_time_left = white_time_left - (Time.get_ticks_msec() - last_time)
+				update_white_ms_time_gui()
+				if white_time_left % 1000 > last_white_time % 1000:
+					update_white_time_gui()
+				last_white_time = white_time_left
+			Enums.ChessColor.BLACK:
+				black_time_left = black_time_left - (Time.get_ticks_msec() - last_time)
+				update_black_ms_time_gui()
+				if black_time_left % 1000 > last_black_time % 1000:
+					update_black_time_gui()
+				last_black_time = black_time_left
+	
+	last_time = Time.get_ticks_msec()
 
 
 func _on_move_animation_started(move_type: Enums.MoveType, _from: String, _to: String):
@@ -143,13 +146,19 @@ func update_black_time_gui():
 func update_white_ms_time_gui():
 	var white_ms_label: Label = bottom_ms_label if config_data["player_color"] == Enums.ChessColor.WHITE else top_ms_label
 	@warning_ignore("integer_division")
-	white_ms_label.text = ":%02d" % [white_time_left % 1000 / 10]
+	if white_time_left <= 0:
+		white_ms_label.text = ":0"
+	else:
+		white_ms_label.text = ":" + str(white_time_left % 1000)[0]
 
 
 func update_black_ms_time_gui():
 	var black_ms_label: Label = bottom_ms_label if config_data["player_color"] == Enums.ChessColor.BLACK else top_ms_label
 	@warning_ignore("integer_division")
-	black_ms_label.text = ":%02d" % [black_time_left % 1000 / 10]
+	if black_time_left <= 0:
+		black_ms_label.text = ":0"
+	else:
+		black_ms_label.text = ":" + str(black_time_left % 1000)[0]
 
 
 func get_white_time_left() -> int:

@@ -82,7 +82,7 @@ impl ChessLogic
                             }
                             Enums::GameMode::Chess960 =>
                             {
-                                let fen_string = self.get_random_fen();
+                                let fen_string = config_data.get("fen_string").unwrap().to::<String>();
                                 let fen: Fen = fen_string.parse().unwrap();
 
                                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
@@ -103,7 +103,7 @@ impl ChessLogic
                             }
                             Enums::GameMode::Chess960 =>
                             {
-                                let fen_string = self.get_random_fen();
+                                let fen_string = config_data.get("fen_string").unwrap().to::<String>();
                                 let fen: Fen = fen_string.parse().unwrap();
 
                                 self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
@@ -115,7 +115,45 @@ impl ChessLogic
             }
             Enums::ConnectionType::Lan =>
             {
+                let lan_opponent_side = config_data.get("lan_opponent_side").unwrap().to::<Enums::LanOpponentSide>();
 
+                match lan_opponent_side
+                {
+                    Enums::LanOpponentSide::Host =>
+                    {
+                        match game_mode
+                        {
+                            Enums::GameMode::Standard =>
+                            {
+                                self.chess = Chess::default();
+                            }
+                            Enums::GameMode::Chess960 =>
+                            {
+                                let fen_string = config_data.get("fen_string").unwrap().to::<String>();
+                                let fen: Fen = fen_string.parse().unwrap();
+
+                                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
+                            }
+                        }
+                    },
+                    Enums::LanOpponentSide::Peer =>
+                    {
+                        match game_mode
+                        {
+                            Enums::GameMode::Standard =>
+                            {
+                                self.chess = Chess::default();
+                            }
+                            Enums::GameMode::Chess960 =>
+                            {
+                                let fen_string = config_data.get("fen_string").unwrap().to::<String>();
+                                let fen: Fen = fen_string.parse().unwrap();
+
+                                self.chess = fen.into_position(CastlingMode::Chess960).unwrap();
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -123,7 +161,8 @@ impl ChessLogic
     }
 
 
-    fn get_random_fen(&self) -> String
+    #[func]
+    fn get_random_fen() -> String
     {
         let all_fens: Vec<&str> = include_str!("fens.txt").lines().collect();
         let random_number = randi_range(0, 960 - 1) as usize;
@@ -363,7 +402,7 @@ impl ChessLogic
         self.update_move_history(play_move);
         self.update_repeated_board_hash_history();
 
-        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Promotion.to_variant(), from.to_variant(), to.to_variant(), Enums::Piece::Empty.to_variant()]);
+        self.base_mut().emit_signal("move_applied", &[Enums::MoveType::Promotion.to_variant(), from.to_variant(), to.to_variant(), new_role.to_variant()]);
     }
 
 

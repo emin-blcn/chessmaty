@@ -1,7 +1,7 @@
 mod chess_logic;
 mod chess_engine;
-mod lan_stream;
-mod lan_client;
+mod lan_host;
+mod lan_peer;
 mod enums;
 
 

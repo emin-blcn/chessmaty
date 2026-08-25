@@ -1,10 +1,9 @@
 [gd_scene format=3 uid="uid://bwj4opff1w5kr"]
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_bs7qj"]
-[ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/move_history_table.gd" id="2_oa6ig"]
+[ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/hud_move_history_table.gd" id="2_oa6ig"]
 
 [node name="Panel" type="Panel" unique_id=736317109]
-anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -69.0
