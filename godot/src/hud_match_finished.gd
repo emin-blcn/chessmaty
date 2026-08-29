@@ -8,8 +8,7 @@ func _on_rematch_button_pressed() -> void:
 
 
 func _on_undo_button_pressed() -> void:
-	if master_scene.is_undoable():
-		master_scene.undo_last_move()
+	master_scene.undo_last_move()
 
 
 func _on_leave_button_pressed() -> void:

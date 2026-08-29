@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://opi1s7sjts4x"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_shaxa"]
+[ext_resource type="Script" uid="uid://dnhwul7bmenqc" path="res://src/hud_three_check_control.gd" id="2_bb4id"]
+
+[node name="Control" type="Control" unique_id=532153863]
+layout_mode = 3
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+grow_vertical = 2
+theme = ExtResource("1_shaxa")
+script = ExtResource("2_bb4id")
+metadata/_edit_lock_ = true
+
+[node name="top_check_message_label" type="Label" parent="." unique_id=277419851]
+layout_mode = 0
+offset_top = -56.0
+offset_right = 72.0
+offset_bottom = -40.0
+theme_override_colors/font_color = Color(0.4392157, 0.2, 0.29803923, 1)
+theme_override_constants/outline_size = 2
+text = "Black checks:"
+horizontal_alignment = 1
+
+[node name="check_label" type="Label" parent="top_check_message_label" unique_id=1763988417]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -7.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0/3"
+horizontal_alignment = 1
+
+[node name="bottom_check_message_label" type="Label" parent="." unique_id=521884034]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 72.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.6509804, 0.7294118, 0.76862746, 1)
+theme_override_constants/outline_size = 2
+text = "White checks:"
+horizontal_alignment = 1
+
+[node name="check_label" type="Label" parent="bottom_check_message_label" unique_id=1758410234]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -7.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0/3"
+horizontal_alignment = 1

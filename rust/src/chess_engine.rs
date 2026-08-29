@@ -2,8 +2,18 @@ use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
 use std::sync::Mutex;
 use shakmaty::uci::UciMove;
+use godot::prelude::*;
+use godot::classes::{Os, FileAccess};
+use godot::classes::file_access::ModeFlags;
 
 use crate::enums as Enums;
+
+
+#[cfg(target_os = "linux")]
+static ENGINE_FILE_BYTES: &[u8] = include_bytes!("../../bin/fairy-stockfish_x86-64-modern");
+
+#[cfg(target_os = "windows")]
+static ENGINE_FILE_BYTES: &[u8] = include_bytes!("../../bin/fairy-stockfish_x86-64-modern.exe");
 
 
 pub struct ChessEngine
@@ -20,9 +30,60 @@ pub struct ChessEngine
 
 impl ChessEngine
 {
-    pub fn new(ai_binary_path: String, game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
+    pub fn new(game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
     {
-        let mut child = Command::new(ai_binary_path)
+        #[cfg(target_os = "linux")]
+        let engine_file_name = "fairy-stockfish_x86-64-modern";
+
+        #[cfg(target_os = "windows")]
+        let engine_file_name = "fairy-stockfish_x86-64-modern.exe";
+
+        let engine_file_path = Os::singleton().get_user_data_dir().path_join(engine_file_name);
+        let file_exist = if FileAccess::file_exists(&engine_file_path)
+        {
+            if let Some(file) = FileAccess::open(&engine_file_path, ModeFlags::READ)
+            {
+                file.get_length() == ENGINE_FILE_BYTES.len() as u64
+            }
+            else
+            {
+                godot_error!("[{}:{}] chess engine could not be read from user data directory.", file!(), line!());
+                false
+            }
+        }
+        else
+        {
+            false
+        };
+
+        if !file_exist
+        {
+            if let Some(mut file) = FileAccess::open(&engine_file_path, ModeFlags::WRITE)
+            {
+                file.store_buffer(&PackedByteArray::from(ENGINE_FILE_BYTES));
+                file.close();
+            }
+            else
+            {
+                godot_error!("[{}:{}] chess engine could not be written to user data directory.", file!(), line!())
+            }
+        }
+
+        let engine_file_path_string = engine_file_path.to_string();
+        #[cfg(target_os = "linux")]
+        {
+            use std::fs;
+            use std::os::unix::fs::PermissionsExt;
+
+            if let Ok(metadata) = fs::metadata(&engine_file_path_string)
+            {
+                let mut permissions = metadata.permissions();
+                permissions.set_mode(0o755);
+                let _ = fs::set_permissions(&engine_file_path_string, permissions);
+            }
+        }
+
+        let mut child = Command::new(engine_file_path_string)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()
@@ -49,6 +110,11 @@ impl ChessEngine
         if game_mode == Enums::GameMode::Chess960
         {
             writeln!(stdin, "setoption name UCI_Chess960 value true").unwrap();
+            stdin.flush().unwrap();
+        }
+        else if game_mode == Enums::GameMode::KingOfTheHill
+        {
+            writeln!(stdin, "setoption name UCI_Variant value kingofthehill").unwrap();
             stdin.flush().unwrap();
         }
 
@@ -95,36 +161,35 @@ impl ChessEngine
         {
             let mut stdin = self.stdin.lock().unwrap();
 
-            match self.game_mode
+            // give begin board fen to AI if pieces not standard order
+            if self.game_mode == Enums::GameMode::Chess960
             {
-                Enums::GameMode::Standard =>
-                { // oyun modu standart, AI'dan normal formatta hamle istiyoruz
-                    if move_history.is_empty()
-                    { // hamle listesi boş, ilk hamleyi AI yapacak
-                        writeln!(stdin, "position startpos").unwrap();
-                        stdin.flush().unwrap();
-                    }
-                    else
-                    { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
-                        writeln!(stdin, "position startpos moves {}", uci_moves_string.trim_end()).unwrap();
-                        stdin.flush().unwrap();
-                    }
+                if move_history.is_empty()
+                {// move list is empty, AI will make first move
+                    writeln!(stdin, "position fen {}", self.fen_string).unwrap();
+                    stdin.flush().unwrap();
                 }
-                Enums::GameMode::Chess960 =>
-                { // oyun modu satranç960, AI'dan fen formatında hamle istiyoruz
-                    if move_history.is_empty()
-                    { // hamle listesi boş, ilk hamleyi AI yapacak
-                        writeln!(stdin, "position fen {}", self.fen_string).unwrap();
-                        stdin.flush().unwrap();
-                    }
-                    else
-                    { // hamle listesi boş değil, aı sıradaki hamleyi yapacak
-                        writeln!(stdin, "position fen {} moves {}", self.fen_string, uci_moves_string.trim_end()).unwrap();
-                        stdin.flush().unwrap();
-                    }
+                else
+                {// move list is not empty, AI will make next move
+                    writeln!(stdin, "position fen {} moves {}", self.fen_string, uci_moves_string.trim_end()).unwrap();
+                    stdin.flush().unwrap();
+                }
+            }
+            else
+            {
+                if move_history.is_empty()
+                {// move list is empty, AI will make first move
+                    writeln!(stdin, "position startpos").unwrap();
+                    stdin.flush().unwrap();
+                }
+                else
+                {// move list is not empty, AI will make next move
+                    writeln!(stdin, "position startpos moves {}", uci_moves_string.trim_end()).unwrap();
+                    stdin.flush().unwrap();
                 }
             }
             
+            //no time limit if time limit value == -1 minute (-60000 ms)
             if self.time_per_side == -60_000
             {
                 writeln!(stdin, "go movetime 1000").unwrap();

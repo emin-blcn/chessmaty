@@ -9,7 +9,9 @@ enum ChessColor
 enum GameMode
 {
 	STANDARD,
-	CHESS960
+	CHESS960,
+	KING_OF_THE_HILL,
+	THREE_CHECK
 }
 
 enum ConnectionType
@@ -22,12 +24,6 @@ enum LocalOpponent
 {
 	HUMAN,
 	AI
-}
-
-enum LanOpponentSide
-{
-	HOST,
-	PEER
 }
 
 enum Piece

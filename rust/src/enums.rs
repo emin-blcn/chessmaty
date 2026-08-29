@@ -19,18 +19,12 @@ pub enum LocalOpponent
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
 #[godot(via = i32)]
-pub enum LanOpponentSide
-{
-    Host,
-    Peer
-}
-
-#[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
-#[godot(via = i32)]
 pub enum GameMode
 {
     Standard,
-    Chess960
+    Chess960,
+    KingOfTheHill,
+    ThreeCheck
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]

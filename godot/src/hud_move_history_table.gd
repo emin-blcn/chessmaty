@@ -11,8 +11,9 @@ var full_move_number: int = 0
 
 func _on_move_animation_started(move_type: Enums.MoveType, from: String, to: String):
 	var color: Enums.ChessColor = master_scene.get_turn()
-	
-	if move_type == Enums.MoveType.UNDO:
+	if move_type == Enums.MoveType.PROMOTION:
+		return
+	elif move_type == Enums.MoveType.UNDO:
 		match color:
 			Enums.ChessColor.WHITE:
 				full_move_number -= 1
@@ -20,8 +21,6 @@ func _on_move_animation_started(move_type: Enums.MoveType, from: String, to: Str
 				update_scroll_container_value()
 			Enums.ChessColor.BLACK:
 				element_nodes.get_child(element_nodes.get_child_count() - 1).get_node("black_move").text = "..."
-	elif move_type == Enums.MoveType.PROMOTION:
-		return
 	else:
 		if move_type != Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
 			color = Enums.ChessColor.WHITE if color == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK

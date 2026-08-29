@@ -5,7 +5,7 @@ extends TextureRect
 var config_data: Dictionary[String, Variant] = {}
 
 
-func config(new_config_data: Dictionary) -> void:
+func config(new_config_data: Dictionary[String, Variant]) -> void:
 	config_data["player_color"] = new_config_data["player_color"]
 	config_data["connection_type"] = new_config_data["connection_type"]
 	

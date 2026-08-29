@@ -45,23 +45,6 @@ text = "00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ms_label" type="Label" parent="top_time_message_label/time_label" unique_id=1078329561]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_top = 7.0
-offset_right = 7.0
-offset_bottom = -5.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("2_wsvgb")
-theme_override_font_sizes/font_size = 8
-text = ":0"
-vertical_alignment = 2
-
 [node name="bottom_time_message_label" type="Label" parent="." unique_id=1708945685]
 layout_mode = 1
 anchors_preset = 4
@@ -96,19 +79,7 @@ text = "00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ms_label" type="Label" parent="bottom_time_message_label/time_label" unique_id=1467186223]
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -1.0
-offset_top = 7.0
-offset_right = 7.0
-offset_bottom = -5.0
-grow_horizontal = 0
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("2_wsvgb")
-theme_override_font_sizes/font_size = 8
-text = ":0"
-vertical_alignment = 2
+[node name="second_timer" type="Timer" parent="." unique_id=175008678]
+one_shot = true
+
+[connection signal="timeout" from="second_timer" to="." method="_on_second_timer_timeout"]

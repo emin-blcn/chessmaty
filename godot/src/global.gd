@@ -19,15 +19,15 @@ func load_settings_data():
 		save_settings_data()
 		return
 	
-	var file_access: FileAccess = FileAccess.open(user_data_file_path, FileAccess.READ)
-	user_data = file_access.get_var()
-	file_access.close()
+	var file: FileAccess = FileAccess.open(user_data_file_path, FileAccess.READ)
+	user_data = file.get_var()
+	file.close()
 
 
 func save_settings_data():
-	var file_access: FileAccess = FileAccess.open(user_data_file_path, FileAccess.WRITE)
-	file_access.store_var(user_data)
-	file_access.close()
+	var file: FileAccess = FileAccess.open(user_data_file_path, FileAccess.WRITE)
+	file.store_var(user_data)
+	file.close()
 
 
 func apply_resolution_setting():

@@ -4,16 +4,15 @@
 [ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/hud_move_history_table.gd" id="2_oa6ig"]
 
 [node name="Panel" type="Panel" unique_id=736317109]
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -69.0
-offset_top = 8.0
-offset_right = -3.0
-offset_bottom = 92.0
+offset_left = -320.0
+offset_right = -254.0
+offset_bottom = 84.0
 grow_horizontal = 0
 theme = ExtResource("1_bs7qj")
 script = ExtResource("2_oa6ig")
-metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="." unique_id=37045576]
 layout_mode = 1
