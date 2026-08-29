@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/hud_match_finished.tscn" id="10_dinhu"]
 [ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/hud_time_control.tscn" id="11_dinhu"]
 [ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config.tscn" id="12_dinhu"]
+[ext_resource type="PackedScene" uid="uid://d1dek4qdqyvbw" path="res://objects/hud_lan_opponent_left.tscn" id="12_kvuet"]
+[ext_resource type="PackedScene" uid="uid://opi1s7sjts4x" path="res://objects/hud_three_check_control.tscn" id="13_trtic"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
 texture = ExtResource("8_1kice")
@@ -34,6 +36,20 @@ modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_upx7y"]
 texture = ExtResource("9_5newe")
 modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+
+[sub_resource type="Gradient" id="Gradient_lwkho"]
+offsets = PackedFloat32Array(0.3, 1)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_5xl1b"]
+gradient = SubResource("Gradient_lwkho")
+width = 320
+height = 180
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
 
 [node name="Control" type="Control" unique_id=876092718]
 layout_mode = 3
@@ -82,22 +98,14 @@ mouse_filter = 2
 script = ExtResource("6_ssvqc")
 metadata/_edit_lock_ = true
 
-[node name="move_history_table" parent="game_content/hud" unique_id=736317109 instance=ExtResource("5_rysoc")]
-layout_mode = 1
-anchors_preset = 1
-offset_left = -68.0
-offset_top = 0.0
-offset_right = -2.0
-offset_bottom = 84.0
-
 [node name="undo_button" type="Button" parent="game_content/hud" unique_id=1857265176]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -10.0
+offset_left = -11.0
 offset_top = 95.0
-offset_right = -2.0
+offset_right = -3.0
 offset_bottom = 103.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("7_264po")
@@ -125,9 +133,9 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -10.0
+offset_left = -11.0
 offset_top = 108.0
-offset_right = -2.0
+offset_right = -3.0
 offset_bottom = 116.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("7_264po")
@@ -150,12 +158,30 @@ theme_override_font_sizes/font_size = 8
 text = "Leave match"
 horizontal_alignment = 2
 
-[node name="promotion_selection_gui" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
+[node name="move_history_table" parent="game_content/hud" unique_id=736317109 instance=ExtResource("5_rysoc")]
+layout_mode = 1
+offset_left = -69.0
+offset_top = 8.0
+offset_right = -3.0
+offset_bottom = 92.0
+metadata/_edit_lock_ = true
+
+[node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
 visible = false
 layout_mode = 1
 anchors_preset = 15
 
-[node name="match_finished_gui" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
+[node name="match_finished" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
+visible = false
+layout_mode = 0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+grow_horizontal = 1
+grow_vertical = 1
+texture = SubResource("GradientTexture2D_5xl1b")
+
+[node name="lan_opponent_left" parent="game_content/hud" unique_id=1722805660 instance=ExtResource("12_kvuet")]
 visible = false
 layout_mode = 0
 anchors_preset = 0
@@ -164,12 +190,16 @@ anchor_bottom = 0.0
 grow_horizontal = 1
 grow_vertical = 1
 
-[node name="time_control_gui" parent="game_content/hud" unique_id=614857075 instance=ExtResource("11_dinhu")]
+[node name="time_control" parent="game_content/hud" unique_id=614857075 instance=ExtResource("11_dinhu")]
 visible = false
 layout_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="game_config_gui" parent="." unique_id=1807799992 instance=ExtResource("12_dinhu")]
+[node name="three_check_control" parent="game_content/hud" unique_id=532153863 instance=ExtResource("13_trtic")]
+visible = false
+layout_mode = 1
+
+[node name="game_config" parent="." unique_id=1807799992 instance=ExtResource("12_dinhu")]
 layout_mode = 1
 offset_top = -87.0
 offset_bottom = 87.0

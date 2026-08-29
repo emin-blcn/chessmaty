@@ -184,6 +184,18 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Start"
 
+[node name="back_button" type="Button" parent="local_game" unique_id=1255591863]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -44.0
+offset_top = -15.0
+offset_right = -5.0
+offset_bottom = -2.0
+grow_vertical = 0
+text = "Back"
+
 [node name="lan_game" type="Control" parent="." unique_id=1260433913]
 visible = false
 layout_mode = 2
@@ -540,6 +552,18 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Cancel"
 
+[node name="back_button" type="Button" parent="lan_game" unique_id=1880669551]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -44.0
+offset_top = -15.0
+offset_right = -5.0
+offset_bottom = -2.0
+grow_vertical = 0
+text = "Back"
+
 [node name="Control" type="Control" parent="." unique_id=2127080727]
 visible = false
 layout_mode = 2
@@ -554,6 +578,7 @@ metadata/_tab_name = "..........12"
 [connection signal="value_changed" from="local_game/time_per_side_bar" to="local_game" method="_on_time_per_side_bar_value_changed"]
 [connection signal="value_changed" from="local_game/time_increment_bar" to="local_game" method="_on_time_increment_bar_value_changed"]
 [connection signal="pressed" from="local_game/start_button" to="local_game" method="_on_start_button_pressed"]
+[connection signal="pressed" from="local_game/back_button" to="local_game" method="_on_back_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/join/refresh_host_list_button" to="lan_game" method="_on_refresh_host_list_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/game_mode_button" to="lan_game" method="_on_game_mode_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/player_color_button" to="lan_game" method="_on_player_color_button_pressed"]
@@ -561,3 +586,4 @@ metadata/_tab_name = "..........12"
 [connection signal="value_changed" from="lan_game/TabContainer/create/create_host_config/time_increment_bar" to="lan_game" method="_on_time_increment_bar_value_changed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/crate_host_button" to="lan_game" method="_on_crate_host_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button" to="lan_game" method="_on_cancel_waiting_for_peer_button_pressed"]
+[connection signal="pressed" from="lan_game/back_button" to="lan_game" method="_on_back_button_pressed"]

@@ -45,6 +45,12 @@ func _on_game_mode_button_pressed() -> void:
 			config_data["game_mode"] = Enums.GameMode.CHESS960
 			game_mode_button.text = "Game mode: Chess960"
 		Enums.GameMode.CHESS960:
+			config_data["game_mode"] = Enums.GameMode.KING_OF_THE_HILL
+			game_mode_button.text = "Game mode: King of the hill"
+		Enums.GameMode.KING_OF_THE_HILL:
+			config_data["game_mode"] = Enums.GameMode.THREE_CHECK
+			game_mode_button.text = "Game mode: Three check"
+		Enums.GameMode.THREE_CHECK:
 			config_data["game_mode"] = Enums.GameMode.STANDARD
 			game_mode_button.text = "Game mode: Standard"
 
@@ -94,25 +100,11 @@ func _on_time_increment_bar_value_changed(value: float) -> void:
 
 
 func _on_start_button_pressed() -> void:
-	if config_data["local_opponent"] == Enums.LocalOpponent.AI:
-		config_data["ai_binary_path"] = get_ai_binary_path()
 	if config_data["game_mode"] == Enums.GameMode.CHESS960:
-		config_data["fen_string"] = ChessLogic.get_random_fen()
+		config_data["fen_string"] = ChessLogic.random_fen()
 	
 	config_finished.emit(config_data)
 
 
-func get_ai_binary_path() -> String:
-	var path: String
-	if OS.has_feature("editor"):
-		path = ProjectSettings.globalize_path("res://").get_base_dir().get_base_dir().path_join("bin")
-	else:
-		path = OS.get_executable_path().get_base_dir()
-	
-	var file_name: String
-	match [OS.get_name(), Engine.get_architecture_name()]:
-		["Linux", "x86_64"]: file_name = "stockfish_linux_x86_64_avx2"
-		["Windows", "x86_64"]: file_name = "stockfish_windows_x86_64_avx2.exe"
-		["Windows", "arm64"]: file_name = "stockfish_windows_arm64.exe"
-	
-	return path.path_join(file_name)
+func _on_back_button_pressed() -> void:
+	get_tree().change_scene_to_file("uid://dwnbfraut6h7t")

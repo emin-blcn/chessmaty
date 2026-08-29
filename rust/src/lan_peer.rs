@@ -1,5 +1,6 @@
 use std::io::{BufRead, BufReader, Write};
-use std::net::{UdpSocket, Ipv4Addr, TcpStream};
+use std::net::{Ipv4Addr, Shutdown, TcpStream, UdpSocket};
+use std::sync::Mutex;
 use std::time::Duration;
 use godot::prelude::*;
 use godot::classes::{IRefCounted, RefCounted};
@@ -21,9 +22,9 @@ const MOVE_MSG: &str = "CHESSMATY_MOVE";
 pub struct LanPeer
 {
     base: Base<RefCounted>,
-    discover_socket: Option<UdpSocket>,
-    tcp_stream: Option<TcpStream>,
-    tcp_bufreader: Option<BufReader<TcpStream>>,
+    discover_udp_socket: Mutex<Option<UdpSocket>>,
+    tcp_stream: Mutex<Option<TcpStream>>,
+    tcp_bufreader: Mutex<Option<BufReader<TcpStream>>>,
 }
 
 
@@ -36,7 +37,7 @@ impl IRefCounted for LanPeer
         socket.set_read_timeout(Some(Duration::from_millis(200))).unwrap();
         socket.join_multicast_v4(&MULTICAST_IP, &Ipv4Addr::new(0, 0, 0, 0)).unwrap();
 
-        Self { base, discover_socket: Some(socket), tcp_stream: None, tcp_bufreader: None }
+        Self { base, discover_udp_socket: Mutex::new(Some(socket)), tcp_stream: Mutex::new(None), tcp_bufreader: Mutex::new(None) }
     }
 }
 
@@ -45,12 +46,13 @@ impl IRefCounted for LanPeer
 impl LanPeer
 {
     #[func]
-    fn discover_all_hosts(&mut self) -> Dictionary<GString, GString>
+    fn discover_all_hosts(&self) -> Dictionary<GString, GString>
     {
-        let socket = self.discover_socket.as_ref().unwrap();
+        let socket_guard = self.discover_udp_socket.lock().unwrap();
+        let socket = socket_guard.as_ref().unwrap();
         socket.send_to(DISCOVERY_PING_MSG.as_bytes(), (MULTICAST_IP, TARGET_PORT)).unwrap();
 
-        let mut buffer = [0u8; 128];
+        let mut buffer = [0u8; 512];
         let mut discovered_hosts_for_godot = Dictionary::<GString, GString>::new();
 
         loop
@@ -75,9 +77,10 @@ impl LanPeer
 
 
     #[func]
-    fn join_host(&mut self, host_ip: GString) -> bool
+    fn join_host(&self, host_ip: GString) -> bool
     {
-        let socket = self.discover_socket.take().unwrap();
+        let socket_guard = self.discover_udp_socket.lock().unwrap();
+        let socket = socket_guard.as_ref().unwrap();
         let host_ip_string = host_ip.to_string();
 
         socket.send_to(JOIN_PING_MSG.as_bytes(), (host_ip_string.as_str(), TARGET_PORT)).unwrap();
@@ -88,16 +91,22 @@ impl LanPeer
         {
             match socket.recv_from(&mut buffer)
             {
-                Ok((msg_size, addr)) =>
+                Ok((size, addr)) =>
                 {
-                    let received_msg = String::from_utf8_lossy(&buffer[..msg_size]).trim().to_string();
+                    let received_msg = String::from_utf8_lossy(&buffer[..size]).trim().to_string();
 
                     if received_msg.starts_with(JOIN_PONG_MSG)
                     {
                         let stream = TcpStream::connect(addr).unwrap();
 
-                        self.tcp_bufreader = Some(BufReader::new(stream.try_clone().unwrap()));
-                        self.tcp_stream = Some(stream);
+                        {
+                            let mut tcp_bufreader_guard = self.tcp_bufreader.lock().unwrap();
+                            let mut tcp_stream_guard = self.tcp_stream.lock().unwrap();
+
+                            *tcp_bufreader_guard = Some(BufReader::new(stream.try_clone().unwrap()));
+                            *tcp_stream_guard = Some(stream);
+                        }
+                        
                         return true;
                     }
                 }
@@ -108,9 +117,10 @@ impl LanPeer
 
 
     #[func]
-    fn wait_for_opponent_msg(&mut self) -> GString
+    fn wait_for_opponent_msg(&self) -> GString
     {
-        let reader = self.tcp_bufreader.as_mut().unwrap();
+        let mut reader_guard = self.tcp_bufreader.lock().unwrap();
+        let reader = reader_guard.as_mut().unwrap();
         let mut buffer = String::new();
 
         loop
@@ -123,6 +133,7 @@ impl LanPeer
                 Ok(_) =>
                 {
                     let received_msg = buffer.trim();
+                    
                     if received_msg.starts_with(MOVE_MSG)
                     {
                         return received_msg.to_gstring();
@@ -135,11 +146,22 @@ impl LanPeer
 
 
     #[func]
-    fn send_move_to_opponent(&mut self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_piece: Enums::Piece)
+    fn send_move_msg_to_opponent(&self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_piece: Enums::Piece)
     {
-        let stream = self.tcp_stream.as_mut().unwrap();
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
         let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_piece as i32);
 
         stream.write_all(msg.as_bytes()).unwrap();
+    }
+
+
+    #[func]
+    fn send_leave_match_msg_to_opponent(&self)
+    {
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
+
+        let _ = stream.shutdown(Shutdown::Both);
     }
 }

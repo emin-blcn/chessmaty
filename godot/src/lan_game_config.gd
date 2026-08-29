@@ -33,7 +33,6 @@ var config_data: Dictionary[String, Variant] = {
 	"game_mode": Enums.GameMode.STANDARD,
 	"fen_string": "",
 	"connection_type": Enums.ConnectionType.LAN,
-	"lan_opponent_side": Enums.LanOpponentSide.HOST,
 	"time_per_side": -60_000,
 	"time_increment": 0}
 
@@ -139,7 +138,6 @@ func _on_join_button_pressed(host_ip: String, host_config_data: Dictionary[Strin
 			config_data["player_color"] = Enums.ChessColor.WHITE
 	config_data["game_mode"] = host_config_data["game_mode"]
 	config_data["fen_string"] = host_config_data["fen_string"]
-	config_data["lan_opponent_side"] = Enums.LanOpponentSide.PEER
 	config_data["time_per_side"] = host_config_data["time_per_side"]
 	config_data["time_increment"] = host_config_data["time_increment"]
 	
@@ -164,8 +162,15 @@ func _on_game_mode_button_pressed() -> void:
 			config_data["game_mode"] = Enums.GameMode.CHESS960
 			game_mode_button.text = "Game mode: Chess960"
 		Enums.GameMode.CHESS960:
+			config_data["game_mode"] = Enums.GameMode.KING_OF_THE_HILL
+			game_mode_button.text = "Game mode: King of the hill"
+		Enums.GameMode.KING_OF_THE_HILL:
+			config_data["game_mode"] = Enums.GameMode.THREE_CHECK
+			game_mode_button.text = "Game mode: Three check"
+		Enums.GameMode.THREE_CHECK:
 			config_data["game_mode"] = Enums.GameMode.STANDARD
 			game_mode_button.text = "Game mode: Standard"
+
 
 
 func _on_time_per_side_bar_value_changed(value: float) -> void:
@@ -212,21 +217,31 @@ func wait_for_peer():
 
 func _wait_for_peer():
 	if config_data["game_mode"] == Enums.GameMode.CHESS960:
-		config_data["fen_string"] = ChessLogic.get_random_fen()
+		config_data["fen_string"] = ChessLogic.random_fen()
 	
-	lan_host.wait_for_peer(config_data)
-	call_deferred("_on_join_request_received_from_peer")
+	var peer_joined: bool = lan_host.wait_for_peer(config_data)
+	if peer_joined:
+		call_deferred("_on_join_request_received_from_peer")
 
 
-func _on_join_request_received_from_peer():
-	config_data["lan_opponent_side"] = Enums.LanOpponentSide.HOST
+func _on_join_request_received_from_peer() -> void:
 	lan_peer = null
 	master_scene.init_stream(lan_host)
 	config_finished.emit(config_data)
 
 
 func _on_cancel_waiting_for_peer_button_pressed() -> void:
+	cancel_waiting_for_peer()
+
+
+func cancel_waiting_for_peer() -> void:
 	lan_host.cancel_waiting_for_peer()
 	wait_for_peer_node.hide()
 	create_host_config_node.show()
 	is_waiting_for_peer = false
+
+
+func _on_back_button_pressed() -> void:
+	if is_waiting_for_peer:
+		cancel_waiting_for_peer()
+	get_tree().change_scene_to_file("uid://dwnbfraut6h7t")

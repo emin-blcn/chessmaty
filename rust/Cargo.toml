@@ -8,4 +8,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 godot = { version = "0.5.5", features = ["experimental-threads"] }
-shakmaty = "0.30.1"
+shakmaty = { version = "0.30.1", features = ["variant"] }

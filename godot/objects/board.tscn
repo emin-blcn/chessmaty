@@ -554,7 +554,23 @@ texture = ExtResource("3_s07tm")
 stretch_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="move_marker_nodes" type="Control" parent="." unique_id=1638250089]
+[node name="king_of_the_hill_color_rect" type="ColorRect" parent="." unique_id=2095535336]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0, 0.25490198)
+metadata/_edit_lock_ = true
+
+[node name="marker_nodes" type="Control" parent="." unique_id=1638250089]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

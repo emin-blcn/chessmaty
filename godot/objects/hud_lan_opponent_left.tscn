@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://dcexr08yr4d6g"]
+[gd_scene format=3 uid="uid://d1dek4qdqyvbw"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_wa353"]
-[ext_resource type="Script" uid="uid://4pdab483krba" path="res://src/hud_match_finished.gd" id="2_y2r8k"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_tm6bo"]
+[ext_resource type="Script" uid="uid://ysg1ldg4chcl" path="res://src/hud_lan_opponent_left.gd" id="2_r0145"]
 
 [sub_resource type="Gradient" id="Gradient_lwkho"]
 offsets = PackedFloat32Array(0.3, 1)
@@ -23,48 +23,25 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_wa353")
+theme = ExtResource("1_tm6bo")
 texture = SubResource("GradientTexture2D_5xl1b")
-script = ExtResource("2_y2r8k")
+script = ExtResource("2_r0145")
 metadata/_edit_lock_ = true
+metadata/_edit_vertical_guides_ = [72.0]
 
 [node name="Label" type="Label" parent="." unique_id=1621229476]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -31.0
+offset_top = -31.5
 offset_right = 72.0
-offset_bottom = -18.0
+offset_bottom = 13.5
 grow_vertical = 2
 theme_override_font_sizes/font_size = 16
-text = "Game Drawn"
+text = "Opponent left the game"
 horizontal_alignment = 1
-
-[node name="rematch_button" type="Button" parent="." unique_id=1282986072]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 7.0
-offset_top = -14.0
-offset_right = 65.0
-offset_bottom = -1.0
-grow_vertical = 2
-theme_override_font_sizes/font_size = 8
-text = "Rematch"
-
-[node name="undo_button" type="Button" parent="." unique_id=1003296897]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 7.0
-offset_right = 65.0
-offset_bottom = 13.0
-grow_vertical = 2
-theme_override_font_sizes/font_size = 8
-text = "Undo last move"
+autowrap_mode = 2
 
 [node name="leave_button" type="Button" parent="." unique_id=860316151]
 layout_mode = 1
@@ -72,13 +49,11 @@ anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 7.0
-offset_top = 15.0
+offset_top = 19.0
 offset_right = 65.0
-offset_bottom = 28.0
+offset_bottom = 32.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 8
 text = "Leave game"
 
-[connection signal="pressed" from="rematch_button" to="." method="_on_rematch_button_pressed"]
-[connection signal="pressed" from="undo_button" to="." method="_on_undo_button_pressed"]
 [connection signal="pressed" from="leave_button" to="." method="_on_leave_button_pressed"]
