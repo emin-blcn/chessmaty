@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://dcexr08yr4d6g"]
+[gd_scene format=3 uid="uid://cvjv1jg4c1nvi"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_wa353"]
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_jwixr"]
 
 [sub_resource type="Gradient" id="Gradient_lwkho"]
 offsets = PackedFloat32Array(0.3, 1)
@@ -22,8 +22,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_wa353")
+theme = ExtResource("1_jwixr")
 texture = SubResource("GradientTexture2D_5xl1b")
+metadata/_edit_vertical_guides_ = [72.0]
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="." unique_id=1621229476]
@@ -31,23 +32,36 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -19.0
+offset_top = -25.0
 offset_right = 72.0
-offset_bottom = -6.0
+offset_bottom = -7.0
 grow_vertical = 2
-theme_override_font_sizes/font_size = 16
-text = "Game Drawn"
+text = "Opponent wants to
+undo last move."
 horizontal_alignment = 1
 
-[node name="leave_button" type="Button" parent="." unique_id=860316151]
+[node name="accept_button" type="Button" parent="." unique_id=860316151]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
 offset_left = 7.0
-offset_top = -1.0
+offset_top = 1.0
 offset_right = 65.0
-offset_bottom = 12.0
+offset_bottom = 14.0
 grow_vertical = 2
 theme_override_font_sizes/font_size = 8
-text = "Leave"
+text = "Accept"
+
+[node name="reject_button" type="Button" parent="." unique_id=1445791588]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 7.0
+offset_top = 17.0
+offset_right = 65.0
+offset_bottom = 30.0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 8
+text = "Reject"

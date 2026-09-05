@@ -15,6 +15,8 @@ const DISCOVERY_PONG_MSG: &str = "CHESSMATY_LAN_PONG";
 const JOIN_PING_MSG: &str = "CHESSMATY_LAN_JOIN_PING";
 const JOIN_PONG_MSG: &str = "CHESSMATY_LAN_JOIN_PONG";
 const MOVE_MSG: &str = "CHESSMATY_MOVE";
+const UNDO_REQUEST_MSG: &str = "CHESSMATY_UNDO_REQUEST";
+const RESPONSE_UNDO_REQUEST_MSG: &str = "CHESSMATY_RESPONSE_UNDO_REQUEST";
 
 
 #[derive(GodotClass)]
@@ -66,7 +68,7 @@ impl LanPeer
 
                     if received_msg.starts_with(DISCOVERY_PONG_MSG)
                     {
-                        let _ = discovered_hosts_for_godot.insert(&received_ip.to_gstring(), &received_msg.to_gstring());
+                        let _ = discovered_hosts_for_godot.insert(&received_ip.to_gstring(), &received_msg.strip_prefix(DISCOVERY_PONG_MSG).unwrap().to_gstring());
                     }
                 }
                 Err(_) => break
@@ -133,11 +135,7 @@ impl LanPeer
                 Ok(_) =>
                 {
                     let received_msg = buffer.trim();
-                    
-                    if received_msg.starts_with(MOVE_MSG)
-                    {
-                        return received_msg.to_gstring();
-                    }
+                    return received_msg.to_gstring();
                 }
                 Err(_) => return GString::new()
             }
@@ -146,11 +144,33 @@ impl LanPeer
 
 
     #[func]
-    fn send_move_msg_to_opponent(&self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_piece: Enums::Piece)
+    fn send_move_msg_to_opponent(&self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_or_put_piece: Enums::Piece)
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_piece as i32);
+        let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_or_put_piece as i32);
+
+        stream.write_all(msg.as_bytes()).unwrap();
+    }
+
+
+    #[func]
+    fn send_undo_request_msg_to_opponent(&self)
+    {
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
+        let msg = format!("{}\n", UNDO_REQUEST_MSG);
+
+        stream.write_all(msg.as_bytes()).unwrap();
+    }
+
+
+    #[func]
+    fn send_response_undo_request_msg_to_opponent(&self, accept: bool)
+    {
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
+        let msg = format!("{}|{}\n", RESPONSE_UNDO_REQUEST_MSG, if accept {"true"} else {"false"});
 
         stream.write_all(msg.as_bytes()).unwrap();
     }

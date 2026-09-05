@@ -12,8 +12,10 @@
 [ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/hud_match_finished.tscn" id="10_dinhu"]
 [ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/hud_time_control.tscn" id="11_dinhu"]
 [ext_resource type="PackedScene" uid="uid://b6eirlketnoai" path="res://objects/game_config.tscn" id="12_dinhu"]
-[ext_resource type="PackedScene" uid="uid://d1dek4qdqyvbw" path="res://objects/hud_lan_opponent_left.tscn" id="12_kvuet"]
+[ext_resource type="PackedScene" uid="uid://d1dek4qdqyvbw" path="res://objects/hud_opponent_left.tscn" id="12_kvuet"]
 [ext_resource type="PackedScene" uid="uid://opi1s7sjts4x" path="res://objects/hud_three_check_control.tscn" id="13_trtic"]
+[ext_resource type="PackedScene" uid="uid://cvjv1jg4c1nvi" path="res://objects/hud_received_undo_request.tscn" id="14_ir15t"]
+[ext_resource type="PackedScene" uid="uid://bvwebetu56kcf" path="res://objects/hud_crazy_house_control.tscn" id="15_ca42v"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hc21h"]
 texture = ExtResource("8_1kice")
@@ -25,6 +27,211 @@ modulate_color = Color(0.46875, 0.46875, 0.46875, 1)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5hoaj"]
 texture = ExtResource("8_1kice")
 modulate_color = Color(0.70703125, 0.70703125, 0.70703125, 1)
+
+[sub_resource type="Animation" id="Animation_ir15t"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("undo_message_label:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": ["Undo last move"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("undo_message_label:theme_override_colors/font_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("undo_message_label:horizontal_alignment")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("undo_message_label:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-58, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_rysoc"]
+resource_name = "undo_request_accepted"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("undo_message_label:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(0, 1, 0, 1), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("undo_message_label:horizontal_alignment")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("undo_message_label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": ["Accepted", "Undo last move"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("undo_message_label:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ssvqc"]
+resource_name = "undo_request_rejected"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("undo_message_label:theme_override_colors/font_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Color(1, 0, 0, 1), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("undo_message_label:horizontal_alignment")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 2]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("undo_message_label:text")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": ["Rejected", "Undo last move"]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("undo_message_label:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("undo_message_label:position")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(-58, 0), Vector2(-54, 0), Vector2(-62, 0), Vector2(-58, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_ca42v"]
+resource_name = "undo_response_waiting"
+length = 1.2
+loop_mode = 1
+step = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("undo_message_label:text")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.90000004),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": ["Waiting.  ", "Waiting..", "Waiting...", "Waiting"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("undo_message_label:horizontal_alignment")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rysoc"]
+_data = {
+&"RESET": SubResource("Animation_ir15t"),
+&"undo_request_accepted": SubResource("Animation_rysoc"),
+&"undo_request_rejected": SubResource("Animation_ssvqc"),
+&"undo_response_waiting": SubResource("Animation_ca42v")
+}
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lwkho"]
 texture = ExtResource("9_5newe")
@@ -99,6 +306,7 @@ script = ExtResource("6_ssvqc")
 metadata/_edit_lock_ = true
 
 [node name="undo_button" type="Button" parent="game_content/hud" unique_id=1857265176]
+self_modulate = Color(1, 1, 1, 0.49803922)
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -108,6 +316,7 @@ offset_top = 95.0
 offset_right = -3.0
 offset_bottom = 103.0
 grow_horizontal = 0
+mouse_filter = 2
 theme_override_fonts/font = ExtResource("7_264po")
 theme_override_styles/normal = SubResource("StyleBoxTexture_hc21h")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3r2ld")
@@ -120,13 +329,17 @@ visible = false
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_left = -56.0
+offset_left = -58.0
 offset_right = -2.0
 grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("7_264po")
 theme_override_font_sizes/font_size = 8
 text = "Undo last move"
 horizontal_alignment = 2
+
+[node name="undo_state_animator" type="AnimationPlayer" parent="game_content/hud/undo_button" unique_id=1223619575]
+libraries/ = SubResource("AnimationLibrary_rysoc")
 
 [node name="leave_button" type="Button" parent="game_content/hud" unique_id=865488424]
 layout_mode = 1
@@ -166,38 +379,35 @@ offset_right = -3.0
 offset_bottom = 92.0
 metadata/_edit_lock_ = true
 
-[node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-
-[node name="match_finished" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
-visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1
-texture = SubResource("GradientTexture2D_5xl1b")
-
-[node name="lan_opponent_left" parent="game_content/hud" unique_id=1722805660 instance=ExtResource("12_kvuet")]
-visible = false
-layout_mode = 0
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-grow_horizontal = 1
-grow_vertical = 1
-
 [node name="time_control" parent="game_content/hud" unique_id=614857075 instance=ExtResource("11_dinhu")]
 visible = false
 layout_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="three_check_control" parent="game_content/hud" unique_id=532153863 instance=ExtResource("13_trtic")]
+[node name="three_check" parent="game_content/hud" unique_id=532153863 instance=ExtResource("13_trtic")]
 visible = false
 layout_mode = 1
+
+[node name="crazy_house" parent="game_content/hud" unique_id=1704907922 instance=ExtResource("15_ca42v")]
+visible = false
+layout_mode = 1
+
+[node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
+visible = false
+layout_mode = 1
+
+[node name="received_undo_request" parent="game_content/hud" unique_id=1639987217 instance=ExtResource("14_ir15t")]
+visible = false
+layout_mode = 1
+
+[node name="opponent_left" parent="game_content/hud" unique_id=1722805660 instance=ExtResource("12_kvuet")]
+visible = false
+layout_mode = 1
+
+[node name="match_finished" parent="game_content/hud" unique_id=129727042 instance=ExtResource("10_dinhu")]
+visible = false
+layout_mode = 1
+texture = SubResource("GradientTexture2D_5xl1b")
 
 [node name="game_config" parent="." unique_id=1807799992 instance=ExtResource("12_dinhu")]
 layout_mode = 1
@@ -210,3 +420,11 @@ offset_bottom = 87.0
 [connection signal="mouse_entered" from="game_content/hud/leave_button" to="game_content/hud" method="_on_leave_button_mouse_entered"]
 [connection signal="mouse_exited" from="game_content/hud/leave_button" to="game_content/hud" method="_on_leave_button_mouse_exited"]
 [connection signal="pressed" from="game_content/hud/leave_button" to="game_content/hud" method="_on_leave_button_pressed"]
+[connection signal="pressed" from="game_content/hud/received_undo_request/accept_button" to="." method="accept_undo_request"]
+[connection signal="pressed" from="game_content/hud/received_undo_request/reject_button" to="." method="reject_undo_request"]
+[connection signal="pressed" from="game_content/hud/opponent_left/leave_button" to="." method="exit_to_menu"]
+[connection signal="pressed" from="game_content/hud/match_finished/leave_button" to="." method="exit_to_menu"]
+
+[editable path="game_content/hud/received_undo_request"]
+[editable path="game_content/hud/opponent_left"]
+[editable path="game_content/hud/match_finished"]

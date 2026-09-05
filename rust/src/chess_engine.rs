@@ -107,18 +107,27 @@ impl ChessEngine
             }
         }
 
-        if game_mode == Enums::GameMode::Chess960
+        match game_mode
         {
-            writeln!(stdin, "setoption name UCI_Chess960 value true").unwrap();
-            stdin.flush().unwrap();
+            Enums::GameMode::Standard |
+            Enums::GameMode::Chess960 =>      writeln!(stdin, "setoption name UCI_Variant value chess").unwrap(),
+            Enums::GameMode::KingOfTheHill => writeln!(stdin, "setoption name UCI_Variant value kingofthehill").unwrap(),
+            Enums::GameMode::ThreeCheck =>    writeln!(stdin, "setoption name UCI_Variant value 3check").unwrap(),
+            Enums::GameMode::CrazyHouse =>    writeln!(stdin, "setoption name UCI_Variant value crazyhouse").unwrap(),
+            Enums::GameMode::AntiChess =>     writeln!(stdin, "setoption name UCI_Variant value antichess").unwrap(),
+            Enums::GameMode::Atomic =>        writeln!(stdin, "setoption name UCI_Variant value atomic").unwrap(),
+            Enums::GameMode::Horde =>         writeln!(stdin, "setoption name UCI_Variant value horde").unwrap(),
+            Enums::GameMode::RacingKings =>   writeln!(stdin, "setoption name UCI_Variant value racingkings").unwrap()
         }
-        else if game_mode == Enums::GameMode::KingOfTheHill
-        {
-            writeln!(stdin, "setoption name UCI_Variant value kingofthehill").unwrap();
-            stdin.flush().unwrap();
-        }
+        stdin.flush().unwrap();
+
+        writeln!(stdin, "setoption name UCI_Chess960 value true").unwrap();
+        stdin.flush().unwrap();
 
         writeln!(stdin, "setoption name Skill Level value {}", ai_skill_level).unwrap();
+        stdin.flush().unwrap();
+
+        writeln!(stdin, "ucinewgame").unwrap();
         stdin.flush().unwrap();
 
         writeln!(stdin, "isready").unwrap();
@@ -161,7 +170,7 @@ impl ChessEngine
         {
             let mut stdin = self.stdin.lock().unwrap();
 
-            // give begin board fen to AI if pieces not standard order
+            // give begin board fen to AI if game mode is Chess960, else give standard start position
             if self.game_mode == Enums::GameMode::Chess960
             {
                 if move_history.is_empty()

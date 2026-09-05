@@ -30,28 +30,28 @@ texture = ExtResource("2_fdcw6")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7awpv"]
 texture = ExtResource("2_fdcw6")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ij4bn"]
 texture = ExtResource("3_8nila")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_abhhs"]
 texture = ExtResource("3_8nila")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_un7px"]
 texture = ExtResource("4_s2y7c")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sb5ba"]
 texture = ExtResource("4_s2y7c")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ilxgh"]
 texture = ExtResource("5_ct4o7")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_is6od"]
 texture = ExtResource("5_ct4o7")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
 texture = ExtResource("6_lgkni")
@@ -65,23 +65,24 @@ texture = ExtResource("7_gu8hf")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_16d88"]
 texture = ExtResource("7_gu8hf")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_52il0"]
 texture = ExtResource("8_vpkif")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_uwq6v"]
 texture = ExtResource("8_vpkif")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gvac2"]
 texture = ExtResource("9_uqhvl")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lpq8d"]
 texture = ExtResource("9_uqhvl")
-modulate_color = Color(1, 1, 1, 0.5882353)
+modulate_color = Color(1, 1, 1, 0.5)
 
 [node name="TextureRect" type="TextureRect" unique_id=1667121682]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2

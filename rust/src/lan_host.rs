@@ -2,7 +2,7 @@ use std::net::{Ipv4Addr, Shutdown, TcpListener, TcpStream, UdpSocket};
 use std::io::{BufRead, BufReader, Write};
 use std::sync::Mutex;
 use godot::prelude::*;
-use godot::classes::{IRefCounted, RefCounted};
+use godot::classes::{IRefCounted, Json, RefCounted};
 
 use crate::enums as Enums;
 
@@ -15,6 +15,8 @@ const JOIN_PING_MSG: &str = "CHESSMATY_LAN_JOIN_PING";
 const JOIN_PONG_MSG: &str = "CHESSMATY_LAN_JOIN_PONG";
 const CANCEL_WAIT_FOR_PEER_MSG: &str = "CANCEL_WAIT_FOR_PEER";
 const MOVE_MSG: &str = "CHESSMATY_MOVE";
+const UNDO_REQUEST_MSG: &str = "CHESSMATY_UNDO_REQUEST";
+const RESPONSE_UNDO_REQUEST_MSG: &str = "CHESSMATY_RESPONSE_UNDO_REQUEST";
 
 
 #[derive(GodotClass)]
@@ -43,13 +45,6 @@ impl LanHost
     #[func]
     fn wait_for_peer(&self, config_data: Dictionary<GString, Variant>) -> bool
     {
-        let host_name = config_data.get("host_name").unwrap().to::<GString>();
-        let player_color = config_data.get("player_color").unwrap().to::<i32>();
-        let game_mode = config_data.get("game_mode").unwrap().to::<i32>();
-        let fen_string = config_data.get("fen_string").unwrap().to::<String>();
-        let time_per_side = config_data.get("time_per_side").unwrap().to::<i64>();
-        let time_increment = config_data.get("time_increment").unwrap().to::<i64>();
-
         let socket = UdpSocket::bind(("0.0.0.0", PORT)).unwrap();
         socket.join_multicast_v4(&MULTICAST_IP, &Ipv4Addr::new(0, 0, 0, 0)).unwrap();
         
@@ -65,8 +60,13 @@ impl LanHost
                     
                     if received_msg.starts_with(DISCOVERY_PING_MSG)
                     {
-                        let game_info_msg = format!("{}|{}|{}|{}|{}|{}|{}", DISCOVERY_PONG_MSG, host_name, player_color, game_mode, fen_string, time_per_side, time_increment);
-                        socket.send_to(game_info_msg.as_bytes(), addr).unwrap();
+                        let mut data_to_sent = config_data.duplicate_deep();
+                        data_to_sent.remove("connection_type").unwrap();
+
+                        let data_to_sent_json = Json::stringify(&data_to_sent.to_variant()).to_string();
+                        let msg = format!("{}{}", DISCOVERY_PONG_MSG, data_to_sent_json);
+
+                        socket.send_to(msg.as_bytes(), addr).unwrap();
                     }
                     else if received_msg.as_str() == JOIN_PING_MSG
                     {
@@ -122,11 +122,7 @@ impl LanHost
                 Ok(_) =>
                 {
                     let received_msg = buffer.trim();
-
-                    if received_msg.starts_with(MOVE_MSG)
-                    {
-                        return received_msg.to_gstring();
-                    }
+                    return received_msg.to_gstring();
                 }
                 Err(_) => return GString::new()
             }
@@ -135,11 +131,33 @@ impl LanHost
 
 
     #[func]
-    fn send_move_msg_to_opponent(&self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_piece: Enums::Piece)
+    fn send_move_msg_to_opponent(&self, move_type: Enums::MoveType, from_square: GString, to_square: GString, promotion_or_put_piece: Enums::Piece)
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_piece as i32);
+        let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_or_put_piece as i32);
+
+        stream.write_all(msg.as_bytes()).unwrap();
+    }
+
+
+    #[func]
+    fn send_undo_request_msg_to_opponent(&self)
+    {
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
+        let msg = format!("{}\n", UNDO_REQUEST_MSG);
+
+        stream.write_all(msg.as_bytes()).unwrap();
+    }
+
+
+    #[func]
+    fn send_response_undo_request_msg_to_opponent(&self, accept: bool)
+    {
+        let mut stream_guard = self.tcp_stream.lock().unwrap();
+        let stream = stream_guard.as_mut().unwrap();
+        let msg = format!("{}|{}\n", RESPONSE_UNDO_REQUEST_MSG, if accept {"true"} else {"false"});
 
         stream.write_all(msg.as_bytes()).unwrap();
     }

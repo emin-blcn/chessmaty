@@ -69,10 +69,10 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Settings"
 
-[node name="exit_button" type="Button" parent="main_buttons" unique_id=1933418096]
+[node name="quit_button" type="Button" parent="main_buttons" unique_id=1933418096]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-text = "Exit"
+text = "Quit"
 
 [node name="settings_gui" parent="." unique_id=80842764 instance=ExtResource("4_wu84c")]
 visible = false
@@ -80,4 +80,4 @@ layout_mode = 1
 
 [connection signal="pressed" from="main_buttons/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="main_buttons/settings_button" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="main_buttons/exit_button" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="main_buttons/quit_button" to="." method="_on_quit_button_pressed"]

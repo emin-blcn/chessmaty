@@ -24,7 +24,12 @@ pub enum GameMode
     Standard,
     Chess960,
     KingOfTheHill,
-    ThreeCheck
+    ThreeCheck,
+    CrazyHouse,
+    AntiChess,
+    Atomic,
+    Horde,
+    RacingKings
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
@@ -58,7 +63,8 @@ pub enum MoveType
     Promotion,
     PromotionRequestByHuman,
     PromotionRequestByAI,
-    Undo
+    Undo,
+    Put
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]

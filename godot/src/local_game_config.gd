@@ -9,6 +9,7 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 
 @onready var player_color_button: Button = $player_color_button
 @onready var game_mode_button: Button = $game_mode_button
+@onready var game_mode_color_rect: ColorRect = $game_mode_color_rect
 @onready var opponent_button: Button = $opponent_button
 @onready var ai_skill_level_bar: HScrollBar = $ai_skill_level_bar
 @onready var ai_skill_level_label: Label = $ai_skill_level_bar/ai_skill_level_label
@@ -29,6 +30,10 @@ var config_data: Dictionary[String, Variant] = {
 	"ai_skill_level": 0}
 
 
+func _ready() -> void:
+	$game_mode_color_rect/game_mode_item_list.select(0)
+
+
 func _on_player_color_button_pressed() -> void:
 	match config_data["player_color"]:
 		Enums.ChessColor.WHITE:
@@ -40,19 +45,26 @@ func _on_player_color_button_pressed() -> void:
 
 
 func _on_game_mode_button_pressed() -> void:
-	match config_data["game_mode"]:
-		Enums.GameMode.STANDARD:
-			config_data["game_mode"] = Enums.GameMode.CHESS960
-			game_mode_button.text = "Game mode: Chess960"
-		Enums.GameMode.CHESS960:
-			config_data["game_mode"] = Enums.GameMode.KING_OF_THE_HILL
-			game_mode_button.text = "Game mode: King of the hill"
-		Enums.GameMode.KING_OF_THE_HILL:
-			config_data["game_mode"] = Enums.GameMode.THREE_CHECK
-			game_mode_button.text = "Game mode: Three check"
-		Enums.GameMode.THREE_CHECK:
-			config_data["game_mode"] = Enums.GameMode.STANDARD
-			game_mode_button.text = "Game mode: Standard"
+	game_mode_color_rect.show()
+
+
+func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MouseButton.MOUSE_BUTTON_LEFT:
+		return
+	
+	var selected_mode: Enums.GameMode = index as Enums.GameMode
+	config_data["game_mode"] = selected_mode
+	match selected_mode:
+		Enums.GameMode.STANDARD: game_mode_button.text = "Game mode: Standard"
+		Enums.GameMode.CHESS960: game_mode_button.text = "Game mode: Chess960"
+		Enums.GameMode.KING_OF_THE_HILL: game_mode_button.text = "Game mode: King Of The Hill"
+		Enums.GameMode.THREE_CHECK: game_mode_button.text = "Game mode: Three-Check"
+		Enums.GameMode.CRAZY_HOUSE: game_mode_button.text = "Game mode: Crazyhouse"
+		Enums.GameMode.ANTI_CHESS: game_mode_button.text = "Game mode: Antichess"
+		Enums.GameMode.ATOMIC: game_mode_button.text = "Game mode: Atomic"
+		Enums.GameMode.HORDE: game_mode_button.text = "Game mode: Horde"
+		Enums.GameMode.RACING_KINGS: game_mode_button.text = "Game mode: Racing Kings"
+	game_mode_color_rect.hide()
 
 
 func _on_opponent_button_pressed() -> void:

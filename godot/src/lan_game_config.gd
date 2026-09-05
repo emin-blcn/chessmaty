@@ -11,14 +11,13 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var create_host_config_node: Control = $TabContainer/create/create_host_config
 @onready var host_name_line_edit: LineEdit = $TabContainer/create/create_host_config/host_name_line_edit
 @onready var game_mode_button: Button = $TabContainer/create/create_host_config/game_mode_button
+@onready var game_mode_color_rect: ColorRect = $TabContainer/create/create_host_config/game_mode_color_rect
 @onready var player_color_button: Button = $TabContainer/create/create_host_config/player_color_button
 @onready var time_per_side_label: Label = $TabContainer/create/create_host_config/time_per_side_bar/time_per_side_label
 @onready var time_increment_bar: HScrollBar = $TabContainer/create/create_host_config/time_increment_bar
 @onready var time_increment_label: Label = $TabContainer/create/create_host_config/time_increment_bar/time_increment_label
-
 @onready var wait_for_peer_node: Control = $TabContainer/create/wait_for_peer
 @onready var cancel_waiting_for_peer_button: Button = $TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button
-
 @onready var refresh_host_list_button: Button = $TabContainer/join/refresh_host_list_button
 @onready var element_nodes: VBoxContainer = $TabContainer/join/ColorRect/ScrollContainer/elements
 @onready var element_instance_node: ColorRect = $TabContainer/join/ColorRect/ScrollContainer/elements/element_instance
@@ -69,16 +68,14 @@ func _discover_hosts():
 
 func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]):
 	for key_ip in discovered_hosts.keys():
-		var value: String = discovered_hosts[key_ip]
-		var data_list: PackedStringArray = value.split("|")
-		# (DISCOVERY_PONG_MSG, host_name, player_color, game_mode, fen_string, time_per_side, time_increment)
+		var value: Dictionary = JSON.parse_string(discovered_hosts[key_ip])
 		var host_config_data: Dictionary[String, Variant] = {
-			"host_name": data_list[1],
-			"player_color": int(data_list[2]) as Enums.ChessColor,
-			"game_mode": int(data_list[3]) as Enums.GameMode,
-			"fen_string": data_list[4],
-			"time_per_side": int(data_list[5]),
-			"time_increment": int(data_list[6])}
+			"host_name": value["host_name"],
+			"player_color": int(value["player_color"]) as Enums.ChessColor,
+			"game_mode": int(value["game_mode"]) as Enums.GameMode,
+			"fen_string": value["fen_string"],
+			"time_per_side": int(value["time_per_side"]),
+			"time_increment": int(value["time_increment"])}
 		
 		var new_element_node: ColorRect = element_instance_node.duplicate()
 		var join_button: Button = new_element_node.get_node("join_button")
@@ -87,11 +84,19 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]):
 		
 		new_element_node.get_node("host_name_label").text = host_config_data["host_name"]
 		
+		var game_mode_label_text: String
 		match host_config_data["game_mode"]:
-			Enums.GameMode.STANDARD:
-				new_element_node.get_node("HBoxContainer/game_mode_label").text = "game mode (Standard)"
-			Enums.GameMode.CHESS960:
-				new_element_node.get_node("HBoxContainer/game_mode_label").text = "game mode (Chess960)"
+			Enums.GameMode.STANDARD: game_mode_label_text = "Standard"
+			Enums.GameMode.CHESS960: game_mode_label_text = "Chess960"
+			Enums.GameMode.KING_OF_THE_HILL: game_mode_label_text = "King Of The Hill"
+			Enums.GameMode.THREE_CHECK: game_mode_label_text = "Three-Check"
+			Enums.GameMode.CRAZY_HOUSE: game_mode_label_text = "Crazyhouse"
+			Enums.GameMode.ANTI_CHESS: game_mode_label_text = "Antichess"
+			Enums.GameMode.ATOMIC: game_mode_label_text = "Atomic"
+			Enums.GameMode.HORDE: game_mode_label_text = "Horde"
+			Enums.GameMode.RACING_KINGS: game_mode_label_text = "Racing Kings"
+		
+		new_element_node.get_node("HBoxContainer/game_mode_label").text = "game mode (" + game_mode_label_text + ")"
 		
 		match host_config_data["player_color"]:
 			Enums.ChessColor.WHITE:
@@ -157,20 +162,26 @@ func _on_player_color_button_pressed() -> void:
 
 
 func _on_game_mode_button_pressed() -> void:
-	match config_data["game_mode"]:
-		Enums.GameMode.STANDARD:
-			config_data["game_mode"] = Enums.GameMode.CHESS960
-			game_mode_button.text = "Game mode: Chess960"
-		Enums.GameMode.CHESS960:
-			config_data["game_mode"] = Enums.GameMode.KING_OF_THE_HILL
-			game_mode_button.text = "Game mode: King of the hill"
-		Enums.GameMode.KING_OF_THE_HILL:
-			config_data["game_mode"] = Enums.GameMode.THREE_CHECK
-			game_mode_button.text = "Game mode: Three check"
-		Enums.GameMode.THREE_CHECK:
-			config_data["game_mode"] = Enums.GameMode.STANDARD
-			game_mode_button.text = "Game mode: Standard"
+	game_mode_color_rect.show()
 
+
+func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mouse_button_index: int) -> void:
+	if mouse_button_index != MouseButton.MOUSE_BUTTON_LEFT:
+		return
+	
+	var selected_mode: Enums.GameMode = index as Enums.GameMode
+	config_data["game_mode"] = selected_mode
+	match selected_mode:
+		Enums.GameMode.STANDARD: game_mode_button.text = "Game mode: Standard"
+		Enums.GameMode.CHESS960: game_mode_button.text = "Game mode: Chess960"
+		Enums.GameMode.KING_OF_THE_HILL: game_mode_button.text = "Game mode: King Of The Hill"
+		Enums.GameMode.THREE_CHECK: game_mode_button.text = "Game mode: Three-Check"
+		Enums.GameMode.CRAZY_HOUSE: game_mode_button.text = "Game mode: Crazyhouse"
+		Enums.GameMode.ANTI_CHESS: game_mode_button.text = "Game mode: Antichess"
+		Enums.GameMode.ATOMIC: game_mode_button.text = "Game mode: Atomic"
+		Enums.GameMode.HORDE: game_mode_button.text = "Game mode: Horde"
+		Enums.GameMode.RACING_KINGS: game_mode_button.text = "Game mode: Racing Kings"
+	game_mode_color_rect.hide()
 
 
 func _on_time_per_side_bar_value_changed(value: float) -> void:
@@ -216,6 +227,7 @@ func wait_for_peer():
 
 
 func _wait_for_peer():
+	config_data["host_name"] = host_name_line_edit.text
 	if config_data["game_mode"] == Enums.GameMode.CHESS960:
 		config_data["fen_string"] = ChessLogic.random_fen()
 	
