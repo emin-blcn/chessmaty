@@ -1,0 +1,276 @@
+[gd_scene format=3 uid="uid://bvwebetu56kcf"]
+
+[ext_resource type="Script" uid="uid://cbwpqwql4tk0y" path="res://src/hud_crazy_house_control.gd" id="1_rrji2"]
+[ext_resource type="Texture2D" uid="uid://dsnueobqdww8a" path="res://assets/graphics/piece_icons/queen_black.png" id="1_rtdpb"]
+[ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="2_rrji2"]
+[ext_resource type="Texture2D" uid="uid://drmnk83sio8lm" path="res://assets/graphics/piece_icons/rook_black.png" id="3_4dqry"]
+[ext_resource type="Texture2D" uid="uid://ban4v21eva78f" path="res://assets/graphics/piece_icons/bishop_black.png" id="4_c76cb"]
+[ext_resource type="Texture2D" uid="uid://fy3y3dmjkmob" path="res://assets/graphics/piece_icons/knight_black.png" id="5_xsfjv"]
+[ext_resource type="Texture2D" uid="uid://dhfyrktcyvw6p" path="res://assets/graphics/piece_icons/pawn_black.png" id="6_m2eeb"]
+[ext_resource type="Texture2D" uid="uid://ddiqss6w65vb1" path="res://assets/graphics/piece_icons/queen_white.png" id="7_rs6tw"]
+[ext_resource type="Texture2D" uid="uid://dtlb4vkdt0w5a" path="res://assets/graphics/piece_icons/rook_white.png" id="8_evlo2"]
+[ext_resource type="Texture2D" uid="uid://dfxsuunmn56g8" path="res://assets/graphics/piece_icons/bishop_white.png" id="9_1uxr7"]
+[ext_resource type="Texture2D" uid="uid://corg0wbxlqtb7" path="res://assets/graphics/piece_icons/knight_white.png" id="10_urxid"]
+[ext_resource type="Texture2D" uid="uid://jq0idoqsrlq8" path="res://assets/graphics/piece_icons/pawn_white.png" id="11_sj7br"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v2yb1"]
+texture = ExtResource("1_rtdpb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_pl11u"]
+texture = ExtResource("1_rtdpb")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_js0lu"]
+texture = ExtResource("3_4dqry")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_bhx41"]
+texture = ExtResource("3_4dqry")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5newe"]
+texture = ExtResource("4_c76cb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qnb83"]
+texture = ExtResource("4_c76cb")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wljb1"]
+texture = ExtResource("5_xsfjv")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sww3w"]
+texture = ExtResource("5_xsfjv")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1kice"]
+texture = ExtResource("6_m2eeb")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_suyxu"]
+texture = ExtResource("6_m2eeb")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ir15t"]
+texture = ExtResource("7_rs6tw")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sgl2t"]
+texture = ExtResource("7_rs6tw")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gxtfn"]
+texture = ExtResource("8_evlo2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qouja"]
+texture = ExtResource("8_evlo2")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_twgab"]
+texture = ExtResource("9_1uxr7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7025r"]
+texture = ExtResource("9_1uxr7")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_02fa5"]
+texture = ExtResource("10_urxid")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m4url"]
+texture = ExtResource("10_urxid")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nepv3"]
+texture = ExtResource("11_sj7br")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8ool0"]
+texture = ExtResource("11_sj7br")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5xl1b"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+
+[node name="crazy_house" type="Control" unique_id=1704907922]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_rrji2")
+metadata/_edit_horizontal_guides_ = [90.0]
+
+[node name="black" type="GridContainer" parent="." unique_id=1539383933]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 36.0
+offset_right = 61.0
+offset_bottom = 88.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 2
+columns = 4
+
+[node name="queen_button" type="Button" parent="black" unique_id=1636557555]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_v2yb1")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_v2yb1")
+theme_override_styles/hover = SubResource("StyleBoxTexture_pl11u")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_pl11u")
+disabled = true
+
+[node name="queen_label" type="Label" parent="black" unique_id=1599798505]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="rook_button" type="Button" parent="black" unique_id=203206]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_js0lu")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_js0lu")
+theme_override_styles/hover = SubResource("StyleBoxTexture_bhx41")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_bhx41")
+disabled = true
+
+[node name="rook_label" type="Label" parent="black" unique_id=1957441032]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="bishop_button" type="Button" parent="black" unique_id=77256974]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_5newe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_5newe")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qnb83")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_qnb83")
+disabled = true
+
+[node name="bishop_label" type="Label" parent="black" unique_id=720135465]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="knight_button" type="Button" parent="black" unique_id=216936379]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_wljb1")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_wljb1")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sww3w")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_sww3w")
+disabled = true
+
+[node name="knight_label" type="Label" parent="black" unique_id=1487974009]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="pawn_button" type="Button" parent="black" unique_id=625699126]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_1kice")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1kice")
+theme_override_styles/hover = SubResource("StyleBoxTexture_suyxu")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_suyxu")
+disabled = true
+
+[node name="pawn_label" type="Label" parent="black" unique_id=1918340714]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="white" type="GridContainer" parent="." unique_id=1353941890]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 92.0
+offset_right = 61.0
+offset_bottom = 144.0
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 2
+columns = 4
+
+[node name="queen_button" type="Button" parent="white" unique_id=782094026]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_ir15t")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ir15t")
+theme_override_styles/hover = SubResource("StyleBoxTexture_sgl2t")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_sgl2t")
+disabled = true
+
+[node name="queen_label" type="Label" parent="white" unique_id=1652268563]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="rook_button" type="Button" parent="white" unique_id=1895168793]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_gxtfn")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gxtfn")
+theme_override_styles/hover = SubResource("StyleBoxTexture_qouja")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_qouja")
+disabled = true
+
+[node name="rook_label" type="Label" parent="white" unique_id=374147100]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="bishop_button" type="Button" parent="white" unique_id=1757680344]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_twgab")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_twgab")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7025r")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_7025r")
+disabled = true
+
+[node name="bishop_label" type="Label" parent="white" unique_id=449355361]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="knight_button" type="Button" parent="white" unique_id=1891049578]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_02fa5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_02fa5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_m4url")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_m4url")
+disabled = true
+
+[node name="knight_label" type="Label" parent="white" unique_id=586097625]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="pawn_button" type="Button" parent="white" unique_id=1672656466]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_nepv3")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_nepv3")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8ool0")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_8ool0")
+disabled = true
+
+[node name="pawn_label" type="Label" parent="white" unique_id=1294958090]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_rrji2")
+theme_override_font_sizes/font_size = 8
+text = "0"
+
+[node name="selected_piece_marker" type="Panel" parent="." unique_id=1637863788]
+visible = false
+layout_mode = 0
+offset_right = 18.0
+offset_bottom = 18.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5xl1b")

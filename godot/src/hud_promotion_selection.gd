@@ -2,21 +2,23 @@ extends TextureRect
 
 @onready var master_scene: Control = get_tree().current_scene
 
-var config_data: Dictionary[String, Variant] = {}
+var player_color: Enums.ChessColor
+var connection_type: Enums.ConnectionType
+var local_opponent: Enums.LocalOpponent
 
 
 func config(new_config_data: Dictionary[String, Variant]) -> void:
-	config_data["player_color"] = new_config_data["player_color"]
-	config_data["connection_type"] = new_config_data["connection_type"]
+	player_color = new_config_data["player_color"]
+	connection_type = new_config_data["connection_type"]
 	
 	if new_config_data["connection_type"] == Enums.ConnectionType.LOCAL:
-		config_data["local_opponent"] = new_config_data["local_opponent"]
+		local_opponent = new_config_data["local_opponent"]
 	
-	if config_data["connection_type"] == Enums.ConnectionType.LOCAL and config_data["local_opponent"] == Enums.LocalOpponent.HUMAN:
+	if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
 		for button: Button in get_node("Panel/white").get_children() + get_node("Panel/black").get_children():
 			button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 	else:
-		match config_data["player_color"]:
+		match player_color:
 			Enums.ChessColor.WHITE:
 				get_node("Panel/black").queue_free()
 				for button: Button in get_node("Panel/white").get_children():
@@ -29,7 +31,7 @@ func config(new_config_data: Dictionary[String, Variant]) -> void:
 
 func _on_move_animation_finished(move_type: Enums.MoveType):
 	if move_type == Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
-		if config_data["connection_type"] == Enums.ConnectionType.LOCAL and config_data["local_opponent"] == Enums.LocalOpponent.HUMAN:
+		if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
 			match master_scene.get_turn():
 				Enums.ChessColor.WHITE:
 					get_node("Panel/white").show()

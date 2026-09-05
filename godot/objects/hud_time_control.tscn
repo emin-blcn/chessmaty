@@ -5,20 +5,17 @@
 
 [node name="Control" type="Control" unique_id=614857075]
 layout_mode = 3
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-grow_vertical = 2
+anchors_preset = 0
 script = ExtResource("1_c4b0o")
 
-[node name="top_time_message_label" type="Label" parent="." unique_id=1572829658]
+[node name="black_time_message_label" type="Label" parent="." unique_id=1572829658]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -88.0
+offset_top = 2.0
 offset_right = 72.0
-offset_bottom = -62.0
+offset_bottom = 28.0
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.4392157, 0.2, 0.29803923, 1)
 theme_override_constants/outline_size = 2
@@ -28,7 +25,7 @@ text = "Black time left:"
 horizontal_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="time_label" type="Label" parent="top_time_message_label" unique_id=1543642519]
+[node name="time_label" type="Label" parent="black_time_message_label" unique_id=1543642519]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -45,14 +42,14 @@ text = "00"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="bottom_time_message_label" type="Label" parent="." unique_id=1708945685]
+[node name="white_time_message_label" type="Label" parent="." unique_id=1708945685]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = 62.0
+offset_top = 152.0
 offset_right = 72.0
-offset_bottom = 88.0
+offset_bottom = 178.0
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.6509804, 0.7294118, 0.76862746, 1)
 theme_override_constants/outline_size = 2
@@ -62,7 +59,7 @@ text = "White time left:"
 horizontal_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="time_label" type="Label" parent="bottom_time_message_label" unique_id=2104410264]
+[node name="time_label" type="Label" parent="white_time_message_label" unique_id=2104410264]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0

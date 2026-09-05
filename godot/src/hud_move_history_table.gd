@@ -24,12 +24,22 @@ func _on_move_animation_started(move_type: Enums.MoveType, from: String, to: Str
 	else:
 		if move_type != Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
 			color = Enums.ChessColor.WHITE if color == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
+		if move_type == Enums.MoveType.PUT:
+			match master_scene.get_piece_role_from_square(to):
+				Enums.Piece.QUEEN: from = "Q"
+				Enums.Piece.ROOK: from = "R"
+				Enums.Piece.BISHOP: from = "B"
+				Enums.Piece.KNIGHT: from = "N"
+				Enums.Piece.PAWN: from = "P"
+			from += "@"
+		else:
+			from += "-"
 		match color:
 			Enums.ChessColor.WHITE:
 				full_move_number += 1
 				var new_element_node: ColorRect = instance_element.duplicate()
 				new_element_node.get_node("move_number").text = str(full_move_number) + "."
-				new_element_node.get_node("white_move").text = from + "-" + to
+				new_element_node.get_node("white_move").text = from + to
 				element_nodes.add_child(new_element_node)
 				new_element_node.show()
 				update_scroll_container_value()

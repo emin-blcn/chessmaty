@@ -45,15 +45,26 @@ tab_alignment = 1
 current_tab = 0
 tab_0/title = " Local Game "
 tab_1/title = "  LAN Game  "
-tab_2/title = "..........12"
+tab_2/title = "............"
 metadata/_edit_lock_ = true
-metadata/_edit_vertical_guides_ = [160.0]
 
 [node name="local_game" type="Control" parent="." unique_id=743462533]
 layout_mode = 2
 script = ExtResource("3_lijna")
 metadata/_tab_index = 0
 metadata/_tab_name = " Local Game "
+
+[node name="back_button" type="Button" parent="local_game" unique_id=1255591863]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -45.0
+offset_top = -10.0
+offset_right = -4.0
+offset_bottom = 3.0
+grow_vertical = 0
+text = "Back"
 
 [node name="player_color_button" type="Button" parent="local_game" unique_id=1088172606]
 layout_mode = 1
@@ -184,17 +195,45 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Start"
 
-[node name="back_button" type="Button" parent="local_game" unique_id=1255591863]
+[node name="game_mode_color_rect" type="ColorRect" parent="local_game" unique_id=1148069257]
+visible = false
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -44.0
-offset_top = -15.0
-offset_right = -5.0
-offset_bottom = -2.0
-grow_vertical = 0
-text = "Back"
+offset_left = -47.0
+offset_top = -25.0
+offset_right = 47.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="game_mode_item_list" type="ItemList" parent="local_game/game_mode_color_rect" unique_id=1403622748]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -25.0
+offset_right = 47.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+item_count = 9
+item_0/text = "Standard"
+item_1/text = "Chess960"
+item_2/text = "King Of The Hill"
+item_3/text = "Three-Check"
+item_4/text = "Crazyhouse"
+item_5/text = "Antichess"
+item_6/text = "Atomic"
+item_7/text = "Horde"
+item_8/text = "Racing Kings"
 
 [node name="lan_game" type="Control" parent="." unique_id=1260433913]
 visible = false
@@ -202,6 +241,18 @@ layout_mode = 2
 script = ExtResource("4_u3r3t")
 metadata/_tab_index = 1
 metadata/_tab_name = "  LAN Game  "
+
+[node name="back_button" type="Button" parent="lan_game" unique_id=1880669551]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -45.0
+offset_top = -10.0
+offset_right = -4.0
+offset_bottom = 3.0
+grow_vertical = 0
+text = "Back"
 
 [node name="TabContainer" type="TabContainer" parent="lan_game" unique_id=1554132219]
 layout_mode = 1
@@ -504,7 +555,46 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Create"
 
-[node name="wait_for_peer" type="Control" parent="lan_game/TabContainer/create" unique_id=1718100444]
+[node name="game_mode_color_rect" type="ColorRect" parent="lan_game/TabContainer/create/create_host_config" unique_id=842788173]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -65.0
+offset_top = -45.0
+offset_right = 65.0
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
+metadata/_edit_group_ = true
+
+[node name="game_mode_item_list" type="ItemList" parent="lan_game/TabContainer/create/create_host_config/game_mode_color_rect" unique_id=987650195]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -47.0
+offset_top = -25.0
+offset_right = 47.0
+offset_bottom = 62.0
+grow_horizontal = 2
+grow_vertical = 2
+item_count = 9
+item_0/text = "Standard"
+item_1/text = "Chess960"
+item_2/text = "King Of The Hill"
+item_3/text = "Three-Check"
+item_4/text = "Crazyhouse"
+item_5/text = "Antichess"
+item_6/text = "Atomic"
+item_7/text = "Horde"
+item_8/text = "Racing Kings"
+
+[node name="wait_for_peer" type="ColorRect" parent="lan_game/TabContainer/create" unique_id=24407122]
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -516,6 +606,7 @@ offset_right = 65.0
 offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0, 0, 0, 0.627451)
 
 [node name="Label" type="Label" parent="lan_game/TabContainer/create/wait_for_peer" unique_id=57534270]
 layout_mode = 1
@@ -531,7 +622,7 @@ offset_bottom = 7.75
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 16
-text = "Waiting for opponent.."
+text = "Waiting for opponent"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="lan_game/TabContainer/create/wait_for_peer" unique_id=1842939198]
 libraries/ = SubResource("AnimationLibrary_iuo5w")
@@ -552,25 +643,14 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Cancel"
 
-[node name="back_button" type="Button" parent="lan_game" unique_id=1880669551]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -44.0
-offset_top = -15.0
-offset_right = -5.0
-offset_bottom = -2.0
-grow_vertical = 0
-text = "Back"
-
 [node name="Control" type="Control" parent="." unique_id=2127080727]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
-metadata/_tab_name = "..........12"
+metadata/_tab_name = "............"
 
 [connection signal="tab_changed" from="." to="lan_game" method="_on_game_config_tab_changed"]
+[connection signal="pressed" from="local_game/back_button" to="local_game" method="_on_back_button_pressed"]
 [connection signal="pressed" from="local_game/player_color_button" to="local_game" method="_on_player_color_button_pressed"]
 [connection signal="pressed" from="local_game/game_mode_button" to="local_game" method="_on_game_mode_button_pressed"]
 [connection signal="pressed" from="local_game/opponent_button" to="local_game" method="_on_opponent_button_pressed"]
@@ -578,12 +658,13 @@ metadata/_tab_name = "..........12"
 [connection signal="value_changed" from="local_game/time_per_side_bar" to="local_game" method="_on_time_per_side_bar_value_changed"]
 [connection signal="value_changed" from="local_game/time_increment_bar" to="local_game" method="_on_time_increment_bar_value_changed"]
 [connection signal="pressed" from="local_game/start_button" to="local_game" method="_on_start_button_pressed"]
-[connection signal="pressed" from="local_game/back_button" to="local_game" method="_on_back_button_pressed"]
+[connection signal="item_clicked" from="local_game/game_mode_color_rect/game_mode_item_list" to="local_game" method="_on_game_mode_item_list_item_clicked"]
+[connection signal="pressed" from="lan_game/back_button" to="lan_game" method="_on_back_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/join/refresh_host_list_button" to="lan_game" method="_on_refresh_host_list_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/game_mode_button" to="lan_game" method="_on_game_mode_button_pressed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/player_color_button" to="lan_game" method="_on_player_color_button_pressed"]
 [connection signal="value_changed" from="lan_game/TabContainer/create/create_host_config/time_per_side_bar" to="lan_game" method="_on_time_per_side_bar_value_changed"]
 [connection signal="value_changed" from="lan_game/TabContainer/create/create_host_config/time_increment_bar" to="lan_game" method="_on_time_increment_bar_value_changed"]
 [connection signal="pressed" from="lan_game/TabContainer/create/create_host_config/crate_host_button" to="lan_game" method="_on_crate_host_button_pressed"]
+[connection signal="item_clicked" from="lan_game/TabContainer/create/create_host_config/game_mode_color_rect/game_mode_item_list" to="lan_game" method="_on_game_mode_item_list_item_clicked"]
 [connection signal="pressed" from="lan_game/TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button" to="lan_game" method="_on_cancel_waiting_for_peer_button_pressed"]
-[connection signal="pressed" from="lan_game/back_button" to="lan_game" method="_on_back_button_pressed"]
