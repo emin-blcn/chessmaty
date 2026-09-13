@@ -11,16 +11,22 @@ config_version=5
 [application]
 
 config/name="chessmaty"
+config/version="1.0.0"
 run/main_scene="uid://dwnbfraut6h7t"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chessmaty"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="uid://now0q7mcsy7a"
+config/windows_native_icon="res://assets/graphics/icon.ico"
+
+[audio]
+
+buses/default_bus_layout="uid://bf27un84ykmxq"
 
 [autoload]
 
 Global="*uid://c16uoaj0yfneu"
-Sounds="*uid://d34byqbjnoepx"
+Sound="*uid://d34byqbjnoepx"
 
 [display]
 

@@ -6,8 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://objects/hud_move_history_table.tscn" id="5_rysoc"]
 [ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/hud.gd" id="6_ssvqc"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="7_264po"]
-[ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/undo_icon.png" id="8_1kice"]
-[ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/leave_match_icon.png" id="9_5newe"]
+[ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/icon_undo_move.png" id="8_1kice"]
+[ext_resource type="Texture2D" uid="uid://csb752f20r07o" path="res://assets/graphics/gui/icon_leave_match.png" id="9_5newe"]
 [ext_resource type="PackedScene" uid="uid://cfsjp52ilwb18" path="res://objects/hud_promotion_selection.tscn" id="10_37s47"]
 [ext_resource type="PackedScene" uid="uid://dcexr08yr4d6g" path="res://objects/hud_match_finished.tscn" id="10_dinhu"]
 [ext_resource type="PackedScene" uid="uid://j2sfhbf33tkg" path="res://objects/hud_time_control.tscn" id="11_dinhu"]
@@ -267,8 +267,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_kvuet")
 metadata/_edit_lock_ = true
-metadata/_edit_horizontal_guides_ = [90.0]
-metadata/_edit_vertical_guides_ = [160.0]
 
 [node name="bg" type="TextureRect" parent="." unique_id=1544648892]
 layout_mode = 1
@@ -391,6 +389,7 @@ layout_mode = 1
 [node name="crazy_house" parent="game_content/hud" unique_id=1704907922 instance=ExtResource("15_ca42v")]
 visible = false
 layout_mode = 1
+metadata/_edit_lock_ = true
 
 [node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("10_37s47")]
 visible = false

@@ -11,7 +11,7 @@ use crate::chess_engine::ChessEngine;
 use crate::enums as Enums;
 
 
-static ALL_FENS_STR: &str = include_str!("fens.txt");
+static ALL_FENS_STR: &str = include_str!("chess960_fens.txt");
 
 
 #[derive(GodotClass)]
@@ -335,9 +335,9 @@ impl ChessLogic
 
 
     #[func]
-    fn legal_put_moves_from_role(&self, piece_role: Enums::Piece) -> Array<GString>
+    fn legal_put_moves_from_role(&self, piece_role: Enums::Piece) -> PackedStringArray
     {
-        let mut legal_put_moves_for_godot = Array::<GString>::new();
+        let mut legal_put_moves_for_godot = PackedStringArray::new();
 
         for legal_move in self.position.legal_moves()
         {
@@ -524,14 +524,7 @@ impl ChessLogic
 
     fn update_move_history(&mut self, new_move: Move)
     {
-        if self.game_mode == Enums::GameMode::Chess960
-        {
-            self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
-        }
-        else
-        {
-            self.move_history.push(UciMove::from_move(new_move, CastlingMode::Standard));
-        }
+        self.move_history.push(UciMove::from_move(new_move, CastlingMode::Chess960));
     }
 
 

@@ -13,9 +13,9 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var game_mode_button: Button = $TabContainer/create/create_host_config/game_mode_button
 @onready var game_mode_color_rect: ColorRect = $TabContainer/create/create_host_config/game_mode_color_rect
 @onready var player_color_button: Button = $TabContainer/create/create_host_config/player_color_button
-@onready var time_per_side_label: Label = $TabContainer/create/create_host_config/time_per_side_bar/time_per_side_label
-@onready var time_increment_bar: HScrollBar = $TabContainer/create/create_host_config/time_increment_bar
-@onready var time_increment_label: Label = $TabContainer/create/create_host_config/time_increment_bar/time_increment_label
+@onready var time_per_side_label: Label = $TabContainer/create/create_host_config/time_per_side_slider/time_per_side_label
+@onready var time_increment_slider: HSlider = $TabContainer/create/create_host_config/time_increment_slider
+@onready var time_increment_label: Label = $TabContainer/create/create_host_config/time_increment_slider/time_increment_label
 @onready var wait_for_peer_node: Control = $TabContainer/create/wait_for_peer
 @onready var cancel_waiting_for_peer_button: Button = $TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button
 @onready var refresh_host_list_button: Button = $TabContainer/join/refresh_host_list_button
@@ -42,10 +42,11 @@ func _on_game_config_tab_changed(tab: int) -> void:
 
 
 func _on_refresh_host_list_button_pressed() -> void:
+	Sound.button_tick.play()
 	discover_hosts()
 
 
-func discover_hosts():
+func discover_hosts() -> void:
 	if is_discovering_hosts:
 		return
 	is_discovering_hosts = true
@@ -61,12 +62,12 @@ func discover_hosts():
 	WorkerThreadPool.add_task(_discover_hosts)
 
 
-func _discover_hosts():
+func _discover_hosts() -> void:
 	var discovered_hosts: Dictionary[String, String] = lan_peer.discover_all_hosts()
 	call_deferred("_on_discovered_all_hosts", discovered_hosts)
 
 
-func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]):
+func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> void:
 	for key_ip in discovered_hosts.keys():
 		var value: Dictionary = JSON.parse_string(discovered_hosts[key_ip])
 		var host_config_data: Dictionary[String, Variant] = {
@@ -130,11 +131,13 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]):
 	is_discovering_hosts = false
 
 
-func _on_join_button_pressed(host_ip: String, host_config_data: Dictionary[String, Variant]):
+func _on_join_button_pressed(host_ip: String, host_config_data: Dictionary[String, Variant]) -> void:
+	Sound.button_tick.play()
 	var is_accepted_join_request: bool = lan_peer.join_host(host_ip)
 	if !is_accepted_join_request:
 		return
 	
+	Sound.peer_joined.play()
 	config_data["host_name"] = host_config_data["host_name"]
 	match host_config_data["player_color"]:
 		Enums.ChessColor.WHITE:
@@ -152,6 +155,7 @@ func _on_join_button_pressed(host_ip: String, host_config_data: Dictionary[Strin
 
 
 func _on_player_color_button_pressed() -> void:
+	Sound.button_tick.play()
 	match config_data["player_color"]:
 		Enums.ChessColor.WHITE:
 			config_data["player_color"] = Enums.ChessColor.BLACK
@@ -162,6 +166,7 @@ func _on_player_color_button_pressed() -> void:
 
 
 func _on_game_mode_button_pressed() -> void:
+	Sound.button_tick.play()
 	game_mode_color_rect.show()
 
 
@@ -184,7 +189,7 @@ func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mou
 	game_mode_color_rect.hide()
 
 
-func _on_time_per_side_bar_value_changed(value: float) -> void:
+func _on_time_per_side_slider_value_changed(value: float) -> void:
 	var index: int = int(value)
 	var new_minute: float = time_per_side_minute_values[index]
 	var new_time: int = int(new_minute * 60 * 1000)
@@ -193,29 +198,30 @@ func _on_time_per_side_bar_value_changed(value: float) -> void:
 	
 	if new_time == -60_000:
 		time_per_side_label.text = "Minutes per side: Unlimited"
-		time_increment_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		time_increment_bar.modulate.a = 0.5
+		time_increment_slider.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		time_increment_slider.modulate.a = 0.5
 		time_increment_label.modulate.a = 0.5
 	else:
 		if str(new_minute).split(".")[1] == "0":
 			time_per_side_label.text = "Minutes per side: " + str(int(new_minute))
 		else:
 			time_per_side_label.text = "Minutes per side: " + str(new_minute)
-		time_increment_bar.mouse_filter = Control.MOUSE_FILTER_STOP
-		time_increment_bar.modulate.a = 1.0
+		time_increment_slider.mouse_filter = Control.MOUSE_FILTER_STOP
+		time_increment_slider.modulate.a = 1.0
 		time_increment_label.modulate.a = 1.0
 
 
-func _on_time_increment_bar_value_changed(value: float) -> void:
+func _on_time_increment_slider_value_changed(value: float) -> void:
 	config_data["time_increment"] = time_increment_second_values[int(value)] * 1000
-	time_increment_label.text = "Increment in seconds " + str(time_increment_second_values[int(value)])
+	time_increment_label.text = "Increment in seconds: " + str(time_increment_second_values[int(value)])
 
 
 func _on_crate_host_button_pressed() -> void:
+	Sound.button_tick.play()
 	wait_for_peer()
 
 
-func wait_for_peer():
+func wait_for_peer() -> void:
 	if is_waiting_for_peer:
 		return
 	is_waiting_for_peer = true
@@ -226,13 +232,14 @@ func wait_for_peer():
 	WorkerThreadPool.add_task(_wait_for_peer)
 
 
-func _wait_for_peer():
+func _wait_for_peer() -> void:
 	config_data["host_name"] = host_name_line_edit.text
 	if config_data["game_mode"] == Enums.GameMode.CHESS960:
 		config_data["fen_string"] = ChessLogic.random_fen()
 	
 	var peer_joined: bool = lan_host.wait_for_peer(config_data)
 	if peer_joined:
+		Sound.peer_joined.call_deferred("play")
 		call_deferred("_on_join_request_received_from_peer")
 
 
@@ -243,6 +250,7 @@ func _on_join_request_received_from_peer() -> void:
 
 
 func _on_cancel_waiting_for_peer_button_pressed() -> void:
+	Sound.button_tick.play()
 	cancel_waiting_for_peer()
 
 
@@ -254,6 +262,7 @@ func cancel_waiting_for_peer() -> void:
 
 
 func _on_back_button_pressed() -> void:
+	Sound.button_tick.play()
 	if is_waiting_for_peer:
 		cancel_waiting_for_peer()
 	get_tree().change_scene_to_file("uid://dwnbfraut6h7t")

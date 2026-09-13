@@ -2,13 +2,13 @@
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_bs7qj"]
 [ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/hud_move_history_table.gd" id="2_oa6ig"]
+[ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="3_abc6i"]
 
 [node name="Panel" type="Panel" unique_id=736317109]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
-offset_right = -254.0
+offset_left = -66.0
 offset_bottom = 84.0
 grow_horizontal = 0
 theme = ExtResource("1_bs7qj")
@@ -38,7 +38,6 @@ offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 horizontal_scroll_mode = 0
-vertical_scroll_mode = 2
 
 [node name="elements" type="VBoxContainer" parent="ScrollContainer" unique_id=996557453]
 layout_mode = 2
@@ -46,35 +45,40 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 1
 
-[node name="instance_element" type="ColorRect" parent="ScrollContainer/elements" unique_id=45123410]
+[node name="instance_element" type="NinePatchRect" parent="ScrollContainer/elements" unique_id=187555844]
 visible = false
 custom_minimum_size = Vector2(0, 10)
 custom_maximum_size = Vector2(60, -1)
 layout_mode = 2
-color = Color(0, 0, 0, 0.6862745)
+texture = ExtResource("3_abc6i")
+region_rect = Rect2(0, 0, 5, 7)
+patch_margin_left = 2
+patch_margin_top = 3
+patch_margin_right = 2
+patch_margin_bottom = 3
 metadata/_edit_group_ = true
 
 [node name="ColorRect" type="ColorRect" parent="ScrollContainer/elements/instance_element" unique_id=209764368]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.26666668
-anchor_top = 0.1
-anchor_right = 0.6166667
-anchor_bottom = 0.9
+anchor_top = 0.2
+anchor_right = 0.6
+anchor_bottom = 0.8
 color = Color(0.6509804, 0.7294118, 0.76862746, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="ColorRect2" type="ColorRect" parent="ScrollContainer/elements/instance_element" unique_id=1768815505]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.6333333
-anchor_top = 0.1
-anchor_right = 0.98333335
-anchor_bottom = 0.9
+anchor_left = 0.6166667
+anchor_top = 0.2
+anchor_right = 0.95
+anchor_bottom = 0.8
 color = Color(0.4392157, 0.2, 0.29803923, 1)
 metadata/_edit_use_anchors_ = true
 
-[node name="move_number" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=196452811]
+[node name="move_number_label" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=196452811]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -88,12 +92,13 @@ text = "0."
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="white_move" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=1899986765]
+[node name="white_move_label" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=1899986765]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.26666668
-anchor_right = 0.6166667
-anchor_bottom = 1.0
+anchor_top = 0.1
+anchor_right = 0.6
+anchor_bottom = 0.9
 theme_override_constants/outline_size = 2
 theme_override_font_sizes/font_size = 8
 text = "..."
@@ -101,12 +106,16 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="black_move" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=328300879]
+[node name="black_move_label" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=328300879]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.6333333
 anchor_right = 0.98333335
 anchor_bottom = 1.0
+offset_left = -1.0
+offset_top = 1.0
+offset_right = -2.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/outline_size = 2
@@ -114,4 +123,3 @@ theme_override_font_sizes/font_size = 8
 text = "..."
 horizontal_alignment = 1
 vertical_alignment = 1
-metadata/_edit_use_anchors_ = true
