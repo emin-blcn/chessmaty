@@ -2,7 +2,6 @@
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_0s7aw"]
 [ext_resource type="Script" uid="uid://c5jprenw1jvhe" path="res://src/settings.gd" id="1_ums2b"]
-[ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="2_0s7aw"]
 
 [node name="Panel" type="Panel" unique_id=80842764]
 anchors_preset = 8
@@ -33,45 +32,33 @@ vertical_alignment = 2
 
 [node name="resolution_button" type="Button" parent="." unique_id=1265015431]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -49.0
-offset_top = 40.0
-offset_right = 49.0
-offset_bottom = 54.0
+anchor_bottom = 0.5
+offset_left = -37.0
+offset_top = -28.0
+offset_right = 37.0
+offset_bottom = -14.0
 grow_horizontal = 2
+grow_vertical = 2
 text = "Resolution: 1280x720"
-
-[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=694294449]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -33.0
-offset_top = 22.0
-offset_right = 33.0
-offset_bottom = 36.0
-grow_horizontal = 2
-texture = ExtResource("2_0s7aw")
-region_rect = Rect2(0, 0, 5, 7)
-patch_margin_left = 2
-patch_margin_top = 3
-patch_margin_right = 2
-patch_margin_bottom = 3
 
 [node name="fullscreen_check_button" type="CheckButton" parent="." unique_id=1168706467]
 layout_mode = 1
-anchors_preset = 5
+anchors_preset = 8
 anchor_left = 0.5
+anchor_top = 0.5
 anchor_right = 0.5
-offset_left = -33.0
-offset_top = 22.0
-offset_right = 31.0
-offset_bottom = 36.0
+anchor_bottom = 0.5
+offset_left = -26.0
+offset_top = -11.0
+offset_right = 26.0
+offset_bottom = -3.0
 grow_horizontal = 2
+grow_vertical = 2
 text = "Fullscreen"
-alignment = 1
 
 [node name="okay_button" type="Button" parent="." unique_id=1983623038]
 layout_mode = 1
@@ -88,6 +75,36 @@ grow_horizontal = 2
 grow_vertical = 0
 text = "Okay"
 
+[node name="sfx_label" type="Label" parent="." unique_id=467968794]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -62.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = 22.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "SFX Volume: 100"
+
+[node name="sfx_slider" type="HSlider" parent="sfx_label" unique_id=1587213452]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -4.0
+offset_right = 77.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 2
+value = 100.0
+
 [connection signal="pressed" from="resolution_button" to="." method="_on_resolution_button_pressed"]
 [connection signal="toggled" from="fullscreen_check_button" to="." method="_on_fullscreen_check_button_toggled"]
 [connection signal="pressed" from="okay_button" to="." method="_on_okay_button_pressed"]
+[connection signal="value_changed" from="sfx_label/sfx_slider" to="." method="_on_sfx_slider_value_changed"]

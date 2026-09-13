@@ -8,32 +8,33 @@ extends Control
 
 var connection_type: Enums.ConnectionType
 
-func config(new_config_data: Dictionary[String, Variant]):
+func config(new_config_data: Dictionary[String, Variant]) -> void:
 	connection_type = new_config_data["connection_type"]
 	
 	if new_config_data["connection_type"] == Enums.ConnectionType.LOCAL:
 		$received_undo_request.queue_free()
-		$undo_button/undo_state_animator.queue_free()
+		undo_state_animator_node.queue_free()
 	else:
 		undo_message_label_node.text = "Send undo request"
 
 
-func _on_move_animation_started(move_type: Enums.MoveType, _from: String, _to: String):
+func _on_move_animation_started(move_type: Enums.MoveType, _from: String, _to: String) -> void:
 	if move_type != Enums.MoveType.PROMOTION:
 		hide_undo_button()
 
 
-func hide_undo_button():
+func hide_undo_button() -> void:
 	undo_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	undo_button.self_modulate.a = 0.5
 
 
-func show_undo_button():
+func show_undo_button() -> void:
 	undo_button.mouse_filter = Control.MOUSE_FILTER_STOP
 	undo_button.self_modulate.a = 1.0
 
 
 func _on_undo_button_pressed() -> void:
+	Sound.button_tick.play()
 	if (connection_type != Enums.ConnectionType.LOCAL
 	and master_scene.is_undoable()
 	and undo_state_animator_node.current_animation != "undo_response_waiting"):
@@ -41,7 +42,7 @@ func _on_undo_button_pressed() -> void:
 	master_scene.undo_last_move()
 
 
-func _on_responded_undo_request(accept: bool):
+func _on_responded_undo_request(accept: bool) -> void:
 	if accept:
 		undo_state_animator_node.play("undo_request_accepted")
 	else:
@@ -60,6 +61,7 @@ func _on_undo_button_mouse_exited() -> void:
 
 
 func _on_leave_button_pressed() -> void:
+	Sound.button_tick.play()
 	if leave_message_label_node.text == "Leave match":
 		leave_message_label_node.text = "Click again"
 	else:

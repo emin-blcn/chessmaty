@@ -5,18 +5,7 @@ use godot::prelude::*;
 use godot::classes::{IRefCounted, Json, RefCounted};
 
 use crate::enums as Enums;
-
-
-const PORT: u16 = 8791;
-const MULTICAST_IP: Ipv4Addr = Ipv4Addr::new(239, 125, 99, 201);
-const DISCOVERY_PING_MSG: &str = "CHESSMATY_LAN_PING";
-const DISCOVERY_PONG_MSG: &str = "CHESSMATY_LAN_PONG";
-const JOIN_PING_MSG: &str = "CHESSMATY_LAN_JOIN_PING";
-const JOIN_PONG_MSG: &str = "CHESSMATY_LAN_JOIN_PONG";
-const CANCEL_WAIT_FOR_PEER_MSG: &str = "CANCEL_WAIT_FOR_PEER";
-const MOVE_MSG: &str = "CHESSMATY_MOVE";
-const UNDO_REQUEST_MSG: &str = "CHESSMATY_UNDO_REQUEST";
-const RESPONSE_UNDO_REQUEST_MSG: &str = "CHESSMATY_RESPONSE_UNDO_REQUEST";
+use crate::lan_protocol as LanProtocol;
 
 
 #[derive(GodotClass)]
@@ -24,6 +13,7 @@ const RESPONSE_UNDO_REQUEST_MSG: &str = "CHESSMATY_RESPONSE_UNDO_REQUEST";
 pub struct LanHost
 {
     base: Base<RefCounted>,
+    // using Mutex, because godot-rust lib locks object in mutable reference functions, which we want to avoid
     tcp_stream: Mutex<Option<TcpStream>>,
     tcp_bufreader: Mutex<Option<BufReader<TcpStream>>>,
 }
@@ -45,8 +35,8 @@ impl LanHost
     #[func]
     fn wait_for_peer(&self, config_data: Dictionary<GString, Variant>) -> bool
     {
-        let socket = UdpSocket::bind(("0.0.0.0", PORT)).unwrap();
-        socket.join_multicast_v4(&MULTICAST_IP, &Ipv4Addr::new(0, 0, 0, 0)).unwrap();
+        let socket = UdpSocket::bind(("0.0.0.0", LanProtocol::PORT)).unwrap();
+        socket.join_multicast_v4(&LanProtocol::MULTICAST_IP, &Ipv4Addr::new(0, 0, 0, 0)).unwrap();
         
         let mut buffer = [0u8; 512];
 
@@ -58,21 +48,21 @@ impl LanHost
                 {
                     let received_msg = String::from_utf8_lossy(&buffer[..size]).trim().to_string();
                     
-                    if received_msg.starts_with(DISCOVERY_PING_MSG)
+                    if received_msg.starts_with(LanProtocol::DISCOVERY_PING_MSG)
                     {
                         let mut data_to_sent = config_data.duplicate_deep();
                         data_to_sent.remove("connection_type").unwrap();
 
                         let data_to_sent_json = Json::stringify(&data_to_sent.to_variant()).to_string();
-                        let msg = format!("{}{}", DISCOVERY_PONG_MSG, data_to_sent_json);
+                        let msg = format!("{}{}", LanProtocol::DISCOVERY_PONG_MSG, data_to_sent_json);
 
                         socket.send_to(msg.as_bytes(), addr).unwrap();
                     }
-                    else if received_msg.as_str() == JOIN_PING_MSG
+                    else if received_msg.as_str() == LanProtocol::JOIN_PING_MSG
                     {
-                        let listener = TcpListener::bind(("0.0.0.0", PORT)).unwrap();
+                        let listener = TcpListener::bind(("0.0.0.0", LanProtocol::PORT)).unwrap();
 
-                        socket.send_to(JOIN_PONG_MSG.as_bytes(), addr).unwrap();
+                        socket.send_to(LanProtocol::JOIN_PONG_MSG.as_bytes(), addr).unwrap();
 
                         let stream = listener.accept().unwrap().0;
 
@@ -86,7 +76,7 @@ impl LanHost
 
                         return true;
                     }
-                    else if received_msg.as_str() == CANCEL_WAIT_FOR_PEER_MSG
+                    else if received_msg.as_str() == LanProtocol::CANCEL_WAITING_FOR_PEER_MSG
                     {
                         return false;
                     }
@@ -101,7 +91,7 @@ impl LanHost
     fn cancel_waiting_for_peer(&self)
     {
         let dummy_socket = UdpSocket::bind(("0.0.0.0", 0)).unwrap();
-        dummy_socket.send_to(CANCEL_WAIT_FOR_PEER_MSG.as_bytes(), ("127.0.0.1", PORT)).unwrap();
+        dummy_socket.send_to(LanProtocol::CANCEL_WAITING_FOR_PEER_MSG.as_bytes(), ("127.0.0.1", LanProtocol::PORT)).unwrap();
     }
 
 
@@ -135,7 +125,7 @@ impl LanHost
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}|{}|{}|{}|{}\n", MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_or_put_piece as i32);
+        let msg = format!("{}|{}|{}|{}|{}\n", LanProtocol::MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_or_put_piece as i32);
 
         stream.write_all(msg.as_bytes()).unwrap();
     }
@@ -146,25 +136,25 @@ impl LanHost
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}\n", UNDO_REQUEST_MSG);
+        let msg = format!("{}\n", LanProtocol::UNDO_REQUEST_MSG);
 
         stream.write_all(msg.as_bytes()).unwrap();
     }
 
 
     #[func]
-    fn send_response_undo_request_msg_to_opponent(&self, accept: bool)
+    fn send_undo_response_msg_to_opponent(&self, accept: bool)
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}|{}\n", RESPONSE_UNDO_REQUEST_MSG, if accept {"true"} else {"false"});
+        let msg = format!("{}|{}\n", LanProtocol::UNDO_RESPONSE_MSG, if accept {"true"} else {"false"});
 
         stream.write_all(msg.as_bytes()).unwrap();
     }
 
 
     #[func]
-    fn send_leave_match_msg_to_opponent(&self)
+    fn leave_stream(&self)
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();

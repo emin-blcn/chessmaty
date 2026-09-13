@@ -538,6 +538,7 @@ text = "H"
 horizontal_alignment = 1
 
 [node name="board_texture" type="TextureRect" parent="." unique_id=374220531]
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -551,7 +552,6 @@ offset_bottom = 64.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_s07tm")
-stretch_mode = 1
 metadata/_edit_lock_ = true
 
 [node name="king_of_the_hill_color_rect" type="ColorRect" parent="." unique_id=2095535336]

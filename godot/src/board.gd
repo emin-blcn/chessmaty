@@ -3,7 +3,7 @@ extends Control
 signal move_animation_started(move_type: Enums.MoveType, from: String, to: String)
 signal move_animation_finished(move_type: Enums.MoveType)
 
-const MOVE_ANIMATION_DURATION: float = 0.4
+const MOVE_ANIMATION_DURATION: float = 0.3
 const PIECE_TEXTURES: Dictionary[Array, Resource] = {
 	[Enums.Piece.KING, Enums.ChessColor.WHITE]: preload("uid://cags18jbwmm0d"),
 	[Enums.Piece.KING, Enums.ChessColor.BLACK]: preload("uid://dioyjnoc4d7vu"),
@@ -52,7 +52,7 @@ var piece_nodes_on_board: Dictionary[String, TextureRect] = {
 	"a1": null, "b1": null, "c1": null, "d1": null, "e1": null, "f1": null, "g1": null, "h1": null}
 
 
-func config(new_config_data: Dictionary[String, Variant]):
+func config(new_config_data: Dictionary[String, Variant]) -> void:
 	player_color = new_config_data["player_color"]
 	game_mode = new_config_data["game_mode"]
 	connection_type = new_config_data["connection_type"]
@@ -77,7 +77,7 @@ func config(new_config_data: Dictionary[String, Variant]):
 			$letters_bottom.get_child(i).text = "HGFEDCBA"[i]
 
 
-func update_all_pieces():
+func update_all_pieces() -> void:
 	# synchronize Godot with Rust
 	for number in "87654321":
 		for letter in "abcdefgh":
@@ -173,6 +173,7 @@ func selected_piece_event(new_square: String) -> void:
 			var piece: Enums.Piece = master_scene.get_piece_role_from_square(new_square)
 			if piece != Enums.Piece.EMPTY:
 				if piece_in_this_square_is_playable(new_square):
+					Sound.select.play()
 					any_piece_selected = true
 					active_square = new_square
 					legal_moves = master_scene.get_legal_moves_from_square(new_square)
@@ -217,6 +218,7 @@ func selected_piece_event(new_square: String) -> void:
 					var piece: Enums.Piece = master_scene.get_piece_role_from_square(new_square)
 					if piece != Enums.Piece.EMPTY:
 						if piece_in_this_square_is_playable(new_square):
+							Sound.select.play()
 							active_square = new_square
 							legal_moves = master_scene.get_legal_moves_from_square(new_square)
 							clear_markers()
@@ -224,7 +226,7 @@ func selected_piece_event(new_square: String) -> void:
 							add_marker(new_square, "white")
 
 
-func _on_selected_piece_for_put_move(piece_role: Enums.Piece):
+func _on_selected_piece_for_put_move(piece_role: Enums.Piece) -> void:
 	selected_piece_for_put_move = piece_role
 	any_piece_selected = false
 	clear_markers()
@@ -232,7 +234,7 @@ func _on_selected_piece_for_put_move(piece_role: Enums.Piece):
 	add_legal_put_move_markers()
 
 
-func _on_unselected_piece_for_put_move():
+func _on_unselected_piece_for_put_move() -> void:
 	selected_piece_for_put_move = Enums.Piece.EMPTY
 	clear_markers()
 
@@ -277,10 +279,12 @@ func piece_in_this_square_is_playable(square: String) -> bool:
 		return false
 
 
-func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, promotion_or_put_role: Enums.Piece):
+func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: String, promotion_or_put_role: Enums.Piece) -> void:
 	move_animation_started.emit(move_type, from, to)
 	
 	if move_type == Enums.MoveType.UNDO:
+		if marker_nodes.get_child_count() > 0:
+			clear_markers()
 		_on_move_animation_tween_finished(move_type)
 		return
 	
@@ -313,7 +317,7 @@ func _on_chess_logic_move_applied(move_type: Enums.MoveType, from: String, to: S
 	tween.play()
 
 
-func apply_normal_move(from_square: String, to_square: String, tween: Tween):
+func apply_normal_move(from_square: String, to_square: String, tween: Tween) -> void:
 	var from_piece_node: Control = piece_nodes_on_board[from_square]
 	piece_nodes_on_board[from_square] = null
 	tween.tween_property(from_piece_node, "position", square_to_position(to_square), MOVE_ANIMATION_DURATION)
@@ -323,6 +327,7 @@ func apply_normal_move(from_square: String, to_square: String, tween: Tween):
 	if to_piece_node != null:
 		tween.tween_property(to_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 		tween.finished.connect(to_piece_node.queue_free)
+		tween.finished.connect(Sound.capture.play)
 		
 		if game_mode == Enums.GameMode.ATOMIC:
 			tween.tween_property(from_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION)
@@ -331,9 +336,10 @@ func apply_normal_move(from_square: String, to_square: String, tween: Tween):
 			return
 	
 	piece_nodes_on_board[to_square] = from_piece_node
+	tween.finished.connect(Sound.move.play)
 
 
-func apply_en_passant_move(pawn_from_square: String, pawn_to_square: String, tween: Tween):
+func apply_en_passant_move(pawn_from_square: String, pawn_to_square: String, tween: Tween) -> void:
 	var from_pawn_node: Control = piece_nodes_on_board[pawn_from_square]
 	piece_nodes_on_board[pawn_from_square] = null
 	tween.tween_property(from_pawn_node, "position", square_to_position(pawn_to_square), MOVE_ANIMATION_DURATION)
@@ -351,9 +357,10 @@ func apply_en_passant_move(pawn_from_square: String, pawn_to_square: String, twe
 	piece_nodes_on_board[captured_pawn_square] = null
 	tween.tween_property(captured_pawn_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 	tween.finished.connect(captured_pawn_node.queue_free)
+	tween.finished.connect(Sound.capture.play)
 
 
-func apply_castling_move(king_from_square: String, rook_from_square: String, tween: Tween):
+func apply_castling_move(king_from_square: String, rook_from_square: String, tween: Tween) -> void:
 	# castling move came chess960 format, get king and rook target squares for godot
 	var king_node: TextureRect = piece_nodes_on_board[king_from_square]
 	var rook_node: TextureRect = piece_nodes_on_board[rook_from_square]
@@ -367,9 +374,10 @@ func apply_castling_move(king_from_square: String, rook_from_square: String, twe
 	
 	tween.tween_property(king_node, "position", square_to_position(king_to_square), MOVE_ANIMATION_DURATION)
 	tween.tween_property(rook_node, "position", square_to_position(rook_to_square), MOVE_ANIMATION_DURATION)
+	tween.finished.connect(Sound.move.play)
 
 
-func update_promotion_piece(square: String, new_role: Enums.Piece):
+func update_promotion_piece(square: String, new_role: Enums.Piece) -> void:
 	var color: Enums.ChessColor
 	match square[1]:
 		"8": color = Enums.ChessColor.WHITE
@@ -378,14 +386,15 @@ func update_promotion_piece(square: String, new_role: Enums.Piece):
 	piece_nodes_on_board[square].texture = PIECE_TEXTURES[ [new_role, color] ]
 
 
-func apply_put_move(square: String, new_role: Enums.Piece):
+func apply_put_move(square: String, new_role: Enums.Piece) -> void:
 	var _new_piece_node: TextureRect = new_piece_node(new_role, current_turn, square)
 	piece_nodes_on_board[square] = _new_piece_node
 	piece_nodes.add_child(_new_piece_node)
 	_on_move_animation_tween_finished(Enums.MoveType.PUT)
+	Sound.move.play()
 
 
-func explode_3x3_area_in_atomic_mode(square: String, tween: Tween):
+func explode_3x3_area_in_atomic_mode(square: String, tween: Tween) -> void:
 	var square_position: Vector2 = square_to_position(square) + Vector2(8.0, 8.0)
 	var target_square_positions: PackedVector2Array = [
 		square_position + Vector2(-16.0, -16.0),
@@ -412,7 +421,7 @@ func explode_3x3_area_in_atomic_mode(square: String, tween: Tween):
 			tween.finished.connect(target_piece_node.queue_free)
 
 
-func _on_move_animation_tween_finished(move_type: Enums.MoveType):
+func _on_move_animation_tween_finished(move_type: Enums.MoveType) -> void:
 	current_turn = master_scene.get_turn()
 	move_animation_finished.emit(move_type)
 	
@@ -434,15 +443,15 @@ func _on_move_animation_tween_finished(move_type: Enums.MoveType):
 	_is_move_animation_playing = false
 
 
-func hide_input_control_node():
+func hide_input_control_node() -> void:
 	input_control_node.hide()
 
 
-func show_input_control_node():
+func show_input_control_node() -> void:
 	input_control_node.show()
 
 
-func add_legal_move_markers():
+func add_legal_move_markers() -> void:
 	if active_square == king_in_danger_square:
 		marker_nodes.get_node(active_square).texture = MARKER_TEXTURES["white"]
 	else:
@@ -467,7 +476,7 @@ func add_legal_move_markers():
 			add_marker(legal_move_square, "red")
 
 
-func add_legal_put_move_markers():
+func add_legal_put_move_markers() -> void:
 	for legal_put_move in legal_put_moves:
 		add_marker(legal_put_move, "white")
 

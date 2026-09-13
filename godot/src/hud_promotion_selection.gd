@@ -29,7 +29,7 @@ func config(new_config_data: Dictionary[String, Variant]) -> void:
 					button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 
 
-func _on_move_animation_finished(move_type: Enums.MoveType):
+func _on_move_animation_finished(move_type: Enums.MoveType) -> void:
 	if move_type == Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
 		if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
 			match master_scene.get_turn():
@@ -42,6 +42,7 @@ func _on_move_animation_finished(move_type: Enums.MoveType):
 		show()
 
 
-func _on_selection_button_pressed(button_name: StringName):
+func _on_selection_button_pressed(button_name: StringName) -> void:
+	Sound.button_tick.play()
 	master_scene.apply_promotion_move(int(button_name) as Enums.Piece)
 	hide()
