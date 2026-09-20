@@ -102,20 +102,15 @@ impl LanHost
         let reader = reader_guard.as_mut().unwrap();
         let mut buffer = String::new();
 
-        loop
+        match reader.read_line(&mut buffer)
         {
-            buffer.clear();
-
-            match reader.read_line(&mut buffer)
+            Ok(0) => GString::new(),
+            Ok(_) =>
             {
-                Ok(0) => return GString::new(),
-                Ok(_) =>
-                {
-                    let received_msg = buffer.trim();
-                    return received_msg.to_gstring();
-                }
-                Err(_) => return GString::new()
+                let received_msg = buffer.trim();
+                received_msg.to_gstring()
             }
+            Err(_) => GString::new()
         }
     }
 
@@ -125,7 +120,7 @@ impl LanHost
     {
         let mut stream_guard = self.tcp_stream.lock().unwrap();
         let stream = stream_guard.as_mut().unwrap();
-        let msg = format!("{}|{}|{}|{}|{}\n", LanProtocol::MOVE_MSG, move_type as i32, from_square.to_string(), to_square.to_string(), promotion_or_put_piece as i32);
+        let msg = format!("{}|{}|{}|{}|{}\n", LanProtocol::MOVE_MSG, move_type as i32, from_square, to_square, promotion_or_put_piece as i32);
 
         stream.write_all(msg.as_bytes()).unwrap();
     }

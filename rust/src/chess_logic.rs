@@ -202,22 +202,22 @@ impl ChessLogic
             {
                 if self.position.promoted().contains(square)
                 {
-                    return Enums::Piece::Pawn
+                    Enums::Piece::Pawn
                 }
                 else
                 {
                     match piece.role
                     {
-                        Role::King => return Enums::Piece::King,
-                        Role::Queen => return Enums::Piece::Queen,
-                        Role::Rook => return Enums::Piece::Rook,
-                        Role::Bishop => return Enums::Piece::Bishop,
-                        Role::Knight => return Enums::Piece::Knight,
-                        Role::Pawn => return Enums::Piece::Pawn
+                        Role::King => Enums::Piece::King,
+                        Role::Queen => Enums::Piece::Queen,
+                        Role::Rook => Enums::Piece::Rook,
+                        Role::Bishop => Enums::Piece::Bishop,
+                        Role::Knight => Enums::Piece::Knight,
+                        Role::Pawn => Enums::Piece::Pawn
                     }
                 }
             }
-            None => return Enums::Piece::Empty
+            None => Enums::Piece::Empty
         }
     }
 
@@ -502,12 +502,11 @@ impl ChessLogic
         for legal_move in self.position.legal_moves()
         {
             if let Move::Put{role, to} = legal_move
+                && role == _role
+                && to == to_square
             {
-                if role == _role && to == to_square
-                {
-                    play_move_option = Some(legal_move);
-                    break;
-                }
+                play_move_option = Some(legal_move);
+                break;
             }
         }
 
