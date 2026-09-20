@@ -4,7 +4,7 @@ signal move_animation_started(move_type: Enums.MoveType, from: String, to: Strin
 signal move_animation_finished(move_type: Enums.MoveType)
 
 const MOVE_ANIMATION_DURATION: float = 0.3
-const PIECE_TEXTURES: Dictionary[Array, Resource] = {
+const PIECE_TEXTURES: Dictionary[Array, CompressedTexture2D] = {
 	[Enums.Piece.KING, Enums.ChessColor.WHITE]: preload("uid://cags18jbwmm0d"),
 	[Enums.Piece.KING, Enums.ChessColor.BLACK]: preload("uid://dioyjnoc4d7vu"),
 	[Enums.Piece.QUEEN, Enums.ChessColor.WHITE]: preload("uid://cfi88xmcwl8xv"),
