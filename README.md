@@ -1,4 +1,4 @@
-![Release](https://img.shields.io/badge/Release-v1.0.0-blue)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.0)
 [![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
 
 <p align="center">
@@ -102,14 +102,13 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 
 **To play against the AI,** you need to provide the **Fairy-Stockfish** engine binary file:
 
-1. Download the appropriate **Fairy-Stockfish** release for your OS: https://fairy-stockfish.github.io/download
+1. Download the appropriate **Fairy-Stockfish** (**modern** version) release for your OS: https://fairy-stockfish.github.io/download
 
 2. Place the downloaded executable inside the `PROJECT_ROOT/bin/` folder and make sure it matches the expected filename in your config (`PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern` or `PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern.exe`).
 
 <br>
 
-**If cross-compiling,** add the required targets via **rustup**:
-`rustup target add x86_64-pc-windows-msvc x86_64-unknown-linux-gnu`
+**If cross-compiling,** add the required targets via **rustup**: `rustup target add x86_64-pc-windows-msvc x86_64-unknown-linux-gnu`
 
 <br>
 
