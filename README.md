@@ -95,15 +95,25 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 **Prerequisites**
 - **Godot Engine** (v4.x)
 - **Rust Toolchain** (`cargo`, `rustc`)
-- *(Linux Cross-Compilation only)* `cargo-xwin` for targeting Windows binaries
+- `cargo-xwin` for targeting Windows binaries *(Cross-Compilation from Linux only)*
+- **Fairy-Stockfish** binary (executable) file.
 
 <br>
 
-**Add other build target for Cross-Compilation (rustup target add...):** x86_64-pc-windows-msvc, x86_64-unknown-linux-gnu
+**To play against the AI,** you need to provide the **Fairy-Stockfish** engine binary file:
+
+1. Download the appropriate **Fairy-Stockfish** release for your OS: https://fairy-stockfish.github.io/download
+
+2. Place the downloaded executable inside the `PROJECT_ROOT/bin/` folder and make sure it matches the expected filename in your config (`PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern` or `PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern.exe`).
 
 <br>
 
-*See also the [build scripts from Linux](Rust_build_scripts_from_Linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
+**If cross-compiling,** add the required targets via **rustup**:
+`rustup target add x86_64-pc-windows-msvc x86_64-unknown-linux-gnu`
+
+<br>
+
+*See also the [build scripts from Linux](rust_build_scripts_from_linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
 
 <br>
 
