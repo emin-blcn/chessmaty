@@ -2,13 +2,14 @@ use std::process::{ChildStdout, Command, Stdio};
 use std::io::{BufReader, BufRead, Write};
 use std::sync::Mutex;
 use shakmaty::uci::UciMove;
+use sha2::{Sha256, Digest};
 use godot::prelude::*;
 use godot::classes::{Os, FileAccess};
 use godot::classes::file_access::ModeFlags;
 
-use crate::enums as Enums;
+use crate::enums::GameMode;
 
-
+// Engine binary is embedded at compile time and extracted to the user data folder for runtime use.
 #[cfg(target_os = "linux")]
 static ENGINE_FILE_BYTES: &[u8] = include_bytes!("../../bin/fairy-stockfish_x86-64-modern");
 
@@ -21,16 +22,15 @@ pub struct ChessEngine
     child: Mutex<std::process::Child>,
     stdin: Mutex<std::process::ChildStdin>,
     reader: Mutex<BufReader<ChildStdout>>,
-    game_mode: Enums::GameMode,
+    game_mode: GameMode,
     fen_string: String,
     time_per_side: i64,
     time_increment: i64
 }
 
-
 impl ChessEngine
 {
-    pub fn new(game_mode: Enums::GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
+    pub fn new(game_mode: GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
     {
         #[cfg(target_os = "linux")]
         let engine_file_name = "fairy-stockfish_x86-64-modern";
@@ -41,9 +41,27 @@ impl ChessEngine
         let engine_file_path = Os::singleton().get_user_data_dir().path_join(engine_file_name);
         let file_exist = if FileAccess::file_exists(&engine_file_path)
         {
-            if let Some(file) = FileAccess::open(&engine_file_path, ModeFlags::READ)
+            if let Some(mut file) = FileAccess::open(&engine_file_path, ModeFlags::READ)
             {
-                file.get_length() == ENGINE_FILE_BYTES.len() as u64
+                let exist_engine_file_lenght = file.get_length();
+
+                // skip SHA-256 hash verification and return false if file sizes don't match
+                if exist_engine_file_lenght != ENGINE_FILE_BYTES.len() as u64
+                {
+                    false
+                }
+                else
+                {
+                    let engine_file_sha256_array = Sha256::digest(ENGINE_FILE_BYTES);
+                    let engine_file_sha256 = engine_file_sha256_array.as_slice();
+
+                    let exist_engine_file_bytes_packed_byte_array = file.get_buffer(exist_engine_file_lenght as i64);
+                    let exist_engine_file_bytes = exist_engine_file_bytes_packed_byte_array.as_slice();
+                    let exist_engine_file_sha256_array = Sha256::digest(exist_engine_file_bytes);
+                    let exist_engine_file_sha256 = exist_engine_file_sha256_array.as_slice();
+
+                    engine_file_sha256 == exist_engine_file_sha256
+                }
             }
             else
             {
@@ -109,15 +127,15 @@ impl ChessEngine
 
         match game_mode
         {
-            Enums::GameMode::Standard |
-            Enums::GameMode::Chess960 =>      writeln!(stdin, "setoption name UCI_Variant value chess").unwrap(),
-            Enums::GameMode::KingOfTheHill => writeln!(stdin, "setoption name UCI_Variant value kingofthehill").unwrap(),
-            Enums::GameMode::ThreeCheck =>    writeln!(stdin, "setoption name UCI_Variant value 3check").unwrap(),
-            Enums::GameMode::CrazyHouse =>    writeln!(stdin, "setoption name UCI_Variant value crazyhouse").unwrap(),
-            Enums::GameMode::AntiChess =>     writeln!(stdin, "setoption name UCI_Variant value antichess").unwrap(),
-            Enums::GameMode::Atomic =>        writeln!(stdin, "setoption name UCI_Variant value atomic").unwrap(),
-            Enums::GameMode::Horde =>         writeln!(stdin, "setoption name UCI_Variant value horde").unwrap(),
-            Enums::GameMode::RacingKings =>   writeln!(stdin, "setoption name UCI_Variant value racingkings").unwrap()
+            GameMode::Standard |
+            GameMode::Chess960 =>      writeln!(stdin, "setoption name UCI_Variant value chess").unwrap(),
+            GameMode::KingOfTheHill => writeln!(stdin, "setoption name UCI_Variant value kingofthehill").unwrap(),
+            GameMode::ThreeCheck =>    writeln!(stdin, "setoption name UCI_Variant value 3check").unwrap(),
+            GameMode::CrazyHouse =>    writeln!(stdin, "setoption name UCI_Variant value crazyhouse").unwrap(),
+            GameMode::AntiChess =>     writeln!(stdin, "setoption name UCI_Variant value antichess").unwrap(),
+            GameMode::Atomic =>        writeln!(stdin, "setoption name UCI_Variant value atomic").unwrap(),
+            GameMode::Horde =>         writeln!(stdin, "setoption name UCI_Variant value horde").unwrap(),
+            GameMode::RacingKings =>   writeln!(stdin, "setoption name UCI_Variant value racingkings").unwrap()
         }
         stdin.flush().unwrap();
 
@@ -171,7 +189,7 @@ impl ChessEngine
             let mut stdin = self.stdin.lock().unwrap();
 
             // give begin board fen to AI if game mode is Chess960, else give standard start position
-            if self.game_mode == Enums::GameMode::Chess960
+            if self.game_mode == GameMode::Chess960
             {
                 if move_history.is_empty()
                 {// move list is empty, AI will make first move
