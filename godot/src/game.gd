@@ -59,7 +59,8 @@ func _on_game_config_finished(new_config_data: Dictionary[String, Variant]) -> v
 	player_color = new_config_data["player_color"]
 	game_mode = new_config_data["game_mode"]
 	connection_type = new_config_data["connection_type"]
-	local_opponent = new_config_data["local_opponent"]
+	if connection_type == Enums.ConnectionType.LOCAL:
+		local_opponent = new_config_data["local_opponent"]
 	is_timed_game = new_config_data["time_per_side"] != -60_000
 	
 	chess_logic.config(new_config_data)
