@@ -15,8 +15,8 @@ func _ready() -> void:
 		resolution_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		resolution_button.modulate.a = 0.5
 	
-	var sfx_volume_percent: int = int(Global.user_data["sfx_volume"] * 100)
-	sfx_label.text = "SFX Volume: " + str(sfx_volume_percent)
+	var sfx_volume_percent: int = Global.user_data["sfx_volume"] * 100
+	sfx_label.text = "SFX Volume: " + str(sfx_volume_percent) + "%"
 	sfx_slider.value = sfx_volume_percent
 
 
@@ -56,6 +56,6 @@ func _on_okay_button_pressed() -> void:
 
 
 func _on_sfx_slider_value_changed(value: float) -> void:
-	sfx_label.text = "SFX Volume: " + str(int(value))
+	sfx_label.text = "SFX Volume: " + str(int(value)) + "%"
 	Global.user_data["sfx_volume"] = value / 100
 	Global.apply_sfx_volume_setting()

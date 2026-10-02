@@ -78,6 +78,18 @@ text = "Quit"
 visible = false
 layout_mode = 1
 
+[node name="version_label" type="Label" parent="." unique_id=449067657]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = -10.0
+offset_right = 21.0
+offset_bottom = -3.0
+grow_vertical = 0
+text = "v0.0.0"
+
 [connection signal="pressed" from="main_buttons/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="main_buttons/settings_button" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="main_buttons/quit_button" to="." method="_on_quit_button_pressed"]

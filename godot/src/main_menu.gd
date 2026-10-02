@@ -4,6 +4,9 @@ extends Control
 @onready var settings_gui_node: Panel = $settings_gui
 
 
+func _ready() -> void:
+	$version_label.text = "v" + ProjectSettings.get_setting("application/config/version")
+
 func _on_start_button_pressed() -> void:
 	Sound.button_tick.play()
 	get_tree().change_scene_to_file("uid://ccx66rc44ejbv")
