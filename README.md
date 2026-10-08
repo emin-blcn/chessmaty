@@ -1,5 +1,5 @@
 [![Release](https://img.shields.io/badge/Release-v1.0.0-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.0)
-[![License](https://img.shields.io/badge/License-MIT-green)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/license-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
 <p align="center">
   <img src="preview.gif" alt="Chessmaty Game Modes" width="720">
