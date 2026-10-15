@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://b6eirlketnoai"]
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_rkeaw"]
-[ext_resource type="Script" uid="uid://dc08orrlqa8xo" path="res://src/local_game_config.gd" id="3_lijna"]
-[ext_resource type="Script" uid="uid://dffph05iunyv7" path="res://src/lan_game_config.gd" id="4_u3r3t"]
+[ext_resource type="Script" uid="uid://dc08orrlqa8xo" path="res://src/objects/game_config_local.gd" id="3_lijna"]
+[ext_resource type="Script" uid="uid://dffph05iunyv7" path="res://src/objects/game_config_lan.gd" id="4_u3r3t"]
 
 [sub_resource type="Animation" id="Animation_7rcxa"]
 resource_name = "default"
@@ -27,7 +27,7 @@ _data = {
 &"default": SubResource("Animation_7rcxa")
 }
 
-[node name="game_config" type="TabContainer" unique_id=1807799992]
+[node name="TabContainer" type="TabContainer" unique_id=1807799992]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://bwj4opff1w5kr"]
+
+[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_77vk8"]
+[ext_resource type="Script" uid="uid://cd2o6nt8coqc6" path="res://src/objects/hud_elements/move_history_table.gd" id="2_r4lfm"]
+[ext_resource type="Texture2D" uid="uid://bwikuvfsn1sju" path="res://assets/graphics/gui/button.png" id="3_a2usn"]
+
+[sub_resource type="Gradient" id="Gradient_abc6i"]
+offsets = PackedFloat32Array(0, 0.125, 0.875, 1)
+colors = PackedColorArray(0.78200006, 0.874, 0.92, 1, 0.6509804, 0.7294118, 0.76862746, 1, 0.6509804, 0.7294118, 0.76862746, 1, 0.527, 0.589, 0.62, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 8
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pgbu2"]
+gradient = SubResource("Gradient_abc6i")
+width = 1
+height = 8
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
+
+[sub_resource type="Gradient" id="Gradient_gswpu"]
+offsets = PackedFloat32Array(0, 0.125, 0.875, 1)
+colors = PackedColorArray(0.59, 0.27139997, 0.40414995, 1, 0.4392157, 0.2, 0.29803923, 1, 0.4392157, 0.2, 0.29803923, 1, 0.29, 0.1334, 0.19864997, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 8
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ex2lk"]
+gradient = SubResource("Gradient_gswpu")
+width = 1
+height = 8
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+metadata/_snap_enabled = true
+metadata/_snap_count = 2
+
+[node name="Panel" type="Panel" unique_id=736317109]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -66.0
+offset_bottom = 82.0
+grow_horizontal = 0
+theme = ExtResource("1_77vk8")
+script = ExtResource("2_r4lfm")
+
+[node name="Label" type="Label" parent="." unique_id=37045576]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -8.0
+offset_bottom = -1.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 8
+text = "Move History"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=2071611855]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 3.0
+offset_right = -1.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="elements" type="VBoxContainer" parent="ScrollContainer" unique_id=996557453]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 1
+
+[node name="instance_element" type="NinePatchRect" parent="ScrollContainer/elements" unique_id=187555844]
+visible = false
+custom_minimum_size = Vector2(0, 10)
+custom_maximum_size = Vector2(60, -1)
+layout_mode = 2
+texture = ExtResource("3_a2usn")
+region_rect = Rect2(0, 0, 5, 7)
+patch_margin_left = 2
+patch_margin_top = 3
+patch_margin_right = 2
+patch_margin_bottom = 3
+metadata/_edit_group_ = true
+
+[node name="move_number_label" type="Label" parent="ScrollContainer/elements/instance_element" unique_id=196452811]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 21.0
+grow_vertical = 2
+size_flags_vertical = 1
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 8
+text = "0."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="white_texture_rect" type="TextureRect" parent="ScrollContainer/elements/instance_element" unique_id=1485939898]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.1
+anchor_right = 0.6333333
+anchor_bottom = 0.9
+texture = SubResource("GradientTexture2D_pgbu2")
+
+[node name="white_move_label" type="Label" parent="ScrollContainer/elements/instance_element/white_texture_rect" unique_id=1899986765]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 8
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="black_texture_rect" type="TextureRect" parent="ScrollContainer/elements/instance_element" unique_id=856433515]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6333333
+anchor_top = 0.1
+anchor_right = 0.96666664
+anchor_bottom = 0.9
+texture = SubResource("GradientTexture2D_ex2lk")
+metadata/_edit_use_anchors_ = true
+
+[node name="black_move_label" type="Label" parent="ScrollContainer/elements/instance_element/black_texture_rect" unique_id=328300879]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 8
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1

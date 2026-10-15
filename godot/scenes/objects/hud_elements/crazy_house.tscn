@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bvwebetu56kcf"]
 
-[ext_resource type="Script" uid="uid://cbwpqwql4tk0y" path="res://src/hud_crazy_house_control.gd" id="1_rrji2"]
+[ext_resource type="Script" uid="uid://cbwpqwql4tk0y" path="res://src/objects/hud_elements/crazy_house.gd" id="1_rrji2"]
 [ext_resource type="Texture2D" uid="uid://dsnueobqdww8a" path="res://assets/graphics/piece_icons/queen_black.png" id="1_rtdpb"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="2_rrji2"]
 [ext_resource type="Texture2D" uid="uid://drmnk83sio8lm" path="res://assets/graphics/piece_icons/rook_black.png" id="3_4dqry"]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://opi1s7sjts4x"]
 
 [ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_shaxa"]
-[ext_resource type="Script" uid="uid://dnhwul7bmenqc" path="res://src/hud_three_check_control.gd" id="2_bb4id"]
+[ext_resource type="Script" uid="uid://dnhwul7bmenqc" path="res://src/objects/hud_elements/three_check.gd" id="2_bb4id"]
 
 [node name="Control" type="Control" unique_id=532153863]
 layout_mode = 3

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c8liaimbtivw6"]
 
-[ext_resource type="Script" uid="uid://bx4vi8mswwye" path="res://src/board.gd" id="1_c5s35"]
+[ext_resource type="Script" uid="uid://bx4vi8mswwye" path="res://src/objects/board.gd" id="1_c5s35"]
 [ext_resource type="FontFile" uid="uid://bfynth8idup1h" path="res://assets/fonts/BoldPixels.otf" id="2_ubtoo"]
 [ext_resource type="Texture2D" uid="uid://ds5tjc7lh2yyt" path="res://assets/graphics/chess_board/board.png" id="3_s07tm"]
 [ext_resource type="Texture2D" uid="uid://bushm83uhla8x" path="res://assets/graphics/chess_board/board_border.png" id="4_gptsx"]
@@ -554,7 +554,7 @@ grow_vertical = 2
 texture = ExtResource("3_s07tm")
 metadata/_edit_lock_ = true
 
-[node name="king_of_the_hill_color_rect" type="ColorRect" parent="." unique_id=2095535336]
+[node name="king_of_the_hill_coloring" type="ColorRect" parent="." unique_id=2095535336]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -570,7 +570,7 @@ grow_vertical = 2
 color = Color(1, 1, 0, 0.25490198)
 metadata/_edit_lock_ = true
 
-[node name="racing_kings_color_rect" type="ColorRect" parent="." unique_id=1661434192]
+[node name="racing_kings_coloring" type="ColorRect" parent="." unique_id=1661434192]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -586,7 +586,7 @@ grow_vertical = 2
 color = Color(1, 1, 0, 0.25490198)
 metadata/_edit_lock_ = true
 
-[node name="marker_nodes" type="Control" parent="." unique_id=1638250089]
+[node name="move_marker_textures" type="Control" parent="." unique_id=1638250089]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -621,7 +621,7 @@ patch_margin_right = 7
 patch_margin_bottom = 7
 metadata/_edit_lock_ = true
 
-[node name="piece_nodes" type="Control" parent="." unique_id=1331294321]
+[node name="piece_textures" type="Control" parent="." unique_id=1331294321]
 y_sort_enabled = true
 layout_mode = 1
 anchors_preset = 8
@@ -637,7 +637,7 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[node name="input_conrol" type="Control" parent="." unique_id=1641036659]
+[node name="input_control" type="Control" parent="." unique_id=1641036659]
 visible = false
 layout_mode = 1
 anchors_preset = 8
@@ -653,5 +653,5 @@ grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_lock_ = true
 
-[connection signal="gui_input" from="input_conrol" to="." method="_on_input_conrol_gui_input"]
-[connection signal="mouse_exited" from="input_conrol" to="." method="_on_input_conrol_mouse_exited"]
+[connection signal="gui_input" from="input_control" to="." method="_on_input_conrol_gui_input"]
+[connection signal="mouse_exited" from="input_control" to="." method="_on_input_conrol_mouse_exited"]

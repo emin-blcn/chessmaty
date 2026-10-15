@@ -15,17 +15,17 @@ func config(new_config_data: Dictionary[String, Variant]) -> void:
 		local_opponent = new_config_data["local_opponent"]
 	
 	if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
-		for button: Button in get_node("Panel/white").get_children() + get_node("Panel/black").get_children():
+		for button: Button in $Panel/white.get_children() + $Panel/black.get_children():
 			button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 	else:
 		match player_color:
 			Enums.ChessColor.WHITE:
-				get_node("Panel/black").queue_free()
-				for button: Button in get_node("Panel/white").get_children():
+				$Panel/black.queue_free()
+				for button: Button in $Panel/white.get_children():
 					button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 			Enums.ChessColor.BLACK:
-				get_node("Panel/white").queue_free()
-				for button: Button in get_node("Panel/black").get_children():
+				$Panel/white.queue_free()
+				for button: Button in $Panel/black.get_children():
 					button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 
 
@@ -34,11 +34,11 @@ func _on_move_animation_finished(move_type: Enums.MoveType) -> void:
 		if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
 			match master_scene.get_turn():
 				Enums.ChessColor.WHITE:
-					get_node("Panel/white").show()
-					get_node("Panel/black").hide()
+					$Panel/white.show()
+					$Panel/black.hide()
 				Enums.ChessColor.BLACK:
-					get_node("Panel/black").show()
-					get_node("Panel/white").hide()
+					$Panel/black.show()
+					$Panel/white.hide()
 		show()
 
 

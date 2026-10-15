@@ -4,7 +4,7 @@ const BASE_RESOLUTION: Vector2i = Vector2i(320, 180)
 
 var user_data_file_path: String = OS.get_user_data_dir().path_join("user_data.bin")
 var user_data: Dictionary = {
-	"resolution": 3,
+	"window_size": 3,
 	"fullscreen": true,
 	"sfx_volume": 1.0}
 var sfx_bus_index: int = AudioServer.get_bus_index("sfx")
@@ -12,7 +12,7 @@ var sfx_bus_index: int = AudioServer.get_bus_index("sfx")
 
 func _ready() -> void:
 	load_settings_data()
-	apply_resolution_setting()
+	apply_window_size_setting()
 	apply_fullscreen_setting()
 	apply_sfx_volume_setting()
 
@@ -33,9 +33,9 @@ func save_settings_data() -> void:
 	file.close()
 
 
-func apply_resolution_setting() -> void:
-	DisplayServer.window_set_size(BASE_RESOLUTION * user_data["resolution"])
-	get_window().size = BASE_RESOLUTION * user_data["resolution"]
+func apply_window_size_setting() -> void:
+	DisplayServer.window_set_size(BASE_RESOLUTION * user_data["window_size"])
+	get_window().size = BASE_RESOLUTION * user_data["window_size"]
 	get_window().move_to_center()
 
 

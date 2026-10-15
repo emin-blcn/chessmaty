@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Chessmaty"
-config/version="1.0.0"
+config/version="v1.0.0"
 run/main_scene="uid://dwnbfraut6h7t"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chessmaty"
@@ -34,7 +34,6 @@ Sound="*uid://d34byqbjnoepx"
 
 window/size/viewport_width=320
 window/size/viewport_height=180
-window/size/resizable=false
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 mouse_cursor/custom_image="uid://dkowp2vku6tfa"
@@ -45,10 +44,8 @@ folder_colors={
 "res://assets/": "red",
 "res://gdextensions/": "orange",
 "res://lib/": "yellow",
-"res://libraries/": "green",
-"res://objects/": "green",
-"res://scenes/": "teal",
-"res://src/": "blue"
+"res://scenes/": "green",
+"res://src/": "teal"
 }
 
 [physics]

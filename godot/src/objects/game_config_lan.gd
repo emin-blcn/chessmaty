@@ -19,7 +19,7 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var wait_for_peer_node: Control = $TabContainer/create/wait_for_peer
 @onready var cancel_waiting_for_peer_button: Button = $TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button
 @onready var refresh_host_list_button: Button = $TabContainer/join/refresh_host_list_button
-@onready var element_nodes: VBoxContainer = $TabContainer/join/ColorRect/ScrollContainer/elements
+@onready var elements_node: VBoxContainer = $TabContainer/join/ColorRect/ScrollContainer/elements
 @onready var element_instance_node: ColorRect = $TabContainer/join/ColorRect/ScrollContainer/elements/element_instance
 
 var lan_host: LanHost = LanHost.new()
@@ -55,7 +55,7 @@ func discover_hosts() -> void:
 	refresh_host_list_button.modulate.a = 0.5
 	cancel_waiting_for_peer_button.hide()
 	
-	for element: ColorRect in element_nodes.get_children():
+	for element: ColorRect in elements_node.get_children():
 		if element != element_instance_node:
 			element.queue_free()
 	
@@ -122,7 +122,7 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 				new_element_node.get_node("HBoxContainer2/increment_second_label").text = "increment in seconds (" + str(host_config_data["time_increment"] / 1000) + ")"
 			@warning_ignore_restore("integer_division")
 		
-		element_nodes.add_child(new_element_node)
+		elements_node.add_child(new_element_node)
 		new_element_node.show()
 	
 	refresh_host_list_button.mouse_filter = Control.MOUSE_FILTER_STOP

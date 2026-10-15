@@ -1,10 +1,10 @@
 extends Control
 
 @onready var master_scene: Control = get_tree().current_scene
-@onready var undo_button: Button = $undo_button
-@onready var undo_message_label_node: Label = $undo_button/undo_message_label
-@onready var undo_state_animator_node: AnimationPlayer = $undo_button/undo_state_animator
-@onready var leave_message_label_node: Label = $leave_button/leave_message_label
+@onready var undo_button: Button = $move_history_table/undo_button
+@onready var undo_message_label_node: Label = $move_history_table/undo_button/undo_message_label
+@onready var undo_state_animator_node: AnimationPlayer = $move_history_table/undo_button/undo_state_animator
+@onready var leave_message_label_node: Label = $move_history_table/leave_button/leave_message_label
 
 var connection_type: Enums.ConnectionType
 

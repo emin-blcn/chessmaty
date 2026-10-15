@@ -1,11 +1,13 @@
 extends Control
 
+@onready var title_label: Label = $title
 @onready var main_buttons_node: VBoxContainer = $main_buttons
-@onready var settings_gui_node: Panel = $settings_gui
+@onready var settings_node: Panel = $setings
 
 
 func _ready() -> void:
-	$version_label.text = "v" + ProjectSettings.get_setting("application/config/version")
+	$version.text = ProjectSettings.get_setting("application/config/version")
+
 
 func _on_start_button_pressed() -> void:
 	Sound.button_tick.play()
@@ -14,8 +16,9 @@ func _on_start_button_pressed() -> void:
 
 func _on_settings_button_pressed() -> void:
 	Sound.button_tick.play()
-	get_node("bg/Label").hide()
-	settings_gui_node.show()
+	main_buttons_node.hide()
+	title_label.hide()
+	settings_node.show()
 
 
 func _on_quit_button_pressed() -> void:

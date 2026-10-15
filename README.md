@@ -82,8 +82,8 @@ Chessmaty supports 9 different chess variants (inspired by [Lichess](https://lic
 <br>
 
 ## Credits & Assets
-- **Pixel Chess Sprites:** [Pixel Chess on itch.io](https://nulltale.itch.io/chess) - Asset by nulltale ([nulltale.itch.io](https://nulltale.itch.io/))
-- **Monogram font:** [monogram by datagoblin](https://datagoblin.itch.io/monogram) - Font by datagoblin ([datagoblin.itch.io](https://datagoblin.itch.io/))
+- **Pixel Chess Sprites:** [Pixel Chess on itch.io](https://nulltale.itch.io/chess) - Asset by nulltale ([nulltale itch.io](https://nulltale.itch.io/))
+- **Monogram font:** [monogram by datagoblin](https://datagoblin.itch.io/monogram) - Font by datagoblin ([datagoblin itch.io](https://datagoblin.itch.io/))
 - **Bold Pixels Font:** [Bold Pixels on itch.io](https://yukipixels.itch.io/boldpixels) - Font by Yūki ([@YukiPixels](https://linktr.ee/yukipixels))
 - **Sound effects sourced from Lichess:** https://github.com/lichess-org/lila/tree/master/public/sound
 

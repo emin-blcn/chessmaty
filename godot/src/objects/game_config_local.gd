@@ -28,10 +28,6 @@ var config_data: Dictionary[String, Variant] = {
 	"ai_skill_level": 0}
 
 
-func _ready() -> void:
-	$game_mode_color_rect/game_mode_item_list.select(0)
-
-
 func _on_player_color_button_pressed() -> void:
 	Sound.button_tick.play()
 	match config_data["player_color"]:

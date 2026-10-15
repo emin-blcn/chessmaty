@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://j2sfhbf33tkg"]
 
-[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/hud_time_control.gd" id="1_c4b0o"]
+[ext_resource type="Script" uid="uid://br5jn4t67pryb" path="res://src/objects/hud_elements/time.gd" id="1_c4b0o"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="2_wsvgb"]
 
 [node name="Control" type="Control" unique_id=614857075]
