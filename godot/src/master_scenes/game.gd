@@ -56,13 +56,13 @@ func _ready() -> void:
 	chess_logic.put_move_applied.connect(time_node._on_put_move_applied)
 	chess_logic.put_move_applied.connect(crazy_house_node._on_put_move_applied)
 	
-	chess_logic.undoed_last_move.connect(_on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(board_node._on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(hud_elements_node._on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(move_history_table_node._on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(time_node._on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(three_check_node._on_undoed_last_move)
-	chess_logic.undoed_last_move.connect(crazy_house_node._on_undoed_last_move)
+	chess_logic.undo_last_move_applied.connect(_on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(board_node._on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(hud_elements_node._on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(move_history_table_node._on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(time_node._on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(three_check_node._on_undo_last_move_applied)
+	chess_logic.undo_last_move_applied.connect(crazy_house_node._on_undo_last_move_applied)
 	
 	board_node.move_animation_finished.connect(_on_move_animation_finished)
 	board_node.move_animation_finished.connect(time_node._on_move_animation_finished)
@@ -281,7 +281,7 @@ func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
 	active_turn = get_turn()
 
 
-func _on_undoed_last_move(_double_undo: bool) -> void:
+func _on_undo_last_move_applied(_double_undo: bool) -> void:
 	active_turn = get_turn()
 	if match_finished_node.visible:
 		match_finished_node.hide()

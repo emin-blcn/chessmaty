@@ -5,8 +5,8 @@ reloadable = true
 
 [libraries]
 
-linux.debug.x86_64 =     "res://lib/librust_linux_x86_64_debug.so"
-linux.release.x86_64 =   "res://lib/librust_linux_x86_64_release.so"
+linux.x86_64.debug =     "res://lib/chessmaty_rust_linux_x86_64_debug.so"
+linux.x86_64.release =   "res://lib/chessmaty_rust_linux_x86_64_release.so"
 
-windows.debug.x86_64 =   "res://lib/librust_windows_x86_64_debug.dll"
-windows.release.x86_64 = "res://lib/librust_windows_x86_64_release.dll"
+windows.x86_64.debug =   "res://lib/chessmaty_rust_windows_x86_64_debug.dll"
+windows.x86_64.release = "res://lib/chessmaty_rust_windows_x86_64_release.dll"

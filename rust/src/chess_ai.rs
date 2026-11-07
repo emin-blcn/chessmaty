@@ -33,7 +33,7 @@ pub struct ChessAI
     fen_string: String,
     time_per_side: i64,
     time_increment: i64,
-    stop_ai_thinking_requested: Mutex<bool>
+    stop_ai_thinking: Mutex<bool>
 }
 
 
@@ -203,7 +203,7 @@ impl ChessAI
             fen_string,
             time_per_side,
             time_increment,
-            stop_ai_thinking_requested: Mutex::<bool>::new(false)
+            stop_ai_thinking: Mutex::<bool>::new(false)
         }
     }
 
@@ -261,7 +261,7 @@ impl ChessAI
             writer.flush().unwrap();
         }
 
-        let mut reader = self.reader.lock().unwrap();
+        let mut reader_mutex_guard = self.reader.lock().unwrap();
         let mut best_move = String::new();
         let mut line = String::new();
 
@@ -269,7 +269,7 @@ impl ChessAI
         {
             line.clear();
 
-            match reader.read_line(&mut line)
+            match reader_mutex_guard.read_line(&mut line)
             {
                 Ok(read_size) =>
                 {
@@ -281,10 +281,10 @@ impl ChessAI
                     {
                         if line.starts_with("bestmove")
                         {
-                            let mut stop_ai_thinking_requested_mutex_guard = self.stop_ai_thinking_requested.lock().unwrap();
-                            if *stop_ai_thinking_requested_mutex_guard
+                            let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking.lock().unwrap();
+                            if *stop_ai_thinking_mutex_guard
                             {
-                                *stop_ai_thinking_requested_mutex_guard = false;
+                                *stop_ai_thinking_mutex_guard = false;
                             }
                             else
                             {
@@ -308,8 +308,8 @@ impl ChessAI
 
     pub fn stop_ai_thinking(&self)
     {
-        let mut stop_ai_thinking_requested_mutex_guard = self.stop_ai_thinking_requested.lock().unwrap();
-        *stop_ai_thinking_requested_mutex_guard = true;
+        let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking.lock().unwrap();
+        *stop_ai_thinking_mutex_guard = true;
 
         let mut writer = self.writer.lock().unwrap();
         let _ = writeln!(writer, "stop");

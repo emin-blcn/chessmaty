@@ -38,7 +38,7 @@ func _on_undo_button_pressed() -> void:
 	master_scene.undo_last_move()
 
 
-func _on_undoed_last_move(_double_undo: bool):
+func _on_undo_last_move_applied(_double_undo: bool):
 	if !master_scene.is_undoable():
 		hide_undo_button()
 

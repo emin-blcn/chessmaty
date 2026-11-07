@@ -73,7 +73,7 @@ func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
 	_on_move_applied(Enums.MoveType.NORMAL, "", "")
 
 
-func _on_undoed_last_move(_double_undo: bool):
+func _on_undo_last_move_applied(_double_undo: bool):
 	_on_move_applied(Enums.MoveType.NORMAL, "", "")
 
 

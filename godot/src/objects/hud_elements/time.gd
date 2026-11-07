@@ -96,7 +96,7 @@ func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
 	_on_move_animation_finished()
 
 
-func _on_undoed_last_move(_double_undo: bool):
+func _on_undo_last_move_applied(_double_undo: bool):
 	if time_left_history.size() <= 2:
 		hundred_ms_timer.stop()
 	

@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/badge/Release-v1.0.0-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.0)
+[![Release](https://img.shields.io/badge/Release-v1.0.1-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.1)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
 <p align="center">
@@ -119,42 +119,42 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 **For Linux x86-64**
 
 - **Debug Build:**
-  - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/debug/librust.so`
+  - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/debug/libchessmaty_rust.so`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/librust_linux_x86_64_debug.so`
+  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_linux_x86_64_debug.so`
 
 
 
 - **Release Build:**
-  - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/release/librust.so`
+  - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/release/libchessmaty_rust.so`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/librust_linux_x86_64_release.so`
+  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_linux_x86_64_release.so`
 
 <br>
 
 **For Windows x86-64**
 
 - **Debug Build:**
-  - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/debug/rust.dll`
+  - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/debug/chessmaty_rust.dll`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/librust_windows_x86_64_debug.dll`
+  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_windows_x86_64_debug.dll`
 
 <br>
 
 - **Release Build:**
-  - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/release/rust.dll`
+  - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/release/chessmaty_rust.dll`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/librust_windows_x86_64_release.dll`
+  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_windows_x86_64_release.dll`
 
 <br>
 
 > **Note on Default Build Paths:**
 >
 > If you compile without specifying a target platform (e.g. standard `cargo build`), the output binary location will omit the target platform directory:
-> - Linux Debug: `PROJECT_ROOT/rust/target/debug/librust.so`
-> - Linux Release: `PROJECT_ROOT/rust/target/release/librust.so`
-> - Windows Debug: `PROJECT_ROOT/rust/target/debug/rust.dll`
-> - Windows Release: `PROJECT_ROOT/rust/target/release/rust.dll`
+> - Linux Debug: `PROJECT_ROOT/rust/target/debug/libchessmaty_rust.so`
+> - Linux Release: `PROJECT_ROOT/rust/target/release/libchessmaty_rust.so`
+> - Windows Debug: `PROJECT_ROOT/rust/target/debug/chessmaty_rust.dll`
+> - Windows Release: `PROJECT_ROOT/rust/target/release/chessmaty_rust.dll`
 
 <br>
 

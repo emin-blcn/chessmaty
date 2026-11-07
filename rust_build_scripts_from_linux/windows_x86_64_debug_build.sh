@@ -10,5 +10,5 @@ cargo xwin build --target x86_64-pc-windows-msvc
 
 cd "$REPO_ROOT"
 
-rm -f "$REPO_ROOT/godot/lib/librust_windows_x86_64_debug.dll"
-cp "$REPO_ROOT/rust/target/x86_64-pc-windows-msvc/debug/rust.dll" "$REPO_ROOT/godot/lib/librust_windows_x86_64_debug.dll"
+rm -f "$REPO_ROOT/godot/lib/chessmaty_rust_windows_x86_64_debug.dll"
+cp "$REPO_ROOT/rust/target/x86_64-pc-windows-msvc/debug/chessmaty_rust.dll" "$REPO_ROOT/godot/lib/chessmaty_rust_windows_x86_64_debug.dll"

@@ -33,7 +33,7 @@ func _on_move_animation_finished() -> void:
 			update_white_check_label()
 
 
-func _on_undoed_last_move(_double_undo: bool):
+func _on_undo_last_move_applied(_double_undo: bool):
 	update_white_check_label()
 	update_black_check_label()
 

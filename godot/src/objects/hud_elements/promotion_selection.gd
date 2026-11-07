@@ -43,6 +43,14 @@ func show_promotion_selection() -> void:
 
 func _on_selection_button_pressed(button_name: StringName) -> void:
 	Sound.button_tick.play()
-	master_scene.update_promotion_move_role(int(button_name) as Enums.PieceRole)
+	
+	var role: Enums.PieceRole
+	match button_name:
+		&"1": role = Enums.PieceRole.QUEEN
+		&"2": role = Enums.PieceRole.BISHOP
+		&"3": role = Enums.PieceRole.KNIGHT
+		&"4": role = Enums.PieceRole.ROOK
+	
+	master_scene.update_promotion_move_role(role)
 	master_scene.apply_promotion_move()
 	hide()

@@ -63,7 +63,7 @@ impl ChessLogic
     #[signal]
     fn put_move_applied(role: enums::PieceRole, to: GString);
     #[signal]
-    fn undoed_last_move(double_undo: bool);
+    fn undo_last_move_applied(double_undo: bool);
 
 
     #[func]
@@ -503,13 +503,10 @@ impl ChessLogic
 
         for legal_move in self.position.legal_moves()
         {
-            if let Move::Put{role: r, to: t} = legal_move
+            if let Move::Put{role: r, to: t} = legal_move && r == role_object && t == to_square
             {
-                if r == role_object && t == to_square
-                {
-                    play_move_option = Some(legal_move);
-                    break;
-                }
+                play_move_option = Some(legal_move);
+                break;
             }
         }
 
@@ -576,7 +573,7 @@ impl ChessLogic
             }
         }
         
-        self.base_mut().emit_signal("undoed_last_move", &[double_undo.to_variant()]);
+        self.base_mut().emit_signal("undo_last_move_applied", &[double_undo.to_variant()]);
     }
 
 

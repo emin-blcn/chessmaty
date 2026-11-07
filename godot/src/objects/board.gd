@@ -312,7 +312,7 @@ func _on_put_move_applied(role: Enums.PieceRole, to: String) -> void:
 	apply_put_move(role, to)
 
 
-func _on_undoed_last_move(_double_undo: bool):
+func _on_undo_last_move_applied(_double_undo: bool):
 	clear_move_markers(false)
 	move_animation_finished.emit()
 
@@ -393,8 +393,6 @@ func apply_promotion_move(pawn_from_square: String, pawn_to_square: String) -> v
 	if to_piece_node == null:
 		move_animation_tween.finished.connect(Sound.move.play)
 		piece_nodes_on_board[pawn_to_square] = from_pawn_node
-		if player_color == active_turn:
-			move_animation_tween.finished.connect(promotion_selection_required.emit)
 	else:
 		move_animation_tween.finished.connect(Sound.capture.play)
 		move_animation_tween.tween_property(to_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
@@ -408,10 +406,16 @@ func apply_promotion_move(pawn_from_square: String, pawn_to_square: String) -> v
 			explode_3x3_area_in_atomic_mode(pawn_to_square)
 		else:
 			piece_nodes_on_board[pawn_to_square] = from_pawn_node
-			if player_color == active_turn:
-				move_animation_tween.finished.connect(promotion_selection_required.emit)
+	
+	if player_color == active_turn or (connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN):
+		move_animation_tween.finished.connect(promotion_selection_required.emit)
+	move_animation_tween.finished.connect(clear_animation_tween)
 	
 	move_animation_tween.play()
+
+
+func clear_animation_tween():
+	move_animation_tween = null
 
 
 func update_promotion_piece(square: String, role: Enums.PieceRole) -> void:
@@ -479,7 +483,7 @@ func _on_move_animation_finished() -> void:
 		# a king in danger in new move
 		add_move_marker(new_king_in_danger_squre, "red")
 	
-	move_animation_tween = null
+	clear_animation_tween()
 	active_turn = master_scene.get_turn()
 	_is_move_animation_playing = false
 
