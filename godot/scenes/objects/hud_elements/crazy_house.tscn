@@ -103,7 +103,7 @@ offset_left = 11.0
 offset_top = 36.0
 offset_right = 61.0
 offset_bottom = 88.0
-theme_override_constants/h_separation = 4
+theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 2
 columns = 4
 
@@ -118,9 +118,13 @@ disabled = true
 
 [node name="queen_label" type="Label" parent="black" unique_id=1599798505]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="rook_button" type="Button" parent="black" unique_id=203206]
 custom_minimum_size = Vector2(16, 16)
@@ -133,9 +137,13 @@ disabled = true
 
 [node name="rook_label" type="Label" parent="black" unique_id=1957441032]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="bishop_button" type="Button" parent="black" unique_id=77256974]
 custom_minimum_size = Vector2(16, 16)
@@ -148,9 +156,13 @@ disabled = true
 
 [node name="bishop_label" type="Label" parent="black" unique_id=720135465]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="knight_button" type="Button" parent="black" unique_id=216936379]
 custom_minimum_size = Vector2(16, 16)
@@ -163,9 +175,13 @@ disabled = true
 
 [node name="knight_label" type="Label" parent="black" unique_id=1487974009]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="pawn_button" type="Button" parent="black" unique_id=625699126]
 custom_minimum_size = Vector2(16, 16)
@@ -178,9 +194,13 @@ disabled = true
 
 [node name="pawn_label" type="Label" parent="black" unique_id=1918340714]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="white" type="GridContainer" parent="." unique_id=1353941890]
 layout_mode = 0
@@ -188,7 +208,7 @@ offset_left = 11.0
 offset_top = 92.0
 offset_right = 61.0
 offset_bottom = 144.0
-theme_override_constants/h_separation = 4
+theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 2
 columns = 4
 
@@ -203,9 +223,13 @@ disabled = true
 
 [node name="queen_label" type="Label" parent="white" unique_id=1652268563]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="rook_button" type="Button" parent="white" unique_id=1895168793]
 custom_minimum_size = Vector2(16, 16)
@@ -218,9 +242,13 @@ disabled = true
 
 [node name="rook_label" type="Label" parent="white" unique_id=374147100]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="bishop_button" type="Button" parent="white" unique_id=1757680344]
 custom_minimum_size = Vector2(16, 16)
@@ -233,9 +261,13 @@ disabled = true
 
 [node name="bishop_label" type="Label" parent="white" unique_id=449355361]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="knight_button" type="Button" parent="white" unique_id=1891049578]
 custom_minimum_size = Vector2(16, 16)
@@ -248,9 +280,13 @@ disabled = true
 
 [node name="knight_label" type="Label" parent="white" unique_id=586097625]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="pawn_button" type="Button" parent="white" unique_id=1672656466]
 custom_minimum_size = Vector2(16, 16)
@@ -263,9 +299,13 @@ disabled = true
 
 [node name="pawn_label" type="Label" parent="white" unique_id=1294958090]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("2_rrji2")
 theme_override_font_sizes/font_size = 8
 text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="selected_piece_marker" type="Panel" parent="." unique_id=1637863788]
 visible = false

@@ -42,13 +42,13 @@ pub enum ChessColor
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
 #[godot(via = i32)]
-pub enum Piece
+pub enum PieceRole
 {
 	King,
 	Queen,
+    Rook,
 	Bishop,
 	Knight,
-	Rook,
 	Pawn,
     Empty
 }
@@ -61,9 +61,6 @@ pub enum MoveType
     EnPassant,
     Castling,
     Promotion,
-    PromotionRequestByHuman,
-    PromotionRequestByAI,
-    Undo,
     Put
 }
 

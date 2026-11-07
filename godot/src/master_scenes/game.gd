@@ -4,19 +4,6 @@ const MOVE_MSG: String = "CHESSMATY_MOVE"
 const UNDO_REQUEST_MSG: String = "CHESSMATY_UNDO_REQUEST"
 const UNDO_RESPONSE_MSG: String = "CHESSMATY_UNDO_RESPONSE"
 
-@onready var game_content_node: Control = $game_content
-@onready var board_node: Control = $game_content/board
-@onready var hud_node: Control = $game_content/hud
-@onready var move_history_table_node: Panel = $game_content/hud/move_history_table
-@onready var time_node: Control = $game_content/hud/time
-@onready var three_check_node: Control = $game_content/hud/three_check
-@onready var crazy_house_node: Control = $game_content/hud/crazy_house
-@onready var promotion_selection_node: TextureRect = $game_content/hud/promotion_selection
-@onready var received_undo_request_node: TextureRect = $game_content/hud/received_undo_request
-@onready var opponent_left_node: TextureRect = $game_content/hud/opponent_left
-@onready var match_finished_node: Control = $game_content/hud/match_finished
-@onready var game_config_node: TabContainer = $game_config
-
 var player_color: Enums.ChessColor
 var game_mode: Enums.GameMode
 var connection_type: Enums.ConnectionType
@@ -25,33 +12,68 @@ var is_timed_game: bool
 var chess_logic: ChessLogic = ChessLogic.new()
 var listen_lan_opponent_thread: Thread
 var lan_stream # host or peer (same named functions)
-var current_turn: Enums.ChessColor = Enums.ChessColor.WHITE
+var active_turn: Enums.ChessColor = Enums.ChessColor.WHITE
 var is_game_started: bool = false
 var is_local_ai_thinking: bool = false
 var is_waiting_for_undo_response: bool = false
-var promotion_pawn_move: Dictionary[String, String] = {"from": "", "to": ""}
-var ai_selected_promotion_role: Enums.Piece = Enums.Piece.EMPTY
+var promotion_move_info: Dictionary[String, Variant] = {"from": "", "to": "", "role": Enums.PieceRole.EMPTY}
+
+@onready var game_content_node: Control = $game_content
+@onready var board_node: Control = $game_content/board
+@onready var hud_elements_node: Control = $game_content/hud_elements
+@onready var move_history_table_node: VBoxContainer = $game_content/hud_elements/move_history_table
+@onready var time_node: Control = $game_content/hud_elements/time
+@onready var three_check_node: Control = $game_content/hud_elements/three_check
+@onready var crazy_house_node: Control = $game_content/hud_elements/crazy_house
+@onready var promotion_selection_node: TextureRect = $game_content/hud_elements/promotion_selection
+@onready var received_undo_request_node: TextureRect = $game_content/hud_elements/received_undo_request
+@onready var opponent_left_node: TextureRect = $game_content/hud_elements/opponent_left
+@onready var match_finished_node: Control = $game_content/hud_elements/match_finished
+@onready var game_config_node: TabContainer = $game_config
 
 
 func _ready() -> void:
 	game_config_node.get_node("local_game").config_finished.connect(_on_game_config_finished)
 	game_config_node.get_node("lan_game").config_finished.connect(_on_game_config_finished)
 	
-	board_node.move_animation_started.connect(_on_move_animation_started)
-	board_node.move_animation_started.connect(hud_node._on_move_animation_started)
-	board_node.move_animation_started.connect(move_history_table_node._on_move_animation_started)
-	board_node.move_animation_started.connect(time_node._on_move_animation_started)
-	board_node.move_animation_started.connect(crazy_house_node._on_move_animation_started)
+	chess_logic.move_applied.connect(_on_move_applied)
+	chess_logic.move_applied.connect(board_node._on_move_applied)
+	chess_logic.move_applied.connect(move_history_table_node._on_move_applied)
+	chess_logic.move_applied.connect(time_node._on_move_applied)
+	chess_logic.move_applied.connect(crazy_house_node._on_move_applied)
+	
+	chess_logic.promotion_piece_updated.connect(_on_promotion_piece_updated)
+	chess_logic.promotion_piece_updated.connect(board_node._on_promotion_piece_updated)
+	chess_logic.promotion_piece_updated.connect(move_history_table_node._on_promotion_piece_updated)
+	chess_logic.promotion_piece_updated.connect(time_node._on_promotion_piece_updated)
+	chess_logic.promotion_piece_updated.connect(crazy_house_node._on_promotion_piece_updated)
+	
+	chess_logic.promotion_move_played_by_ai.connect(_on_promotion_move_played_by_ai)
+	
+	chess_logic.put_move_applied.connect(_on_put_move_applied)
+	chess_logic.put_move_applied.connect(board_node._on_put_move_applied)
+	chess_logic.put_move_applied.connect(move_history_table_node._on_put_move_applied)
+	chess_logic.put_move_applied.connect(time_node._on_put_move_applied)
+	chess_logic.put_move_applied.connect(crazy_house_node._on_put_move_applied)
+	
+	chess_logic.undoed_last_move.connect(_on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(board_node._on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(hud_elements_node._on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(move_history_table_node._on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(time_node._on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(three_check_node._on_undoed_last_move)
+	chess_logic.undoed_last_move.connect(crazy_house_node._on_undoed_last_move)
 	
 	board_node.move_animation_finished.connect(_on_move_animation_finished)
-	board_node.move_animation_finished.connect(promotion_selection_node._on_move_animation_finished)
 	board_node.move_animation_finished.connect(time_node._on_move_animation_finished)
 	board_node.move_animation_finished.connect(three_check_node._on_move_animation_finished)
+	board_node.promotion_selection_required.connect(promotion_selection_node.show_promotion_selection)
 	
 	time_node.white_times_up.connect(_on_white_times_up)
 	time_node.black_times_up.connect(_on_black_times_up)
 	
-	chess_logic.move_applied.connect(board_node._on_chess_logic_move_applied)
+	crazy_house_node.piece_selected_for_put_move.connect(board_node._on_piece_selected_for_put_move)
+	crazy_house_node.piece_unselected_for_put_move.connect(board_node._on_piece_unselected_for_put_move)
 
 
 func _on_game_config_finished(new_config_data: Dictionary[String, Variant]) -> void:
@@ -64,7 +86,7 @@ func _on_game_config_finished(new_config_data: Dictionary[String, Variant]) -> v
 	is_timed_game = new_config_data["time_per_side"] != -60_000
 	
 	chess_logic.config(new_config_data)
-	hud_node.config(new_config_data)
+	hud_elements_node.config(new_config_data)
 	promotion_selection_node.config(new_config_data)
 	time_node.config(new_config_data)
 	three_check_node.config(new_config_data)
@@ -100,16 +122,27 @@ func init_stream(new_stream) -> void:
 
 func wait_for_lan_opponent_msg() -> void:
 	while true:
-		var received_msg: String = lan_stream.wait_for_opponent_msg()
-		if received_msg.is_empty():
+		var received_text: String = lan_stream.wait_for_opponent_msg()
+		if received_text.is_empty():
 			call_deferred("_on_received_leave_msg_from_lan_opponent")
 			break
-		elif received_msg.begins_with(MOVE_MSG):
-			call_deferred("_on_received_move_msg_from_lan_opponent", received_msg)
-		elif received_msg.begins_with(UNDO_REQUEST_MSG):
-			call_deferred("_on_received_undo_request_msg_from_lan_opponent")
-		elif received_msg.begins_with(UNDO_RESPONSE_MSG):
-			call_deferred("_on_received_undo_response_msg_from_lan_opponent", received_msg)
+		
+		var received_json_data: Dictionary = JSON.parse_string(received_text)
+		var received_msg_type: String = received_json_data.get("msg_type")
+		var received_params: Dictionary = received_json_data.get("params")
+		
+		match received_msg_type:
+			MOVE_MSG:
+				var move_type: Enums.MoveType = int(received_params.get("move_type")) as Enums.MoveType
+				var from: String = received_params.get("from")
+				var to: String = received_params.get("to")
+				var promotion_or_put_role: Enums.PieceRole = int(received_params.get("promotion_or_put_role")) as Enums.PieceRole
+				call_deferred("_on_received_move_msg_from_lan_opponent", move_type, from, to, promotion_or_put_role)
+			UNDO_REQUEST_MSG:
+				call_deferred("_on_received_undo_request_msg_from_lan_opponent")
+			UNDO_RESPONSE_MSG:
+				var response: bool = received_params.get("response")
+				call_deferred("_on_received_undo_response_msg_from_lan_opponent", response)
 
 
 func _on_received_leave_msg_from_lan_opponent() -> void:
@@ -125,16 +158,15 @@ func _on_received_undo_request_msg_from_lan_opponent() -> void:
 func accept_undo_request() -> void:
 	lan_stream.send_undo_response_msg_to_opponent(true)
 	
-	if player_color == current_turn or get_position_history_count() == 1:
-		chess_logic.undo_last_move()
+	if player_color == active_turn or get_position_history_count() == 1:
+		chess_logic.undo_last_move(false)
 	else:
-		chess_logic.undo_last_move()
-		chess_logic.undo_last_move()
+		chess_logic.undo_last_move(true)
 	
 	board_node.update_all_pieces()
 	board_node.enable_board_input()
 	if is_undoable():
-		hud_node.show_undo_button()
+		hud_elements_node.show_undo_button()
 	received_undo_request_node.hide()
 	is_waiting_for_undo_response = false
 
@@ -142,36 +174,27 @@ func accept_undo_request() -> void:
 func reject_undo_request() -> void:
 	lan_stream.send_undo_response_msg_to_opponent(false)
 	board_node.enable_board_input()
-	hud_node.show_undo_button()
+	hud_elements_node.show_undo_button()
 	received_undo_request_node.hide()
 	is_waiting_for_undo_response = false
 
 
-func _on_received_undo_response_msg_from_lan_opponent(received_undo_response_msg: String) -> void:
-	var is_undo_request_accepted = received_undo_response_msg.split("|")[1] == "true"
-	
-	if is_undo_request_accepted:
-		if player_color != current_turn or get_position_history_count() == 1:
-			chess_logic.undo_last_move()
+func _on_received_undo_response_msg_from_lan_opponent(undo_request_accepted: bool) -> void:
+	if undo_request_accepted:
+		if player_color != active_turn or get_position_history_count() == 1:
+			chess_logic.undo_last_move(false)
 		else:
-			chess_logic.undo_last_move()
-			chess_logic.undo_last_move()
+			chess_logic.undo_last_move(true)
 	
 		board_node.update_all_pieces()
-	hud_node._on_responded_undo_request(is_undo_request_accepted)
+	hud_elements_node._on_responded_undo_request(undo_request_accepted)
 	board_node.enable_board_input()
 	if is_undoable():
-		hud_node.show_undo_button()
+		hud_elements_node.show_undo_button()
 	is_waiting_for_undo_response = false
 
 
-func _on_received_move_msg_from_lan_opponent(received_move_msg: String) -> void:
-	var msg_element_array: PackedStringArray = received_move_msg.split("|")
-	var move_type: Enums.MoveType = int(msg_element_array[1]) as Enums.MoveType
-	var from: String = msg_element_array[2]
-	var to: String = msg_element_array[3]
-	var promotion_or_put_role: Enums.Piece = int(msg_element_array[4]) as Enums.Piece
-	
+func _on_received_move_msg_from_lan_opponent(move_type: Enums.MoveType, from: String, to: String, promotion_or_put_role: Enums.PieceRole) -> void:
 	match move_type:
 		Enums.MoveType.NORMAL:
 			apply_normal_move(from, to)
@@ -180,91 +203,91 @@ func _on_received_move_msg_from_lan_opponent(received_move_msg: String) -> void:
 		Enums.MoveType.CASTLING:
 			apply_castling_move(from, to)
 		Enums.MoveType.PROMOTION:
-			promotion_pawn_move.set("from", from)
-			promotion_pawn_move.set("to", to)
-			apply_promotion_move(promotion_or_put_role)
+			update_promotion_move_squares(from, to)
+			update_promotion_move_role(promotion_or_put_role)
+			board_node.apply_promotion_move(from, to)
+			apply_promotion_move()
 		Enums.MoveType.PUT:
-			appy_put_move(promotion_or_put_role, to)
-
-
-func update_ai_selected_promotion_role(new_role: Enums.Piece) -> void:
-	ai_selected_promotion_role = new_role
+			apply_put_move(promotion_or_put_role, to)
 
 
 # Note: when chess_logic.apply_*_move() functions are called, switches the turn.
 # some tasks must be execute before switching the turn.
 func apply_normal_move(from: String, to: String) -> void:
-	if connection_type == Enums.ConnectionType.LAN and player_color == current_turn:
+	if connection_type == Enums.ConnectionType.LAN and player_color == active_turn:
 		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.NORMAL, from, to))
 	
 	chess_logic.apply_normal_move(from, to)
 
 
 func apply_en_passant_move(from: String, to: String) -> void:
-	if connection_type == Enums.ConnectionType.LAN and player_color == current_turn:
+	if connection_type == Enums.ConnectionType.LAN and player_color == active_turn:
 		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.EN_PASSANT, from, to))
 	
 	chess_logic.apply_en_passant_move(from, to)
 
 
 func apply_castling_move(from: String, to: String) -> void:
-	if connection_type == Enums.ConnectionType.LAN and player_color == current_turn:
+	if connection_type == Enums.ConnectionType.LAN and player_color == active_turn:
 		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.CASTLING, from, to))
 	
 	chess_logic.apply_castling_move(from, to)
 
 
-func apply_promotion_move(new_role: Enums.Piece) -> void:
-	var from: String = promotion_pawn_move.get("from")
-	var to: String = promotion_pawn_move.get("to")
-	
-	if connection_type == Enums.ConnectionType.LAN and player_color == current_turn:
-		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.PROMOTION, from, to, new_role))
-	
-	chess_logic.apply_promotion_move(from, to, new_role)
-	
-	promotion_pawn_move.set("from", "")
-	promotion_pawn_move.set("to", "")
-	ai_selected_promotion_role = Enums.Piece.EMPTY
+func update_promotion_move_squares(from: String, to: String) -> void:
+	promotion_move_info.set("from", from)
+	promotion_move_info.set("to", to)
 
 
-func appy_put_move(role: Enums.Piece, square: String) -> void:
-	if connection_type == Enums.ConnectionType.LAN and player_color == current_turn:
+func update_promotion_move_role(role: Enums.PieceRole) -> void:
+	promotion_move_info.set("role", role)
+
+
+func apply_promotion_move() -> void:
+	var from: String = promotion_move_info.get("from")
+	var to: String = promotion_move_info.get("to")
+	var role: Enums.PieceRole = promotion_move_info.get("role")
+	
+	if connection_type == Enums.ConnectionType.LAN and player_color == active_turn:
+		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.PROMOTION, from, to, role))
+	
+	chess_logic.apply_promotion_move(from, to, role)
+	
+	promotion_move_info.set("from", "")
+	promotion_move_info.set("to", "")
+	promotion_move_info.set("role", Enums.PieceRole.EMPTY)
+
+
+func apply_put_move(role: Enums.PieceRole, square: String) -> void:
+	if connection_type == Enums.ConnectionType.LAN and player_color == active_turn:
 		WorkerThreadPool.add_task(send_move_msg_to_lan_opponent.bind(Enums.MoveType.PUT, " ", square, role))
 	
 	chess_logic.apply_put_move(role, square)
-	crazy_house_node._on_put_move_applied()
 
 
-func send_move_msg_to_lan_opponent(move_type: Enums.MoveType, from_square: String, to_square: String, promotion_new_role: Enums.Piece = Enums.Piece.QUEEN) -> void:
-	lan_stream.send_move_msg_to_opponent(move_type, from_square, to_square, promotion_new_role)
+func send_move_msg_to_lan_opponent(move_type: Enums.MoveType, from: String, to: String, promotion_or_put_role: Enums.PieceRole = Enums.PieceRole.EMPTY) -> void:
+	lan_stream.send_move_msg_to_opponent(move_type, from, to, promotion_or_put_role)
 
 
-func _on_selected_piece_for_put_move(piece_role: Enums.Piece) -> void:
-	board_node._on_selected_piece_for_put_move(piece_role)
+func _on_move_applied(_move_type: Enums.MoveType, _from: String, _to: String) -> void:
+	active_turn = get_turn()
 
 
-func _on_unselected_piece_for_put_move() -> void:
-	board_node._on_unselected_piece_for_put_move()
+func _on_promotion_piece_updated(_from: String, _to: String, _role: Enums.PieceRole) -> void:
+	active_turn = get_turn()
 
 
-func _on_move_animation_started(move_type: Enums.MoveType, from: String, to: String) -> void:
-	current_turn = get_turn()
-	
-	if move_type == Enums.MoveType.UNDO:
-		if match_finished_node.visible:
-			match_finished_node.hide()
-	elif move_type == Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN or move_type == Enums.MoveType.PROMOTION_REQUEST_BY_AI:
-		promotion_pawn_move.set("from", from)
-		promotion_pawn_move.set("to", to)
+func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
+	active_turn = get_turn()
 
 
-func _on_move_animation_finished(move_type: Enums.MoveType) -> void:
-	if move_type == Enums.MoveType.UNDO:
-		return
-	elif move_type == Enums.MoveType.PROMOTION_REQUEST_BY_AI:
-		apply_promotion_move(ai_selected_promotion_role)
-	
+func _on_undoed_last_move(_double_undo: bool) -> void:
+	active_turn = get_turn()
+	if match_finished_node.visible:
+		match_finished_node.hide()
+
+
+func _on_move_animation_finished() -> void:
 	var match_finish_state: Enums.MatchFinishedState = get_match_finished_state()
 	if match_finish_state != Enums.MatchFinishedState.NOT_FINISHED:
 		match_finished(match_finish_state)
@@ -272,30 +295,31 @@ func _on_move_animation_finished(move_type: Enums.MoveType) -> void:
 	
 	match connection_type:
 		Enums.ConnectionType.LOCAL:
-			# local game
+			if get_position_history_count() > 0:
+				hud_elements_node.show_undo_button()
+			
 			if local_opponent == Enums.LocalOpponent.HUMAN:
 				# opponenet is local human, turn isn't important, allow to make move
 				board_node.enable_board_input()
-				hud_node.show_undo_button()
-			else:
-				# opponent is AI
-				if player_color == current_turn:
+			else: # opponent is AI
+				if player_color == active_turn:
 					# it'a human's turn, allow to make move
 					board_node.enable_board_input()
-					hud_node.show_undo_button()
 				else:
 					# it'a AI's turn, don't allow to make move, AI will make move
 					play_ai_move()
 		Enums.ConnectionType.LAN:
-			if player_color == current_turn:
+			if player_color == active_turn:
 				board_node.enable_board_input()
 				if get_position_history_count() > 1:
-					hud_node.show_undo_button()
+					hud_elements_node.show_undo_button()
 			else:
-				hud_node.show_undo_button()
+				hud_elements_node.show_undo_button()
 
 
 func play_ai_move() -> void:
+	is_local_ai_thinking = true
+	
 	var white_time: int = 0
 	var black_time: int = 0
 	
@@ -303,18 +327,26 @@ func play_ai_move() -> void:
 		white_time = time_node.get_white_time_left()
 		black_time = time_node.get_black_time_left()
 	
-	is_local_ai_thinking = true
 	WorkerThreadPool.add_task(calculate_best_ai_move_in_thread.bind(white_time, black_time))
 
 
 func calculate_best_ai_move_in_thread(white_time: int, black_time: int) -> void:
-	var best_move: String = chess_logic.best_ai_move(white_time, black_time)
-	call_deferred("_on_ai_move_ready", best_move)
+	var best_ai_move: String = chess_logic.best_ai_move(white_time, black_time)
+	call_deferred("_on_ai_move_ready", best_ai_move)
 
 
 func _on_ai_move_ready(best_ai_move: String) -> void:
-	chess_logic.play_ai_move(best_ai_move)
+	if !best_ai_move.is_empty():
+		chess_logic.play_ai_move(best_ai_move)
 	is_local_ai_thinking = false
+
+
+func _on_promotion_move_played_by_ai(from: String, to: String, role: Enums.PieceRole) -> void:
+	update_promotion_move_squares(from, to)
+	update_promotion_move_role(role)
+	
+	board_node.apply_promotion_move(from, to)
+	apply_promotion_move()
 
 
 func _on_white_times_up() -> void:
@@ -346,31 +378,27 @@ func get_turn() -> Enums.ChessColor:
 	return chess_logic.turn() as Enums.ChessColor
 
 
-func get_piece_role_from_square(square: String) -> Enums.Piece:
-	return chess_logic.piece_role_from_square(square) as Enums.Piece
+func get_piece_role_from_square(square: String) -> Enums.PieceRole:
+	return chess_logic.piece_role_from_square(square) as Enums.PieceRole
 
 
-func get_piece_role_from_square_in_put_move(square: String) -> Enums.Piece:
-	return chess_logic.piece_role_from_square_in_put_move(square) as Enums.Piece
+func get_piece_role_from_square_in_put_move(square: String) -> Enums.PieceRole:
+	return chess_logic.piece_role_from_square_in_put_move(square) as Enums.PieceRole
 
 
 func get_piece_color_from_square(square: String) -> Enums.ChessColor:
 	return chess_logic.piece_color_from_square(square) as Enums.ChessColor
 
 
-func get_crazyhouse_pocket_white_pieces() -> Dictionary[Enums.Piece, int]:
-	return chess_logic.crazyhouse_pocket_white_pieces() as Dictionary[Enums.Piece, int]
-
-
-func get_crazyhouse_pocket_black_pieces() -> Dictionary[Enums.Piece, int]:
-	return chess_logic.crazyhouse_pocket_black_pieces() as Dictionary[Enums.Piece, int]
+func get_crazyhouse_pockets() -> Array[Vector3i]: # x = color, y = role, z = value
+	return chess_logic.crazyhouse_pockets()
 
 
 func get_legal_moves_from_square(square: String) -> Dictionary[String, Enums.MoveType]:
 	return chess_logic.legal_moves_from_square(square) as Dictionary[String, Enums.MoveType]
 
 
-func get_legal_put_moves_from_role(piece_role: Enums.Piece) -> PackedStringArray:
+func get_legal_put_moves_from_role(piece_role: Enums.PieceRole) -> PackedStringArray:
 	return chess_logic.legal_put_moves_from_role(piece_role)
 
 
@@ -395,11 +423,8 @@ func get_position_history_count() -> int:
 
 
 func is_undoable() -> bool:
-	if connection_type == Enums.ConnectionType.LOCAL:
-		if local_opponent == Enums.LocalOpponent.HUMAN:
-			return get_position_history_count() > 0 and !board_node.is_move_animation_playing() and !is_local_ai_thinking
-		else:
-			return get_position_history_count() > 1 and !board_node.is_move_animation_playing() and !is_local_ai_thinking
+	if get_position_history_count() <= 0 or board_node.is_move_animation_playing():
+		return false
 	
 	if is_waiting_for_undo_response:
 		return false
@@ -412,21 +437,25 @@ func undo_last_move() -> void:
 		return
 	
 	board_node.disable_board_input()
-	hud_node.hide_undo_button()
-	board_node.clear_markers()
+	hud_elements_node.hide_undo_button()
 	
 	if connection_type == Enums.ConnectionType.LOCAL:
 		if local_opponent == Enums.LocalOpponent.HUMAN:
-			chess_logic.undo_last_move()
+			chess_logic.undo_last_move(false)
 		else:
-			chess_logic.undo_last_move()
-			chess_logic.undo_last_move()
+			if is_local_ai_thinking:
+				chess_logic.stop_ai_thinking()
+			
+			if active_turn == player_color:
+				chess_logic.undo_last_move(true)
+			else:
+				chess_logic.undo_last_move(false)
 		
 		board_node.update_all_pieces()
 		board_node.enable_board_input()
 		
 		if is_undoable():
-			hud_node.show_undo_button()
+			hud_elements_node.show_undo_button()
 		
 	elif connection_type == Enums.ConnectionType.LAN:
 		is_waiting_for_undo_response = true

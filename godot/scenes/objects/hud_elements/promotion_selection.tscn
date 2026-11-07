@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cfsjp52ilwb18"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_00y83"]
+[ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="1_42kb0"]
 [ext_resource type="Script" uid="uid://b5ycxv76dgi5l" path="res://src/objects/hud_elements/promotion_selection.gd" id="2_8nila"]
 [ext_resource type="Texture2D" uid="uid://cp7h3f6nl280m" path="res://assets/graphics/chess_pieces/queen_black.png" id="2_fdcw6"]
 [ext_resource type="Texture2D" uid="uid://dnip4r75iln63" path="res://assets/graphics/chess_pieces/bishop_black.png" id="3_8nila"]
@@ -87,7 +87,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_00y83")
+theme = ExtResource("1_42kb0")
 texture = SubResource("GradientTexture2D_5xl1b")
 script = ExtResource("2_8nila")
 metadata/_edit_lock_ = true

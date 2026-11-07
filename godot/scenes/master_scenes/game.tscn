@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://cmwwvuydl32bg" path="res://src/master_scenes/game.gd" id="1_873yf"]
 [ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="2_nm604"]
 [ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://scenes/objects/board.tscn" id="3_3ucld"]
-[ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/objects/hud_elements/hud.gd" id="4_lkrtx"]
+[ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/objects/hud_elements/hud_elements.gd" id="4_lkrtx"]
+[ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="4_opn41"]
 [ext_resource type="PackedScene" uid="uid://bwj4opff1w5kr" path="res://scenes/objects/hud_elements/move_history_table.tscn" id="5_ta85g"]
 [ext_resource type="FontFile" uid="uid://dccpa8r8j0gic" path="res://assets/fonts/monogram-extended.ttf" id="6_44dqv"]
 [ext_resource type="Texture2D" uid="uid://cw6simk655sgy" path="res://assets/graphics/gui/icon_undo_move.png" id="7_3xp0n"]
@@ -292,7 +293,7 @@ metadata/_edit_lock_ = true
 [node name="board" parent="game_content" unique_id=578451742 instance=ExtResource("3_3ucld")]
 layout_mode = 1
 
-[node name="hud" type="Control" parent="game_content" unique_id=1015186951]
+[node name="hud_elements" type="Control" parent="game_content" unique_id=1015186951]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -300,38 +301,35 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+theme = ExtResource("4_opn41")
 script = ExtResource("4_lkrtx")
 metadata/_edit_lock_ = true
 
-[node name="move_history_table" parent="game_content/hud" unique_id=736317109 instance=ExtResource("5_ta85g")]
+[node name="move_history_table" parent="game_content/hud_elements" unique_id=736317109 instance=ExtResource("5_ta85g")]
 layout_mode = 1
-offset_left = -69.0
-offset_top = 8.0
-offset_right = -3.0
-offset_bottom = 90.0
-metadata/_edit_lock_ = true
-
-[node name="undo_button" type="Button" parent="game_content/hud/move_history_table" unique_id=1857265176]
-self_modulate = Color(1, 1, 1, 0.49803922)
-layout_mode = 1
-anchors_preset = 3
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -8.0
-offset_top = 3.0
-offset_bottom = 11.0
+offset_left = -70.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = 93.0
 grow_horizontal = 0
-grow_vertical = 0
+
+[node name="undo_button" type="Button" parent="game_content/hud_elements" unique_id=1857265176]
+self_modulate = Color(1, 1, 1, 0.5019608)
+layout_mode = 0
+offset_left = 307.0
+offset_top = 98.0
+offset_right = 315.0
+offset_bottom = 106.0
 mouse_filter = 2
 theme_override_fonts/font = ExtResource("6_44dqv")
 theme_override_styles/normal = SubResource("StyleBoxTexture_hc21h")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_3r2ld")
 theme_override_styles/hover = SubResource("StyleBoxTexture_5hoaj")
-alignment = 2
 
-[node name="undo_message_label" type="Label" parent="game_content/hud/move_history_table/undo_button" unique_id=1583861356]
+[node name="undo_message_label" type="Label" parent="game_content/hud_elements/undo_button" unique_id=1583861356]
 visible = false
 layout_mode = 1
 anchors_preset = 9
@@ -345,28 +343,21 @@ theme_override_font_sizes/font_size = 8
 text = "Undo last move"
 horizontal_alignment = 2
 
-[node name="undo_state_animator" type="AnimationPlayer" parent="game_content/hud/move_history_table/undo_button" unique_id=1223619575]
+[node name="undo_state_animator" type="AnimationPlayer" parent="game_content/hud_elements/undo_button" unique_id=1223619575]
 libraries/ = SubResource("AnimationLibrary_rysoc")
 
-[node name="leave_button" type="Button" parent="game_content/hud/move_history_table" unique_id=865488424]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -8.0
-offset_top = 16.0
-offset_bottom = 24.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="leave_button" type="Button" parent="game_content/hud_elements" unique_id=865488424]
+layout_mode = 0
+offset_left = 307.0
+offset_top = 112.0
+offset_right = 315.0
+offset_bottom = 120.0
 theme_override_fonts/font = ExtResource("6_44dqv")
 theme_override_styles/normal = SubResource("StyleBoxTexture_lwkho")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_oksyj")
 theme_override_styles/hover = SubResource("StyleBoxTexture_upx7y")
-alignment = 2
 
-[node name="leave_message_label" type="Label" parent="game_content/hud/move_history_table/leave_button" unique_id=1375898115]
+[node name="leave_message_label" type="Label" parent="game_content/hud_elements/leave_button" unique_id=1375898115]
 visible = false
 layout_mode = 1
 anchors_preset = 9
@@ -379,33 +370,33 @@ theme_override_font_sizes/font_size = 8
 text = "Leave match"
 horizontal_alignment = 2
 
-[node name="time" parent="game_content/hud" unique_id=614857075 instance=ExtResource("9_vshuw")]
+[node name="time" parent="game_content/hud_elements" unique_id=614857075 instance=ExtResource("9_vshuw")]
 visible = false
 layout_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="three_check" parent="game_content/hud" unique_id=532153863 instance=ExtResource("10_kcfyl")]
+[node name="three_check" parent="game_content/hud_elements" unique_id=532153863 instance=ExtResource("10_kcfyl")]
 visible = false
 layout_mode = 1
 
-[node name="crazy_house" parent="game_content/hud" unique_id=1704907922 instance=ExtResource("11_pm1mm")]
+[node name="crazy_house" parent="game_content/hud_elements" unique_id=1704907922 instance=ExtResource("11_pm1mm")]
 visible = false
 layout_mode = 1
 metadata/_edit_lock_ = true
 
-[node name="promotion_selection" parent="game_content/hud" unique_id=1667121682 instance=ExtResource("12_tnxn1")]
+[node name="promotion_selection" parent="game_content/hud_elements" unique_id=1667121682 instance=ExtResource("12_tnxn1")]
 visible = false
 layout_mode = 1
 
-[node name="received_undo_request" parent="game_content/hud" unique_id=1639987217 instance=ExtResource("13_t2yr7")]
+[node name="received_undo_request" parent="game_content/hud_elements" unique_id=1639987217 instance=ExtResource("13_t2yr7")]
 visible = false
 layout_mode = 1
 
-[node name="opponent_left" parent="game_content/hud" unique_id=1722805660 instance=ExtResource("14_pk722")]
+[node name="opponent_left" parent="game_content/hud_elements" unique_id=1722805660 instance=ExtResource("14_pk722")]
 visible = false
 layout_mode = 1
 
-[node name="match_finished" parent="game_content/hud" unique_id=129727042 instance=ExtResource("15_1luef")]
+[node name="match_finished" parent="game_content/hud_elements" unique_id=129727042 instance=ExtResource("15_1luef")]
 visible = false
 layout_mode = 1
 texture = SubResource("GradientTexture2D_5xl1b")
@@ -415,17 +406,17 @@ layout_mode = 1
 offset_top = -87.0
 offset_bottom = 87.0
 
-[connection signal="mouse_entered" from="game_content/hud/move_history_table/undo_button" to="game_content/hud" method="_on_undo_button_mouse_entered"]
-[connection signal="mouse_exited" from="game_content/hud/move_history_table/undo_button" to="game_content/hud" method="_on_undo_button_mouse_exited"]
-[connection signal="pressed" from="game_content/hud/move_history_table/undo_button" to="game_content/hud" method="_on_undo_button_pressed"]
-[connection signal="mouse_entered" from="game_content/hud/move_history_table/leave_button" to="game_content/hud" method="_on_leave_button_mouse_entered"]
-[connection signal="mouse_exited" from="game_content/hud/move_history_table/leave_button" to="game_content/hud" method="_on_leave_button_mouse_exited"]
-[connection signal="pressed" from="game_content/hud/move_history_table/leave_button" to="game_content/hud" method="_on_leave_button_pressed"]
-[connection signal="pressed" from="game_content/hud/received_undo_request/accept_button" to="." method="accept_undo_request"]
-[connection signal="pressed" from="game_content/hud/received_undo_request/reject_button" to="." method="reject_undo_request"]
-[connection signal="pressed" from="game_content/hud/opponent_left/leave_button" to="." method="exit_to_menu"]
-[connection signal="pressed" from="game_content/hud/match_finished/leave_button" to="." method="exit_to_menu"]
+[connection signal="mouse_entered" from="game_content/hud_elements/undo_button" to="game_content/hud_elements" method="_on_undo_button_mouse_entered"]
+[connection signal="mouse_exited" from="game_content/hud_elements/undo_button" to="game_content/hud_elements" method="_on_undo_button_mouse_exited"]
+[connection signal="pressed" from="game_content/hud_elements/undo_button" to="game_content/hud_elements" method="_on_undo_button_pressed"]
+[connection signal="mouse_entered" from="game_content/hud_elements/leave_button" to="game_content/hud_elements" method="_on_leave_button_mouse_entered"]
+[connection signal="mouse_exited" from="game_content/hud_elements/leave_button" to="game_content/hud_elements" method="_on_leave_button_mouse_exited"]
+[connection signal="pressed" from="game_content/hud_elements/leave_button" to="game_content/hud_elements" method="_on_leave_button_pressed"]
+[connection signal="pressed" from="game_content/hud_elements/received_undo_request/accept_button" to="." method="accept_undo_request"]
+[connection signal="pressed" from="game_content/hud_elements/received_undo_request/reject_button" to="." method="reject_undo_request"]
+[connection signal="pressed" from="game_content/hud_elements/opponent_left/leave_button" to="." method="exit_to_menu"]
+[connection signal="pressed" from="game_content/hud_elements/match_finished/leave_button" to="." method="exit_to_menu"]
 
-[editable path="game_content/hud/received_undo_request"]
-[editable path="game_content/hud/opponent_left"]
-[editable path="game_content/hud/match_finished"]
+[editable path="game_content/hud_elements/received_undo_request"]
+[editable path="game_content/hud_elements/opponent_left"]
+[editable path="game_content/hud_elements/match_finished"]

@@ -1,41 +1,56 @@
 extends Node
 
-const BASE_RESOLUTION: Vector2i = Vector2i(320, 180)
-
-var user_data_file_path: String = OS.get_user_data_dir().path_join("user_data.bin")
-var user_data: Dictionary = {
-	"window_size": 3,
-	"fullscreen": true,
-	"sfx_volume": 1.0}
+const BASE_WINDOW_SIZE: Vector2i = Vector2i(320, 180)
+ 
 var sfx_bus_index: int = AudioServer.get_bus_index("sfx")
+var user_data_file_dir: String = OS.get_user_data_dir().path_join("user_data.bin")
+@warning_ignore("integer_division")
+var user_data: Dictionary[String, Variant] = {
+	"fullscreen": true,
+	"window_size": DisplayServer.screen_get_size().x / BASE_WINDOW_SIZE.x,
+	"sfx_volume": 1.0}
 
 
 func _ready() -> void:
-	load_settings_data()
-	apply_window_size_setting()
-	apply_fullscreen_setting()
+	load_user_data()
 	apply_sfx_volume_setting()
+	if user_data["fullscreen"]:
+		apply_fullscreen_setting()
+	else:
+		apply_window_size_setting()
 
 
-func load_settings_data() -> void:
-	if !FileAccess.file_exists(user_data_file_path):
-		save_settings_data()
+func load_user_data() -> void:
+	if !FileAccess.file_exists(user_data_file_dir):
+		save_user_data()
 		return
 	
-	var file: FileAccess = FileAccess.open(user_data_file_path, FileAccess.READ)
-	user_data.merge(file.get_var(), true)
-	file.close()
+	var file_access: FileAccess = FileAccess.open(user_data_file_dir, FileAccess.READ)
+	var loaded_data = file_access.get_var()
+	
+	# save again default data if file content is broken
+	if loaded_data == null:
+		push_error("User data file is founded, but data is broken or was changed. \nWill write again from default values.")
+		save_user_data()
+		return
+	
+	var new_user_data: Dictionary[String, Variant] = loaded_data
+	user_data.merge(new_user_data, true)
+	file_access.close()
 
 
-func save_settings_data() -> void:
-	var file: FileAccess = FileAccess.open(user_data_file_path, FileAccess.WRITE)
-	file.store_var(user_data)
-	file.close()
+func save_user_data() -> void:
+	var file_access: FileAccess = FileAccess.open(user_data_file_dir, FileAccess.WRITE)
+	if file_access == null:
+		push_error("User data file could not be written to user data directory")
+		return
+	
+	file_access.store_var(user_data)
+	file_access.close()
 
 
 func apply_window_size_setting() -> void:
-	DisplayServer.window_set_size(BASE_RESOLUTION * user_data["window_size"])
-	get_window().size = BASE_RESOLUTION * user_data["window_size"]
+	get_window().size = BASE_WINDOW_SIZE * user_data.get("window_size")
 	get_window().move_to_center()
 
 

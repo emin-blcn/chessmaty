@@ -31,13 +31,13 @@ enum LocalOpponent
 	AI
 }
 
-enum Piece
+enum PieceRole
 {
 	KING,
 	QUEEN,
+	ROOK,
 	BISHOP,
 	KNIGHT,
-	ROOK,
 	PAWN,
 	EMPTY
 }
@@ -48,9 +48,6 @@ enum MoveType
 	EN_PASSANT,
 	CASTLING,
 	PROMOTION,
-	PROMOTION_REQUEST_BY_HUMAN,
-	PROMOTION_REQUEST_BY_AI,
-	UNDO,
 	PUT
 }
 

@@ -1,9 +1,10 @@
 bin/*
-!bin/.gitkeep
-
-godot/.godot/
-
 godot/lib/*
+
+!bin/.gitkeep
 !godot/lib/.gitkeep
 
+godot/.godot/
 rust/target/
+
+godot/.editorconfig

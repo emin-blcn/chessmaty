@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Chessmaty"
-config/version="v1.0.0"
+config/version="v1.0.1"
 run/main_scene="uid://dwnbfraut6h7t"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="chessmaty"
@@ -30,10 +30,15 @@ buses/default_bus_layout="uid://bf27un84ykmxq"
 Global="*uid://c16uoaj0yfneu"
 Sound="*uid://d34byqbjnoepx"
 
+[debug]
+
+file_logging/max_log_files=10
+
 [display]
 
 window/size/viewport_width=320
 window/size/viewport_height=180
+window/size/resizable=false
 window/stretch/mode="canvas_items"
 window/stretch/scale_mode="integer"
 mouse_cursor/custom_image="uid://dkowp2vku6tfa"
@@ -48,6 +53,11 @@ folder_colors={
 "res://src/": "teal"
 }
 
+[navigation]
+
+2d/navigation_engine="Dummy"
+3d/navigation_engine="Dummy"
+
 [physics]
 
 2d/physics_engine="Dummy"
@@ -56,6 +66,5 @@ folder_colors={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"

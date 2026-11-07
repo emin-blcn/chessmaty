@@ -7,6 +7,16 @@ const time_per_side_minute_values: PackedFloat64Array = [0.25, 0.5, 0.75, 1.0, 1
 const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 90, 120, 150, 180]
 
+var config_data: Dictionary[String, Variant] = {
+	"player_color": Enums.ChessColor.WHITE,
+	"game_mode": Enums.GameMode.STANDARD,
+	"connection_type": Enums.ConnectionType.LOCAL,
+	"local_opponent": Enums.LocalOpponent.HUMAN,
+	"fen_string": "-",
+	"time_per_side": -60_000,
+	"time_increment": 0,
+	"ai_skill_level": 0}
+
 @onready var player_color_button: Button = $player_color_button
 @onready var game_mode_button: Button = $game_mode_button
 @onready var game_mode_color_rect: ColorRect = $game_mode_color_rect
@@ -16,16 +26,6 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var opponent_button: Button = $opponent_button
 @onready var ai_skill_level_slider: HSlider = $ai_skill_level_slider
 @onready var ai_skill_level_label: Label = $ai_skill_level_slider/ai_skill_level_label
-
-var config_data: Dictionary[String, Variant] = {
-	"player_color": Enums.ChessColor.WHITE,
-	"game_mode": Enums.GameMode.STANDARD,
-	"fen_string": "",
-	"connection_type": Enums.ConnectionType.LOCAL,
-	"local_opponent": Enums.LocalOpponent.HUMAN,
-	"time_per_side": -60_000,
-	"time_increment": 0,
-	"ai_skill_level": 0}
 
 
 func _on_player_color_button_pressed() -> void:

@@ -1,10 +1,10 @@
 extends TextureRect
 
-@onready var master_scene: Control = get_tree().current_scene
-
 var player_color: Enums.ChessColor
 var connection_type: Enums.ConnectionType
 var local_opponent: Enums.LocalOpponent
+
+@onready var master_scene: Control = get_tree().current_scene
 
 
 func config(new_config_data: Dictionary[String, Variant]) -> void:
@@ -29,20 +29,20 @@ func config(new_config_data: Dictionary[String, Variant]) -> void:
 					button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 
 
-func _on_move_animation_finished(move_type: Enums.MoveType) -> void:
-	if move_type == Enums.MoveType.PROMOTION_REQUEST_BY_HUMAN:
-		if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
-			match master_scene.get_turn():
-				Enums.ChessColor.WHITE:
-					$Panel/white.show()
-					$Panel/black.hide()
-				Enums.ChessColor.BLACK:
-					$Panel/black.show()
-					$Panel/white.hide()
-		show()
+func show_promotion_selection() -> void:
+	if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
+		match master_scene.get_turn():
+			Enums.ChessColor.WHITE:
+				$Panel/white.show()
+				$Panel/black.hide()
+			Enums.ChessColor.BLACK:
+				$Panel/black.show()
+				$Panel/white.hide()
+	show()
 
 
 func _on_selection_button_pressed(button_name: StringName) -> void:
 	Sound.button_tick.play()
-	master_scene.apply_promotion_move(int(button_name) as Enums.Piece)
+	master_scene.update_promotion_move_role(int(button_name) as Enums.PieceRole)
+	master_scene.apply_promotion_move()
 	hide()

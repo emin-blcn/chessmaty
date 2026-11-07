@@ -1,10 +1,10 @@
 extends Control
 
 @onready var master_scene: Control = get_tree().current_scene
-@onready var undo_button: Button = $move_history_table/undo_button
-@onready var undo_message_label_node: Label = $move_history_table/undo_button/undo_message_label
-@onready var undo_state_animator_node: AnimationPlayer = $move_history_table/undo_button/undo_state_animator
-@onready var leave_message_label_node: Label = $move_history_table/leave_button/leave_message_label
+@onready var undo_button: Button = $undo_button
+@onready var undo_message_label_node: Label = $undo_button/undo_message_label
+@onready var undo_state_animator_node: AnimationPlayer = $undo_button/undo_state_animator
+@onready var leave_message_label_node: Label = $leave_button/leave_message_label
 
 var connection_type: Enums.ConnectionType
 
@@ -16,11 +16,9 @@ func config(new_config_data: Dictionary[String, Variant]) -> void:
 		undo_state_animator_node.queue_free()
 	else:
 		undo_message_label_node.text = "Send undo request"
-
-
-func _on_move_animation_started(move_type: Enums.MoveType, _from: String, _to: String) -> void:
-	if move_type != Enums.MoveType.PROMOTION:
-		hide_undo_button()
+	
+	for hud_element: Control in get_children():
+		hud_element.theme = null
 
 
 func hide_undo_button() -> void:
@@ -35,11 +33,14 @@ func show_undo_button() -> void:
 
 func _on_undo_button_pressed() -> void:
 	Sound.button_tick.play()
-	if (connection_type != Enums.ConnectionType.LOCAL
-	and master_scene.is_undoable()
-	and undo_state_animator_node.current_animation != "undo_response_waiting"):
+	if connection_type != Enums.ConnectionType.LOCAL and undo_state_animator_node.current_animation != "undo_response_waiting":
 		undo_state_animator_node.play("undo_response_waiting")
 	master_scene.undo_last_move()
+
+
+func _on_undoed_last_move(_double_undo: bool):
+	if !master_scene.is_undoable():
+		hide_undo_button()
 
 
 func _on_responded_undo_request(accept: bool) -> void:

@@ -7,6 +7,7 @@ extends Control
 
 func _ready() -> void:
 	$version.text = ProjectSettings.get_setting("application/config/version")
+	settings_node.theme = null
 
 
 func _on_start_button_pressed() -> void:

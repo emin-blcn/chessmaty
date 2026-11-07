@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dcexr08yr4d6g"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_wa353"]
+[ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="1_ppj5t"]
 
 [sub_resource type="Gradient" id="Gradient_lwkho"]
 offsets = PackedFloat32Array(0.3, 1)
@@ -22,7 +22,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_wa353")
+theme = ExtResource("1_ppj5t")
 texture = SubResource("GradientTexture2D_5xl1b")
 metadata/_edit_lock_ = true
 

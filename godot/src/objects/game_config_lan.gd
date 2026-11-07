@@ -7,6 +7,19 @@ const time_per_side_minute_values: PackedFloat64Array = [0.25, 0.5, 0.75, 1.0, 1
 const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 90, 120, 150, 180]
 
+var lan_host: LanHost = LanHost.new()
+var lan_peer: LanPeer = LanPeer.new()
+var is_discovering_hosts: bool = false
+var is_waiting_for_peer: bool = false
+var config_data: Dictionary[String, Variant] = {
+	"host_name": "New Match",
+	"player_color": Enums.ChessColor.WHITE,
+	"game_mode": Enums.GameMode.STANDARD,
+	"connection_type": Enums.ConnectionType.LAN,
+	"fen_string": "-",
+	"time_per_side": -60_000,
+	"time_increment": 0}
+
 @onready var master_scene: Control = get_tree().current_scene
 @onready var create_host_config_node: Control = $TabContainer/create/create_host_config
 @onready var host_name_line_edit: LineEdit = $TabContainer/create/create_host_config/host_name_line_edit
@@ -21,19 +34,6 @@ const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 
 @onready var refresh_host_list_button: Button = $TabContainer/join/refresh_host_list_button
 @onready var elements_node: VBoxContainer = $TabContainer/join/ColorRect/ScrollContainer/elements
 @onready var element_instance_node: ColorRect = $TabContainer/join/ColorRect/ScrollContainer/elements/element_instance
-
-var lan_host: LanHost = LanHost.new()
-var lan_peer: LanPeer = LanPeer.new()
-var is_discovering_hosts: bool = false
-var is_waiting_for_peer: bool = false
-var config_data: Dictionary[String, Variant] = {
-	"host_name": "New Match",
-	"player_color": Enums.ChessColor.WHITE,
-	"game_mode": Enums.GameMode.STANDARD,
-	"fen_string": "",
-	"connection_type": Enums.ConnectionType.LAN,
-	"time_per_side": -60_000,
-	"time_increment": 0}
 
 
 func _on_game_config_tab_changed(tab: int) -> void:
@@ -50,9 +50,7 @@ func discover_hosts() -> void:
 	if is_discovering_hosts:
 		return
 	is_discovering_hosts = true
-	
-	refresh_host_list_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	refresh_host_list_button.modulate.a = 0.5
+	refresh_host_list_button.disabled = true
 	cancel_waiting_for_peer_button.hide()
 	
 	for element: ColorRect in elements_node.get_children():
@@ -68,20 +66,21 @@ func _discover_hosts() -> void:
 
 
 func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> void:
-	for key_ip in discovered_hosts.keys():
-		var value: Dictionary = JSON.parse_string(discovered_hosts[key_ip])
+	for received_addr in discovered_hosts.keys():
+		var received_params: Dictionary = JSON.parse_string(discovered_hosts.get(received_addr))
 		var host_config_data: Dictionary[String, Variant] = {
-			"host_name": value["host_name"],
-			"player_color": int(value["player_color"]) as Enums.ChessColor,
-			"game_mode": int(value["game_mode"]) as Enums.GameMode,
-			"fen_string": value["fen_string"],
-			"time_per_side": int(value["time_per_side"]),
-			"time_increment": int(value["time_increment"])}
+			"host_name": received_params.get("host_name"),
+			"player_color": int(received_params.get("player_color")) as Enums.ChessColor,
+			"game_mode": int(received_params.get("game_mode")) as Enums.GameMode,
+			"fen_string": received_params.get("fen_string"),
+			"time_per_side": int(received_params.get("time_per_side")),
+			"time_increment": int(received_params.get("time_increment"))
+		}
 		
 		var new_element_node: ColorRect = element_instance_node.duplicate()
 		var join_button: Button = new_element_node.get_node("join_button")
 		
-		join_button.pressed.connect(_on_join_button_pressed.bind(key_ip, host_config_data))
+		join_button.pressed.connect(_on_join_button_pressed.bind(received_addr, host_config_data))
 		
 		new_element_node.get_node("host_name_label").text = host_config_data["host_name"]
 		
@@ -125,8 +124,7 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 		elements_node.add_child(new_element_node)
 		new_element_node.show()
 	
-	refresh_host_list_button.mouse_filter = Control.MOUSE_FILTER_STOP
-	refresh_host_list_button.modulate.a = 1.0
+	refresh_host_list_button.disabled = false
 	cancel_waiting_for_peer_button.show()
 	is_discovering_hosts = false
 

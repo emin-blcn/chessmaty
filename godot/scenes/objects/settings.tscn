@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cxwdf1f42na5x"]
 
-[ext_resource type="Theme" uid="uid://csqqph7absw12" path="res://assets/graphics/gui/theme/gui.theme" id="1_513w1"]
+[ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="1_513w1"]
 [ext_resource type="Script" uid="uid://c5jprenw1jvhe" path="res://src/objects/settings.gd" id="2_mq068"]
 
 [node name="Panel" type="Panel" unique_id=80842764]
@@ -84,7 +84,7 @@ custom_maximum_size = Vector2(-1, 12)
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 1
-text = "SFX Volume: %100"
+text = "SFX Volume: 100%"
 vertical_alignment = 1
 
 [node name="okay" type="Button" parent="VBoxContainer" unique_id=1983623038]
