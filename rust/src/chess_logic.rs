@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use shakmaty::{Position, Color, Move, Role, Square, EnPassantMode, CastlingMode};
 use shakmaty::variant::{VariantPosition, Chess, KingOfTheHill, ThreeCheck, Crazyhouse, Antichess, Atomic, Horde, RacingKings};
 use shakmaty::uci::UciMove;
@@ -13,7 +11,7 @@ use crate::enums;
 use crate::chess_ai::ChessAI;
 
 
-static ALL_FENS_STR: &str = include_str!("chess960_fens.txt");
+const ALL_FENS_STR: &str = include_str!("chess960_fens.txt");
 
 
 #[derive(GodotClass)]
@@ -67,12 +65,12 @@ impl ChessLogic
 
 
     #[func]
-    fn config(&mut self, config_data: Dictionary<GString, Variant>)
+    fn setup(&mut self, data: Dictionary<GString, Variant>)
     {
-        let player_color = config_data.get("player_color").unwrap().to::<enums::ChessColor>();
-        let game_mode = config_data.get("game_mode").unwrap().to::<enums::GameMode>();
-        let fen_string = config_data.get("fen_string").unwrap().to::<String>();
-        let connection_type = config_data.get("connection_type").unwrap().to::<enums::ConnectionType>();
+        let player_color = data.get("player_color").unwrap().to::<enums::ChessColor>();
+        let game_mode = data.get("game_mode").unwrap().to::<enums::GameMode>();
+        let fen_string = data.get("fen_string").unwrap().to::<String>() + " w KQkq - 0 1";
+        let connection_type = data.get("connection_type").unwrap().to::<enums::ConnectionType>();
 
         self.player_color = player_color;
         self.game_mode = game_mode;
@@ -86,9 +84,8 @@ impl ChessLogic
                     enums::GameMode::Standard => {
                         self.position = VariantPosition::Chess(Chess::default());
                     }
-                    enums::GameMode::Chess960 =>
-                    {
-                        let fen: Fen = fen_string.parse().unwrap();
+                    enums::GameMode::Chess960 => {
+                        let fen = Fen::from_ascii(fen_string.as_bytes()).unwrap();
                         self.position = VariantPosition::Chess(fen.into_position(CastlingMode::Chess960).unwrap());
                     }
                     enums::GameMode::KingOfTheHill => {
@@ -114,13 +111,13 @@ impl ChessLogic
                     }
                 }
 
-                let local_opponent = config_data.get("local_opponent").unwrap().to::<enums::LocalOpponent>();
+                let local_opponent = data.get("local_opponent").unwrap().to::<enums::LocalOpponent>();
 
                 if local_opponent == enums::LocalOpponent::AI
                 {
-                    let time_per_side = config_data.get("time_per_side").unwrap().to::<i64>();
-                    let time_increment = config_data.get("time_increment").unwrap().to::<i64>();
-                    let ai_skill_level = config_data.get("ai_skill_level").unwrap().to::<i64>();
+                    let time_per_side = data.get("time_per_side").unwrap().to::<i64>();
+                    let time_increment = data.get("time_increment").unwrap().to::<i64>();
+                    let ai_skill_level = data.get("ai_skill_level").unwrap().to::<i64>();
 
                     self.chess_ai = Some(ChessAI::new(game_mode, fen_string, ai_skill_level, time_per_side, time_increment));
                 }
@@ -130,9 +127,8 @@ impl ChessLogic
                 self.position = match game_mode
                 {
                     enums::GameMode::Standard => VariantPosition::Chess(Chess::default()),
-                    enums::GameMode::Chess960 =>
-                    {
-                        let fen = Fen::from_str(fen_string.as_str()).unwrap();
+                    enums::GameMode::Chess960 => {
+                        let fen = Fen::from_ascii(fen_string.as_bytes()).unwrap();
                         VariantPosition::Chess(fen.into_position(CastlingMode::Chess960).unwrap())
                     }
                     enums::GameMode::KingOfTheHill => VariantPosition::KingOfTheHill(KingOfTheHill::default()),
@@ -151,12 +147,19 @@ impl ChessLogic
 
 
     #[func]
-    fn random_fen() -> String
+    fn random_fen() -> GString
     {
         let all_fens_vector: Vec<&str> = ALL_FENS_STR.lines().collect();
         let random_number = randi_range(0, 960 - 1) as usize;
 
-        format!("{}/pppppppp/8/8/8/8/PPPPPPPP/{} w KQkq - 0 1", all_fens_vector[random_number], all_fens_vector[random_number].to_uppercase())
+        format!("{}/pppppppp/8/8/8/8/PPPPPPPP/{}", all_fens_vector[random_number], all_fens_vector[random_number].to_uppercase()).to_gstring()
+    }
+
+
+    #[func]
+    fn active_board_fen(&self) -> GString
+    {
+        self.position.board().board_fen().to_string().to_gstring()
     }
 
 
@@ -236,7 +239,7 @@ impl ChessLogic
 
 
     #[func]
-    fn turn(&self) -> enums::ChessColor
+    fn active_turn(&self) -> enums::ChessColor
     {
         match self.position.turn()
         {
@@ -288,9 +291,10 @@ impl ChessLogic
 
 
     #[func]
-    fn legal_moves_from_square(&mut self, square: String) -> Dictionary<GString, enums::MoveType>
+    fn legal_moves_from_square(&self, from: GString) -> Dictionary<GString, enums::MoveType>
     {
         let mut legal_moves_for_godot = Dictionary::<GString, enums::MoveType>::new();
+        let from = Square::from_ascii(from.to_string().as_bytes()).unwrap();
 
         for legal_move in self.position.legal_moves()
         {
@@ -298,12 +302,11 @@ impl ChessLogic
             {
                 continue;
             }
-
-            else if legal_move.from().unwrap().to_string() == square
+            else if legal_move.from().unwrap() == from
             {// shakmaty legal move square == selected square from Godot, add move to Godot legal move list
-                let to_square = legal_move.to().to_string().to_gstring();
-
-                if !legal_moves_for_godot.contains_key(&to_square)
+                let to = legal_move.to();
+                let to_as_gstring = to.to_string().to_gstring();
+                if !legal_moves_for_godot.contains_key(&to_as_gstring)
                 {
                     match legal_move
                     {
@@ -311,20 +314,20 @@ impl ChessLogic
                         {
                             if legal_move.is_promotion()
                             {
-                                legal_moves_for_godot.set(&to_square, enums::MoveType::Promotion);
+                                legal_moves_for_godot.set(&to_as_gstring, enums::MoveType::Promotion);
                             }
                             else
                             {
-                                legal_moves_for_godot.set(&to_square, enums::MoveType::Normal);
+                                legal_moves_for_godot.set(&to_as_gstring, enums::MoveType::Normal);
                             }
                         }
                         Move::EnPassant {..} =>
                         {
-                            legal_moves_for_godot.set(&to_square, enums::MoveType::EnPassant);
+                            legal_moves_for_godot.set(&to_as_gstring, enums::MoveType::EnPassant);
                         }
                         Move::Castle{..} =>
                         {
-                            legal_moves_for_godot.set(&to_square, enums::MoveType::Castling);
+                            legal_moves_for_godot.set(&to_as_gstring, enums::MoveType::Castling);
                         }
                         _ => {}
                     };
@@ -334,6 +337,7 @@ impl ChessLogic
 
         legal_moves_for_godot
     }
+
 
 
     #[func]

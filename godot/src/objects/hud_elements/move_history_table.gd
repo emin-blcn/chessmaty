@@ -10,7 +10,7 @@ var full_move_number: int = 0
 
 
 func _on_move_applied(_move_type: Enums.MoveType, from: String, to: String) -> void:
-	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
+	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_active_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
 	match color:
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
@@ -25,14 +25,13 @@ func _on_move_applied(_move_type: Enums.MoveType, from: String, to: String) -> v
 
 
 func _on_promotion_piece_updated(from: String, to: String, role: Enums.PieceRole) -> void:
-	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
-	
 	match role:
 		Enums.PieceRole.QUEEN:  to += "q"
 		Enums.PieceRole.ROOK:   to += "r"
 		Enums.PieceRole.BISHOP: to += "b"
 		Enums.PieceRole.KNIGHT: to += "n"
-	
+
+	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_active_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
 	match color:
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
@@ -47,15 +46,14 @@ func _on_promotion_piece_updated(from: String, to: String, role: Enums.PieceRole
 
 
 func _on_put_move_applied(_role: Enums.PieceRole, to: String) -> void:
-	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
-	
 	match master_scene.get_piece_role_from_square(to):
 		Enums.PieceRole.QUEEN: to = to.insert(0, "Q@")
 		Enums.PieceRole.ROOK: to = to.insert(0, "R@")
 		Enums.PieceRole.BISHOP: to = to.insert(0, "B@")
 		Enums.PieceRole.KNIGHT: to = to.insert(0, "N@")
 		Enums.PieceRole.PAWN: to = to.insert(0, "P@")
-	
+
+	var color: Enums.ChessColor = Enums.ChessColor.WHITE if master_scene.get_active_turn() == Enums.ChessColor.BLACK else Enums.ChessColor.BLACK
 	match color:
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
@@ -73,13 +71,13 @@ func _on_undo_last_move_applied(double_undo: bool):
 	for _i in range(2):
 		var last_element_instance: NinePatchRect = elements_node.get_child(elements_node.get_child_count() - 1)
 		var last_element_instance_black_label: Label = last_element_instance.get_node("black_texture_rect/black_move_label")
-		
+
 		if last_element_instance_black_label.text == "...":
 			full_move_number -= 1
 			last_element_instance.queue_free()
 		else:
 			last_element_instance_black_label.text = "..."
-		
+
 		if !double_undo:
 			break
 

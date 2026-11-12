@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://ds5tjc7lh2yyt" path="res://assets/graphics/chess_board/board.png" id="3_s07tm"]
 [ext_resource type="Texture2D" uid="uid://bushm83uhla8x" path="res://assets/graphics/chess_board/board_border.png" id="4_gptsx"]
 
-[node name="Control" type="Control" unique_id=578451742]
+[node name="board" type="Control" unique_id=578451742]
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5

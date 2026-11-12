@@ -1,13 +1,13 @@
 extends Control
 
-signal config_finished(config_data: Dictionary[String, Variant])
+signal setup_finished(data: Dictionary[String, Variant])
 
 const time_per_side_minute_values: PackedFloat64Array = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
 	13.0, 14.0, 15.0, 16.0, 17.0,18.0, 19.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 60.0, 75.0, 90.0, 105.0, 120.0, 135.0, 150.0, 165.0, 180.0, -1.0]
 const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 90, 120, 150, 180]
 
-var config_data: Dictionary[String, Variant] = {
+var data: Dictionary[String, Variant] = {
 	"player_color": Enums.ChessColor.WHITE,
 	"game_mode": Enums.GameMode.STANDARD,
 	"connection_type": Enums.ConnectionType.LOCAL,
@@ -30,12 +30,12 @@ var config_data: Dictionary[String, Variant] = {
 
 func _on_player_color_button_pressed() -> void:
 	Sound.button_tick.play()
-	match config_data["player_color"]:
+	match data.get("player_color"):
 		Enums.ChessColor.WHITE:
-			config_data["player_color"] = Enums.ChessColor.BLACK
+			data.set("player_color", Enums.ChessColor.BLACK)
 			player_color_button.text = "Player side: Black"
 		Enums.ChessColor.BLACK:
-			config_data["player_color"] = Enums.ChessColor.WHITE
+			data.set("player_color", Enums.ChessColor.WHITE)
 			player_color_button.text = "Player side: White"
 
 
@@ -48,9 +48,9 @@ func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mou
 	Sound.button_tick.play()
 	if mouse_button_index != MouseButton.MOUSE_BUTTON_LEFT:
 		return
-	
+
 	var selected_mode: Enums.GameMode = index as Enums.GameMode
-	config_data["game_mode"] = selected_mode
+	data.set("game_mode", selected_mode)
 	match selected_mode:
 		Enums.GameMode.STANDARD: game_mode_button.text = "Game mode: Standard"
 		Enums.GameMode.CHESS960: game_mode_button.text = "Game mode: Chess960"
@@ -66,36 +66,33 @@ func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mou
 
 func _on_opponent_button_pressed() -> void:
 	Sound.button_tick.play()
-	match config_data["local_opponent"]:
+	match data.get("local_opponent"):
 		Enums.LocalOpponent.HUMAN:
-			config_data["local_opponent"] = Enums.LocalOpponent.AI
+			data.set("local_opponent", Enums.LocalOpponent.AI)
 			opponent_button.text = "Opponent: AI"
 			ai_skill_level_slider.show()
 		Enums.LocalOpponent.AI:
-			config_data["local_opponent"] = Enums.LocalOpponent.HUMAN
+			data.set("local_opponent", Enums.LocalOpponent.HUMAN)
 			opponent_button.text = "Opponent: Human"
 			ai_skill_level_slider.hide()
 
 
 func _on_ai_skill_level_slider_value_changed(value: float) -> void:
-	config_data["ai_skill_level"] = int(value)
+	data.set("ai_skill_level", int(value))
 	ai_skill_level_label.text = "AI skill level: " + str(int(value))
 
 
 func _on_time_per_side_slider_value_changed(value: float) -> void:
-	var index: int = int(value)
-	var new_minute: float = time_per_side_minute_values[index]
-	var new_time: int = int(new_minute * 60 * 1000)
-	
-	config_data["time_per_side"] = new_time
-	
-	if new_time == -60_000:
+	var new_minute: float = time_per_side_minute_values.get(int(value))
+	var new_time_per_side: int = int(new_minute * 60 * 1000)
+	data.set("time_per_side", new_time_per_side)
+	if new_time_per_side == -60_000:
 		time_per_side_label.text = "Minutes per side: Unlimited"
 		time_increment_slider.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		time_increment_slider.modulate.a = 0.5
 		time_increment_label.modulate.a = 0.5
 	else:
-		if str(new_minute).split(".")[1] == "0":
+		if str(new_minute).split(".").get(1) == "0":
 			time_per_side_label.text = "Minutes per side: " + str(int(new_minute))
 		else:
 			time_per_side_label.text = "Minutes per side: " + str(new_minute)
@@ -105,16 +102,16 @@ func _on_time_per_side_slider_value_changed(value: float) -> void:
 
 
 func _on_time_increment_slider_value_changed(value: float) -> void:
-	config_data["time_increment"] = time_increment_second_values[int(value)] * 1000
-	time_increment_label.text = "Increment in seconds: " + str(time_increment_second_values[int(value)])
+	data.set("time_increment", time_increment_second_values.get(int(value)) * 1000)
+	time_increment_label.text = "Increment in seconds: %d" %time_increment_second_values.get(int(value))
 
 
 func _on_start_button_pressed() -> void:
 	Sound.button_tick.play()
-	if config_data["game_mode"] == Enums.GameMode.CHESS960:
-		config_data["fen_string"] = ChessLogic.random_fen()
-	
-	config_finished.emit(config_data)
+	if data.get("game_mode") == Enums.GameMode.CHESS960:
+		data.set("fen_string", ChessLogic.random_fen())
+
+	setup_finished.emit(data)
 
 
 func _on_back_button_pressed() -> void:

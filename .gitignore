@@ -1,7 +1,8 @@
 bin/*
 godot/lib/*
 
-!bin/.gitkeep
+!bin/get_engine_files.sh
+!bin/README.md
 !godot/lib/.gitkeep
 
 godot/.godot/

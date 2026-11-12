@@ -1,7 +1,7 @@
 extends Node
 
 const BASE_WINDOW_SIZE: Vector2i = Vector2i(320, 180)
- 
+
 var sfx_bus_index: int = AudioServer.get_bus_index("sfx")
 var user_data_file_dir: String = OS.get_user_data_dir().path_join("user_data.bin")
 @warning_ignore("integer_division")
@@ -24,16 +24,16 @@ func load_user_data() -> void:
 	if !FileAccess.file_exists(user_data_file_dir):
 		save_user_data()
 		return
-	
+
 	var file_access: FileAccess = FileAccess.open(user_data_file_dir, FileAccess.READ)
 	var loaded_data = file_access.get_var()
-	
+
 	# save again default data if file content is broken
 	if loaded_data == null:
 		push_error("User data file is founded, but data is broken or was changed. \nWill write again from default values.")
 		save_user_data()
 		return
-	
+
 	var new_user_data: Dictionary[String, Variant] = loaded_data
 	user_data.merge(new_user_data, true)
 	file_access.close()
@@ -44,7 +44,7 @@ func save_user_data() -> void:
 	if file_access == null:
 		push_error("User data file could not be written to user data directory")
 		return
-	
+
 	file_access.store_var(user_data)
 	file_access.close()
 

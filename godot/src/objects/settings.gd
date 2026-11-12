@@ -12,22 +12,22 @@ var min_window_size: int = max_window_size - 3
 
 
 func _ready() -> void:
-	if Global.user_data["fullscreen"]:
+	if Global.user_data.get("fullscreen"):
 		fullscreen_check_button.set_pressed_no_signal(true)
 		window_size_button.disabled = true
-	
-	var window_size: Vector2i = Global.BASE_WINDOW_SIZE * Global.user_data["window_size"]
+
+	var window_size: Vector2i = Global.BASE_WINDOW_SIZE * Global.user_data.get("window_size")
 	window_size_button.text = "Window Size: " + str(window_size).remove_chars("(),").replace(" ", "x")
-	
-	sfx_label.text = "SFX Volume: %d%%" % [Global.user_data["sfx_volume"] * 100]
-	sfx_slider.set_value_no_signal(Global.user_data["sfx_volume"])
+
+	sfx_label.text = "SFX Volume: %d%%" % [Global.user_data.get("sfx_volume") * 100]
+	sfx_slider.set_value_no_signal(Global.user_data.get("sfx_volume"))
 
 
 func _on_fullscreen_check_button_toggled(toggled_on: bool) -> void:
 	Sound.button_tick.play()
-	Global.user_data["fullscreen"] = toggled_on
+	Global.user_data.set("fullscreen", toggled_on)
 	Global.apply_fullscreen_setting()
-	
+
 	if toggled_on:
 		window_size_button.disabled = true
 	else:
@@ -37,14 +37,14 @@ func _on_fullscreen_check_button_toggled(toggled_on: bool) -> void:
 
 func _on_window_size_pressed() -> void:
 	Sound.button_tick.play()
-	
-	if Global.user_data["window_size"] >= max_window_size:
-		Global.user_data["window_size"] = min_window_size
+
+	if Global.user_data.get("window_size") >= max_window_size:
+		Global.user_data.set("window_size", min_window_size)
 	else:
 		Global.user_data["window_size"] += 1
 	Global.apply_window_size_setting()
-	
-	var new_window_size: Vector2i = Global.BASE_WINDOW_SIZE * Global.user_data["window_size"]
+
+	var new_window_size: Vector2i = Global.BASE_WINDOW_SIZE * Global.user_data.get("window_size")
 	window_size_button.text = "Window Size: " + str(new_window_size).remove_chars("(),").replace(" ", "x")
 
 
@@ -58,5 +58,5 @@ func _on_okay_button_pressed() -> void:
 
 func _on_sfx_slider_value_changed(value: float) -> void:
 	sfx_label.text = "SFX Volume: %d%%" % [value * 100]
-	Global.user_data["sfx_volume"] = value
+	Global.user_data.set("sfx_volume", value)
 	Global.apply_sfx_volume_setting()

@@ -2,10 +2,10 @@
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
 <p align="center">
-  <img src="preview.gif" alt="Chessmaty Game Modes" width="720">
+  <img src="preview.gif" alt="Chessmaty Game Variants" width="640" height="360">
 </p>
 
-<img src="godot/assets/graphics/icon.png" alt="Godot Engine" width="128"/>
+<img src="godot/assets/graphics/icon.png" alt="Godot Engine" width="84"/>
 
 <br>
 
@@ -100,11 +100,7 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 
 <br>
 
-**To play against the AI,** you need to provide the **Fairy-Stockfish** engine binary file:
-
-1. Download the appropriate **Fairy-Stockfish** (**modern** version) release for your OS: https://fairy-stockfish.github.io/download
-
-2. Place the downloaded executable inside the `PROJECT_ROOT/bin/` folder and make sure it matches the expected filename in your config (`PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern` or `PROJECT_ROOT/bin/fairy-stockfish_x86-64-modern.exe`).
+**To play against the AI,** you need to provide the **Fairy-Stockfish** engine binary files. For download links and instructions please check the [bin/README.md](bin/README.md) file.
 
 <br>
 
@@ -112,7 +108,7 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 
 <br>
 
-*See also the [build scripts from Linux](rust_build_scripts_from_linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
+*See also the [rust_build_scripts_from_linux](rust_build_scripts_from_linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
 
 <br>
 
