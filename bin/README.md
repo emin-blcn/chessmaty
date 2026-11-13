@@ -4,23 +4,21 @@
 
 1. Download the **Fairy-Stockfish** engine files: [Fairy-Stockfish 14 Release Page](https://github.com/fairy-stockfish/Fairy-Stockfish/releases/tag/fairy_sf_14)
 
+    *(You can only download files for your build target platform)*
+    * for Linux
+      - `fairy-stockfish_x86-64-bmi2`
+      - `fairy-stockfish_x86-64-modern`
+      - `fairy-stockfish_x86-64`
+    * for Windows
+      - `fairy-stockfish_x86-64-bmi2.exe`
+      - `fairy-stockfish_x86-64-modern.exe`
+      - `fairy-stockfish_x86-64.exe`
+
 2. Place the downloaded executables inside the `PROJECT_ROOT/bin/` folder.
 
 <br>
 
-**Download these files:**
-  * for Linux
-    - `fairy-stockfish_x86-64-bmi2`
-    - `fairy-stockfish_x86-64-modern`
-    - `fairy-stockfish_x86-64`
-  * for Windows
-    - `fairy-stockfish_x86-64-bmi2.exe`
-    - `fairy-stockfish_x86-64-modern.exe`
-    - `fairy-stockfish_x86-64.exe`
-
-<br>
-
-*You can only download files for your build target platform*
+***Note:** you should not download **largeboard** versions, because this game only supports 8x8 board variants*
 
 You should download all **BMI2**, **modern** and **64-bit** versions (The game picks the right one at runtime based on your CPU)
 

@@ -1,11 +1,11 @@
-[![Release](https://img.shields.io/badge/Release-v1.0.1-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.1)
+[![Release](https://img.shields.io/badge/Release-v1.0.2-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.2)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
 <p align="center">
   <img src="preview.gif" alt="Chessmaty Game Variants" width="640" height="360">
 </p>
 
-<img src="godot/assets/graphics/icon.png" alt="Godot Engine" width="84"/>
+<img src="godot/assets/graphics/icon.png" alt="Godot Engine" width="64"/>
 
 <br>
 
