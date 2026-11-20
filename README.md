@@ -1,6 +1,7 @@
 [![Release](https://img.shields.io/badge/Release-v1.0.2-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.2)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
+
 <p align="center">
   <img src="preview.gif" alt="Chessmaty Game Variants" width="640" height="360">
 </p>
@@ -9,9 +10,13 @@
 
 <br>
 
-# Chessmaty ♟️
+♟️ **Chessmaty** is a pixel art chess game, created with Godot Engine and Rust's Shakmaty crate.
 
-Chessmaty is a pixel art chess game, created with Godot Engine and Rust's Shakmaty crate.
+<br>
+
+## Table of Contents
+
+[Architecture](#architecture) • [Supported Play Modes](#supported-play-modes) • [Game Variants](#game-variants) • [Used Tools](#used-tools) • [Credits & Assets](#credits--assets) • [Building from Source](#building-from-source)
 
 <br>
 
@@ -37,11 +42,11 @@ The Rust crate is compiled into a dynamic C library (.dll and .so) and Godot use
 Chessmaty supports 9 different chess variants (inspired by [Lichess](https://lichess.org/)):
 
 - **Standard:** Classic chess rules and setup.
-- **Chess960 (Fischer Random):** Starting piece positions are randomized.
+- **Chess960:** Starting piece positions are randomized.
 - **King of the Hill:** Bring your King to the center of the board to win.
 - **Three-Check:** Check your opponent's King three times to win.
 - **Crazyhouse:** Captured pieces join your pocket and can be dropped back onto the board.
-- **Antichess (Giveaway):** Lose all your pieces or get stalemated to win.
+- **Antichess:** Lose all your pieces or get stalemated to win.
 - **Atomic:** Captures cause explosions that destroy surrounding non-pawn pieces.
 - **Horde:** One side plays with a massive army of Pawns against standard pieces.
 - **Racing Kings:** Race your King to the 8th rank before your opponent does.
@@ -54,25 +59,25 @@ Chessmaty supports 9 different chess variants (inspired by [Lichess](https://lic
   <tr>
     <td align="center" width="160">
       <a href="https://godotengine.org/" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/6318500?s=200&v=4" width="100" alt="Godot Engine"/><br><br>
+        <img src="https://raw.githubusercontent.com/godotengine/godot/73ca6be2cebd5192d8b279979d04f29ea45c266e/misc/logo/icon.svg" width="100" alt="Godot Engine"/><br><br>
         <b>Godot Engine</b>
       </a>
     </td>
     <td align="center" width="160">
       <a href="https://godot-rust.github.io/" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/66136469?s=200&v=4" width="100" alt="godot-rust"/><br><br>
+        <img src="https://raw.githubusercontent.com/godot-rust/assets/762d100e6aefc96c9e2797de72a7461d103cf6ed/gdext/ferris.svg" width="100" alt="godot-rust"/><br><br>
         <b>godot-rust</b>
       </a>
     </td>
     <td align="center" width="160">
       <a href="https://crates.io/crates/shakmaty" target="_blank">
-        <img src="https://github.com/rust-lang/crates.io/blob/main/svelte/src/lib/assets/cargo.png?raw=true" width="100" alt="Shakmaty"/><br><br>
+        <img src="https://github.com/rust-lang/crates.io/blob/0e7349bf438cc9d541312a131a82cca6005d0201/svelte/src/lib/assets/cargo.png?raw=true" width="100" alt="Shakmaty"/><br><br>
         <b>Shakmaty</b>
       </a>
     </td>
     <td align="center" width="160">
       <a href="https://fairy-stockfish.github.io/" target="_blank">
-        <img src="https://avatars.githubusercontent.com/u/106629112?s=200&v=4" width="100" alt="Fairy-Stockfish"/><br><br>
+        <img src="https://github.com/fairy-stockfish/fairy-stockfish.github.io/blob/6c726ec48bbff68b09574082e432de78873c4bd1/assets/images/fairyfish2-192x192.png?raw=true" width="100" alt="Fairy-Stockfish"/><br><br>
         <b>Fairy-Stockfish</b>
       </a>
     </td>
@@ -82,14 +87,14 @@ Chessmaty supports 9 different chess variants (inspired by [Lichess](https://lic
 <br>
 
 ## Credits & Assets
-- **Pixel Chess Sprites:** [Pixel Chess on itch.io](https://nulltale.itch.io/chess) - Asset by nulltale ([nulltale itch.io](https://nulltale.itch.io/))
-- **Monogram font:** [monogram by datagoblin](https://datagoblin.itch.io/monogram) - Font by datagoblin ([datagoblin itch.io](https://datagoblin.itch.io/))
-- **Bold Pixels Font:** [Bold Pixels on itch.io](https://yukipixels.itch.io/boldpixels) - Font by Yūki ([@YukiPixels](https://linktr.ee/yukipixels))
-- **Sound effects sourced from Lichess:** https://github.com/lichess-org/lila/tree/master/public/sound
+- [Pixel Chess](https://nulltale.itch.io/chess) - sprites by [Nulltale](https://nulltale.itch.io/)
+- [Monogram ](https://datagoblin.itch.io/monogram) - font by [Datagoblin](https://datagoblin.itch.io/)
+- [Bold Pixels](https://yukipixels.itch.io/boldpixels) - font by [Yūki](https://linktr.ee/yukipixels)
+- [Sound effects](https://github.com/lichess-org/lila/tree/63ce12333414a2762f2f042e18e3dd528845adda/public/sound) - sourced from Lichess
 
 <br>
 
-## Building from Source
+## Building From Source
 To ensure GDExtension bindings and library paths match correctly, please follow the build instructions for your operating system.
 
 **Prerequisites**
@@ -108,7 +113,7 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 
 <br>
 
-*See also the [rust_build_scripts_from_linux](rust_build_scripts_from_linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
+*See also the [rust_build_scripts_from_linux folder](rust_build_scripts_from_linux) and the [GDExtension file](godot/gdextensions/rust.gdextension)*
 
 <br>
 
@@ -160,7 +165,7 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 
 <br>
 
-### A Note on UI & Design
+## A Note on UI & Design
 I built this project to master Rust and GDExtension integration in Godot 4, so most of my effort went into the backend engine rather than a pixel-perfect UI layout—mostly because I'm not very good at creating visual interfaces. The interface is currently very simple and basic.
 
 If you have ideas to polish the UI, improve the board feel, or fix layout issues or anything else feel free to open an issue or submit a Pull Request!
