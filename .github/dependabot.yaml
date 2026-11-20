@@ -4,3 +4,5 @@ updates:
     directory: "/rust"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 1
