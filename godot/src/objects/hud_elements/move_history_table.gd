@@ -26,8 +26,9 @@ func _on_move_applied(_move_type: Enums.MoveType, from: String, to: String) -> v
 
 func _on_promotion_piece_updated(from: String, to: String, role: Enums.PieceRole) -> void:
 	match role:
-		Enums.PieceRole.QUEEN:  to += "q"
-		Enums.PieceRole.ROOK:   to += "r"
+		Enums.PieceRole.KING: to += "k" # only antichess mode
+		Enums.PieceRole.QUEEN: to += "q"
+		Enums.PieceRole.ROOK: to += "r"
 		Enums.PieceRole.BISHOP: to += "b"
 		Enums.PieceRole.KNIGHT: to += "n"
 

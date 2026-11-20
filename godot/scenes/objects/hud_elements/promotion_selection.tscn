@@ -3,6 +3,7 @@
 [ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="1_42kb0"]
 [ext_resource type="Script" uid="uid://b5ycxv76dgi5l" path="res://src/objects/hud_elements/promotion_selection.gd" id="2_8nila"]
 [ext_resource type="Texture2D" uid="uid://cp7h3f6nl280m" path="res://assets/graphics/chess_pieces/queen_black.png" id="2_fdcw6"]
+[ext_resource type="Texture2D" uid="uid://dioyjnoc4d7vu" path="res://assets/graphics/chess_pieces/king_black.png" id="3_8f2fd"]
 [ext_resource type="Texture2D" uid="uid://dnip4r75iln63" path="res://assets/graphics/chess_pieces/bishop_black.png" id="3_8nila"]
 [ext_resource type="Texture2D" uid="uid://b1qiry1fgwq7y" path="res://assets/graphics/chess_pieces/knight_black.png" id="4_s2y7c"]
 [ext_resource type="Texture2D" uid="uid://cdw8mxfjy7wn3" path="res://assets/graphics/chess_pieces/rook_black.png" id="5_ct4o7"]
@@ -10,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://cnkaj6a1nvawt" path="res://assets/graphics/chess_pieces/bishop_white.png" id="7_gu8hf"]
 [ext_resource type="Texture2D" uid="uid://bb6wpbdxlg4jl" path="res://assets/graphics/chess_pieces/knight_white.png" id="8_vpkif"]
 [ext_resource type="Texture2D" uid="uid://b43npdubwnbj" path="res://assets/graphics/chess_pieces/rook_white.png" id="9_uqhvl"]
+[ext_resource type="Texture2D" uid="uid://cags18jbwmm0d" path="res://assets/graphics/chess_pieces/king_white.png" id="11_qoxk3"]
 
 [sub_resource type="Gradient" id="Gradient_lwkho"]
 offsets = PackedFloat32Array(0.3, 0.9)
@@ -25,8 +27,18 @@ fill_from = Vector2(0.5, 0.5)
 metadata/_snap_enabled = true
 metadata/_snap_count = 2
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3ym7h"]
-texture = ExtResource("2_fdcw6")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3gpu5"]
+texture = ExtResource("3_8f2fd")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6v406"]
+texture = ExtResource("3_8f2fd")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_6v406"]
+load_path = "res://.godot/imported/queen_black.png-11f1411ebd51c65271915c64d72a8be5.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8f2fd"]
+texture = SubResource("CompressedTexture2D_6v406")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7awpv"]
 texture = ExtResource("2_fdcw6")
@@ -46,11 +58,21 @@ texture = ExtResource("4_s2y7c")
 texture = ExtResource("4_s2y7c")
 modulate_color = Color(1, 1, 1, 0.5)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_g3hbi"]
+load_path = "res://.godot/imported/rook_black.png-42da7ee41ddf33f55aed48d949c31f15.ctex"
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ilxgh"]
-texture = ExtResource("5_ct4o7")
+texture = SubResource("CompressedTexture2D_g3hbi")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_is6od"]
 texture = ExtResource("5_ct4o7")
+modulate_color = Color(1, 1, 1, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qoxk3"]
+texture = ExtResource("11_qoxk3")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kupkr"]
+texture = ExtResource("11_qoxk3")
 modulate_color = Color(1, 1, 1, 0.5)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5xl1b"]
@@ -74,8 +96,11 @@ texture = ExtResource("8_vpkif")
 texture = ExtResource("8_vpkif")
 modulate_color = Color(1, 1, 1, 0.5)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8f2fd"]
+load_path = "res://.godot/imported/rook_white.png-46595e279e894b5593c56372869eda17.ctex"
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gvac2"]
-texture = ExtResource("9_uqhvl")
+texture = SubResource("CompressedTexture2D_8f2fd")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lpq8d"]
 texture = ExtResource("9_uqhvl")
@@ -100,9 +125,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -45.0
+offset_left = -49.0
 offset_top = -23.0
-offset_right = 45.0
+offset_right = 49.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -125,37 +150,45 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -38.0
+offset_left = -48.0
 offset_top = -16.0
-offset_right = 38.0
+offset_right = 48.0
 offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 1
+
+[node name="0" type="Button" parent="Panel/black" unique_id=871253714]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_3gpu5")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3gpu5")
+theme_override_styles/hover = SubResource("StyleBoxTexture_6v406")
 
 [node name="1" type="Button" parent="Panel/black" unique_id=809664592]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_3ym7h")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_3ym7h")
+theme_override_styles/normal = SubResource("StyleBoxTexture_8f2fd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8f2fd")
 theme_override_styles/hover = SubResource("StyleBoxTexture_7awpv")
 
 [node name="2" type="Button" parent="Panel/black" unique_id=291179454]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_ij4bn")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ij4bn")
 theme_override_styles/hover = SubResource("StyleBoxTexture_abhhs")
 
 [node name="3" type="Button" parent="Panel/black" unique_id=217875587]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_un7px")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_un7px")
 theme_override_styles/hover = SubResource("StyleBoxTexture_sb5ba")
 
 [node name="4" type="Button" parent="Panel/black" unique_id=1490168791]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_ilxgh")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_ilxgh")
 theme_override_styles/hover = SubResource("StyleBoxTexture_is6od")
@@ -167,37 +200,45 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -38.0
+offset_left = -48.0
 offset_top = -16.0
-offset_right = 38.0
+offset_right = 48.0
 offset_bottom = 16.0
 grow_horizontal = 2
 grow_vertical = 2
+alignment = 1
+
+[node name="0" type="Button" parent="Panel/white" unique_id=991053693]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_qoxk3")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_qoxk3")
+theme_override_styles/hover = SubResource("StyleBoxTexture_kupkr")
 
 [node name="1" type="Button" parent="Panel/white" unique_id=782503378]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_5xl1b")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_5xl1b")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jq8ee")
 
 [node name="2" type="Button" parent="Panel/white" unique_id=663925100]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_nsm0t")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_nsm0t")
 theme_override_styles/hover = SubResource("StyleBoxTexture_16d88")
 
 [node name="3" type="Button" parent="Panel/white" unique_id=89840008]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_52il0")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_52il0")
 theme_override_styles/hover = SubResource("StyleBoxTexture_uwq6v")
 
 [node name="4" type="Button" parent="Panel/white" unique_id=200715295]
+custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBoxTexture_gvac2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gvac2")
 theme_override_styles/hover = SubResource("StyleBoxTexture_lpq8d")

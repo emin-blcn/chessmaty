@@ -1,6 +1,5 @@
 extends TextureRect
 
-var player_color: Enums.ChessColor
 var connection_type: Enums.ConnectionType
 var local_opponent: Enums.LocalOpponent
 
@@ -8,17 +7,24 @@ var local_opponent: Enums.LocalOpponent
 
 
 func setup(data: Dictionary[String, Variant]) -> void:
-	player_color = data.get("player_color")
 	connection_type = data.get("connection_type")
-
-	if data.get("connection_type") == Enums.ConnectionType.LOCAL:
+	if connection_type == Enums.ConnectionType.LOCAL:
 		local_opponent = data.get("local_opponent")
+
+	if data.get("game_mode") != Enums.GameMode.ANTICHESS:
+		var black_king_button: Button = $"Panel/black/0"
+		var white_king_button: Button = $"Panel/white/0"
+		$"Panel/black".remove_child(black_king_button)
+		$"Panel/white".remove_child(white_king_button)
+		white_king_button.queue_free()
+		black_king_button.queue_free()
+
 
 	if connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN:
 		for button: Button in $Panel/white.get_children() + $Panel/black.get_children():
 			button.pressed.connect(_on_selection_button_pressed.bind(button.name))
 	else:
-		match player_color:
+		match data.get("player_color"):
 			Enums.ChessColor.WHITE:
 				$Panel/black.queue_free()
 				for button: Button in $Panel/white.get_children():
@@ -46,6 +52,7 @@ func _on_selection_button_pressed(button_name: StringName) -> void:
 
 	var role: Enums.PieceRole
 	match button_name:
+		&"0": role = Enums.PieceRole.KING # only antichess mode
 		&"1": role = Enums.PieceRole.QUEEN
 		&"2": role = Enums.PieceRole.BISHOP
 		&"3": role = Enums.PieceRole.KNIGHT

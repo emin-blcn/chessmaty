@@ -1,4 +1,4 @@
-use shakmaty::{Position, Color, Move, Role, Square, EnPassantMode, CastlingMode};
+use shakmaty::{CastlingMode, Color, EnPassantMode, Move, Position, Role, Square, Outcome};
 use shakmaty::variant::{VariantPosition, Chess, KingOfTheHill, ThreeCheck, Crazyhouse, Antichess, Atomic, Horde, RacingKings};
 use shakmaty::uci::UciMove;
 use shakmaty::fen::Fen;
@@ -79,37 +79,20 @@ impl ChessLogic
         {
             enums::ConnectionType::Local =>
             {
-                match game_mode
-                {
-                    enums::GameMode::Standard => {
-                        self.position = VariantPosition::Chess(Chess::default());
-                    }
+                self.position = match game_mode {
+                    enums::GameMode::Standard => VariantPosition::Chess(Chess::default()),
                     enums::GameMode::Chess960 => {
                         let fen = Fen::from_ascii(fen_string.as_bytes()).unwrap();
-                        self.position = VariantPosition::Chess(fen.into_position(CastlingMode::Chess960).unwrap());
+                        VariantPosition::Chess(fen.into_position(CastlingMode::Chess960).unwrap())
                     }
-                    enums::GameMode::KingOfTheHill => {
-                        self.position = VariantPosition::KingOfTheHill(KingOfTheHill::default())
-                    }
-                    enums::GameMode::ThreeCheck => {
-                        self.position = VariantPosition::ThreeCheck(ThreeCheck::default())
-                    }
-                    enums::GameMode::CrazyHouse => {
-                        self.position = VariantPosition::Crazyhouse(Crazyhouse::default())
-                    }
-                    enums::GameMode::AntiChess => {
-                        self.position = VariantPosition::Antichess(Antichess::default())
-                    }
-                    enums::GameMode::Atomic => {
-                        self.position = VariantPosition::Atomic(Atomic::default())
-                    }
-                    enums::GameMode::Horde => {
-                        self.position = VariantPosition::Horde(Horde::default())
-                    }
-                    enums::GameMode::RacingKings => {
-                        self.position = VariantPosition::RacingKings(RacingKings::default())
-                    }
-                }
+                    enums::GameMode::KingOfTheHill => VariantPosition::KingOfTheHill(KingOfTheHill::default()),
+                    enums::GameMode::ThreeCheck => VariantPosition::ThreeCheck(ThreeCheck::default()),
+                    enums::GameMode::CrazyHouse => VariantPosition::Crazyhouse(Crazyhouse::default()),
+                    enums::GameMode::Antichess => VariantPosition::Antichess(Antichess::default()),
+                    enums::GameMode::Atomic => VariantPosition::Atomic(Atomic::default()),
+                    enums::GameMode::Horde => VariantPosition::Horde(Horde::default()),
+                    enums::GameMode::RacingKings => VariantPosition::RacingKings(RacingKings::default()),
+                };
 
                 let local_opponent = data.get("local_opponent").unwrap().to::<enums::LocalOpponent>();
 
@@ -124,8 +107,7 @@ impl ChessLogic
             }
             enums::ConnectionType::Lan =>
             {
-                self.position = match game_mode
-                {
+                self.position = match game_mode {
                     enums::GameMode::Standard => VariantPosition::Chess(Chess::default()),
                     enums::GameMode::Chess960 => {
                         let fen = Fen::from_ascii(fen_string.as_bytes()).unwrap();
@@ -134,11 +116,11 @@ impl ChessLogic
                     enums::GameMode::KingOfTheHill => VariantPosition::KingOfTheHill(KingOfTheHill::default()),
                     enums::GameMode::ThreeCheck => VariantPosition::ThreeCheck(ThreeCheck::default()),
                     enums::GameMode::CrazyHouse => VariantPosition::Crazyhouse(Crazyhouse::default()),
-                    enums::GameMode::AntiChess => VariantPosition::Antichess(Antichess::default()),
+                    enums::GameMode::Antichess => VariantPosition::Antichess(Antichess::default()),
                     enums::GameMode::Atomic => VariantPosition::Atomic(Atomic::default()),
                     enums::GameMode::Horde => VariantPosition::Horde(Horde::default()),
                     enums::GameMode::RacingKings => VariantPosition::RacingKings(RacingKings::default()),
-                }
+                };
             }
         }
 
@@ -191,12 +173,12 @@ impl ChessLogic
     fn piece_role_from_square_in_put_move(&self, square: String) -> enums::PieceRole
     {
         let square = Square::from_ascii(square.as_bytes()).unwrap();
-
         match self.position.board().piece_at(square)
         {
+            None => enums::PieceRole::Empty,
             Some(piece) =>
             {
-                if self.position.promoted().contains(square)
+                if self.game_mode == enums::GameMode::CrazyHouse && self.position.promoted().contains(square)
                 {
                     enums::PieceRole::Pawn
                 }
@@ -213,7 +195,6 @@ impl ChessLogic
                     }
                 }
             }
-            None => enums::PieceRole::Empty
         }
     }
 
@@ -250,7 +231,7 @@ impl ChessLogic
 
 
     #[func]
-    fn crazyhouse_pockets(&self) -> Array<Vector3i> // x = color, y = role, z = value
+    fn crazyhouse_pockets(&self) -> Array<Vector3i> // x = color, y = role, z = count value
     {
         let pockets = self.position.pockets().unwrap();
         let mut pockets_for_godot = Array::<Vector3i>::new();
@@ -259,21 +240,17 @@ impl ChessLogic
         {
             for role in [enums::PieceRole::Queen, enums::PieceRole::Rook, enums::PieceRole::Bishop, enums::PieceRole::Knight, enums::PieceRole::Pawn]
             {
-                let shakmaty_color = match color
-                {
+                let shakmaty_color = match color {
                     enums::ChessColor::White => Color::White,
                     enums::ChessColor::Black => Color::Black
                 };
-                
-                let shakmaty_role = match role
-                {
-                    enums::PieceRole::Queen
-                    | enums::PieceRole::Empty
-                    | enums::PieceRole::King => Role::Queen,
+                let shakmaty_role = match role {
+                    enums::PieceRole::Queen => Role::Queen,
                     enums::PieceRole::Rook => Role::Rook,
                     enums::PieceRole::Bishop => Role::Bishop,
                     enums::PieceRole::Knight => Role::Knight,
-                    enums::PieceRole::Pawn => Role::Pawn
+                    enums::PieceRole::Pawn => Role::Pawn,
+                    _ => Role::Queen
                 };
 
                 pockets_for_godot.push(
@@ -303,7 +280,7 @@ impl ChessLogic
                 continue;
             }
             else if legal_move.from().unwrap() == from
-            {// shakmaty legal move square == selected square from Godot, add move to Godot legal move list
+            {// shakmaty legal move from square == selected square from Godot, add move to Godot legal move list
                 let to = legal_move.to();
                 let to_as_gstring = to.to_string().to_gstring();
                 if !legal_moves_for_godot.contains_key(&to_as_gstring)
@@ -341,28 +318,23 @@ impl ChessLogic
 
 
     #[func]
-    fn legal_put_moves_from_role(&self, piece_role: enums::PieceRole) -> PackedStringArray
+    fn legal_put_moves_from_role(&self, role: enums::PieceRole) -> PackedStringArray
     {
         let mut legal_put_moves_for_godot = PackedStringArray::new();
+        let role = match role {
+            enums::PieceRole::Queen => Role::Queen,
+            enums::PieceRole::Rook => Role::Rook,
+            enums::PieceRole::Bishop => Role::Bishop,
+            enums::PieceRole::Knight => Role::Knight,
+            enums::PieceRole::Pawn => Role::Pawn,
+            _ => Role::Pawn
+        };
 
         for legal_move in self.position.legal_moves()
         {
-            if let Move::Put { role, to } = legal_move
+            if let Move::Put { role: r, to } = legal_move && r == role
             {
-                let target_role = match piece_role
-                {
-                    enums::PieceRole::Queen => Role::Queen,
-                    enums::PieceRole::Rook => Role::Rook,
-                    enums::PieceRole::Bishop => Role::Bishop,
-                    enums::PieceRole::Knight => Role::Knight,
-                    enums::PieceRole::Pawn => Role::Pawn,
-                    _ => Role::Pawn
-                };
-
-                if role == target_role
-                {
-                    legal_put_moves_for_godot.push(&to.to_string().to_gstring());
-                }
+                legal_put_moves_for_godot.push(&to.to_string().to_gstring());
             }
         }
         legal_put_moves_for_godot
@@ -455,24 +427,24 @@ impl ChessLogic
 
 
     #[func]
-    fn apply_promotion_move(&mut self, from: String, to: String, new_role: enums::PieceRole)
+    fn apply_promotion_move(&mut self, from: String, to: String, role: enums::PieceRole)
     {
         let from_square = Square::from_ascii(from.as_bytes()).unwrap();
         let to_square = Square::from_ascii(to.as_bytes()).unwrap();
         let mut play_move_option: Option<Move> = None;
-        let role = match new_role
-        {
+        let new_role = match role {
+            enums::PieceRole::King => Role::King, // only antichess mode
             enums::PieceRole::Queen => Role::Queen,
             enums::PieceRole::Bishop => Role::Bishop,
             enums::PieceRole::Knight => Role::Knight,
             enums::PieceRole::Rook => Role::Rook,
-            _ => panic!()
+            _ => Role::Queen
         };
 
         for legal_move in self.position.legal_moves()
         {
             // check if Godot move from-to square match Shakmaty legal move from-to square to find the Move object
-            if legal_move.from().unwrap() == from_square && legal_move.to() == to_square && legal_move.promotion().unwrap() == role
+            if legal_move.from().unwrap() == from_square && legal_move.to() == to_square && legal_move.promotion().unwrap() == new_role
             {
                 play_move_option = Some(legal_move);
                 break;
@@ -486,15 +458,14 @@ impl ChessLogic
         self.update_move_history(play_move);
         self.update_repeated_position_hash_history();
 
-        self.base_mut().emit_signal("promotion_piece_updated", &[from.to_variant(), to.to_variant(), new_role.to_variant()]);
+        self.base_mut().emit_signal("promotion_piece_updated", &[from.to_variant(), to.to_variant(), role.to_variant()]);
     }
 
 
     #[func]
     fn apply_put_move(&mut self, role: enums::PieceRole, to: String)
     {
-        let role_object = match role
-        {
+        let role_object = match role {
             enums::PieceRole::Queen => Role::Queen,
             enums::PieceRole::Rook => Role::Rook,
             enums::PieceRole::Bishop => Role::Bishop,
@@ -531,16 +502,16 @@ impl ChessLogic
     }
 
 
+    fn update_position_history(&mut self)
+    {
+        self.position_history.push(self.position.clone());
+    }
+
+
     #[func]
     fn position_history_count(&self) -> i64
     {
         self.position_history.len() as i64
-    }
-
-    
-    fn update_position_history(&mut self)
-    {
-        self.position_history.push(self.position.clone());
     }
 
 
@@ -600,8 +571,7 @@ impl ChessLogic
     fn play_ai_move(&mut self, best_ai_move: String)
     {
         let play_move = UciMove::from_ascii(best_ai_move.as_bytes()).unwrap().to_move(&self.position).unwrap();
-        let from = match play_move.from()
-        {
+        let from = match play_move.from() {
             Some(square) => square.to_string(),
             None => String::new()
         };
@@ -613,8 +583,8 @@ impl ChessLogic
             {
                 if play_move.is_promotion()
                 {
-                    let role = match play_move.promotion().unwrap()
-                    {
+                    let role = match play_move.promotion().unwrap() {
+                        Role::King => enums::PieceRole::King, // only antichess mode
                         Role::Queen => enums::PieceRole::Queen,
                         Role::Rook => enums::PieceRole::Rook,
                         Role::Bishop => enums::PieceRole::Bishop,
@@ -633,8 +603,7 @@ impl ChessLogic
             Move::Castle {..} => self.apply_castling_move(from, to),
             Move::Put { role, .. } =>
             {
-                let role = match role
-                {
+                let role = match role {
                     Role::Queen => enums::PieceRole::Queen,
                     Role::Rook => enums::PieceRole::Rook,
                     Role::Bishop => enums::PieceRole::Bishop,
@@ -693,53 +662,42 @@ impl ChessLogic
     #[func]
     fn match_finished_state(&self) -> enums::MatchFinishedState
     {
-        if self.position.is_game_over()
+        match self.position.outcome()
         {
-            match self.position.outcome()
+            Outcome::Known(shakmaty::KnownOutcome::Draw) =>
             {
-                shakmaty::Outcome::Known(known_outcome) =>
-                {
-                    match known_outcome
-                    {
-                        shakmaty::KnownOutcome::Decisive {winner} =>
-                        {
-                            match winner
-                            {
-                                Color::White => return enums::MatchFinishedState::WhiteWon,
-                                Color::Black => return enums::MatchFinishedState::BlackWon
-                            }
-                        }
-                        shakmaty::KnownOutcome::Draw => return  enums::MatchFinishedState::FinishedDraw
-                    }
-                }
-                shakmaty::Outcome::Unknown =>
-                {
-                    godot_error!("[{}:{}] Unknown Outcome", file!(), line!());
-                }
+                return enums::MatchFinishedState::FinishedDraw;
             }
+            Outcome::Known(shakmaty::KnownOutcome::Decisive { winner: Color::White }) =>
+            {
+                return enums::MatchFinishedState::WhiteWon;
+            }
+            Outcome::Known(shakmaty::KnownOutcome::Decisive { winner: Color::Black }) =>
+            {
+                return enums::MatchFinishedState::BlackWon;
+            }
+            Outcome::Unknown => {}
         }
 
         // check 3 repeated positions
-        let repeated_board_count: u8 = match self.repeated_position_hash_history.last()
+        if let Some(last_hash) = self.repeated_position_hash_history.last()
         {
-            None => 0,
-            Some(last_board_hash) =>
+            let mut repeated_position_count = 0u8;
+            for hash in &self.repeated_position_hash_history
             {
-                let mut value = 0u8;
-
-                for board_hash in &self.repeated_position_hash_history
+                if hash == last_hash
                 {
-                    if last_board_hash == board_hash
-                    {
-                        value += 1;
-                    }
+                    repeated_position_count += 1;
                 }
-                value
             }
-        };
+            if repeated_position_count >= 3
+            {
+                return enums::MatchFinishedState::FinishedDraw;
+            }
+        }
 
         // check halfmoves over 100
-        if repeated_board_count >= 3 || self.position.halfmoves() >= 100
+        if self.position.halfmoves() >= 100
         {
             return enums::MatchFinishedState::FinishedDraw;
         }
