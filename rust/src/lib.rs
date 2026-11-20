@@ -1,11 +1,11 @@
-use godot::init::{ExtensionLibrary, gdextension};
+use godot::init::{gdextension, ExtensionLibrary};
 
-mod chess_logic;
-mod chess_ai;
-mod lan_host;
-mod lan_peer;
-mod lan_protocol;
-mod enums;
+pub mod chess_logic;
+pub mod chess_ai;
+pub mod lan_host;
+pub mod lan_peer;
+pub mod lan_protocol;
+pub mod enums;
 
 struct Rust;
 

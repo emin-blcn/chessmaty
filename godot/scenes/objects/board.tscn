@@ -53,6 +53,63 @@ grow_vertical = 2
 color = Color(0.08235294, 0.16470589, 0.14901961, 1)
 metadata/_edit_lock_ = true
 
+[node name="board_texture" type="TextureRect" parent="." unique_id=374220531]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_s07tm")
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="board_border_texture" type="NinePatchRect" parent="board_texture" unique_id=260779980]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -6.0
+offset_top = -6.0
+offset_right = 6.0
+offset_bottom = 6.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_gptsx")
+region_rect = Rect2(0, 0, 16, 16)
+patch_margin_left = 7
+patch_margin_top = 7
+patch_margin_right = 7
+patch_margin_bottom = 7
+
+[node name="king_of_the_hill_coloring" type="ColorRect" parent="board_texture" unique_id=2095535336]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.375
+anchor_top = 0.375
+anchor_right = 0.625
+anchor_bottom = 0.625
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 0, 0.25490198)
+metadata/_edit_use_anchors_ = true
+
+[node name="racing_kings_coloring" type="ColorRect" parent="board_texture" unique_id=1661434192]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.125
+grow_horizontal = 2
+color = Color(1, 1, 0, 0.25490198)
+metadata/_edit_use_anchors_ = true
+
 [node name="numbers_left" type="VBoxContainer" parent="." unique_id=281338518]
 layout_mode = 1
 anchors_preset = 8
@@ -67,7 +124,6 @@ offset_bottom = 64.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="numbers_left" unique_id=1896196886]
@@ -188,7 +244,6 @@ offset_bottom = 64.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="numbers_right" unique_id=984959119]
@@ -301,7 +356,6 @@ offset_bottom = -71.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="letters_top" unique_id=1764801178]
@@ -430,7 +484,6 @@ offset_bottom = 79.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
-metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="letters_bottom" unique_id=1422781387]
@@ -537,56 +590,7 @@ theme_override_font_sizes/font_size = 8
 text = "H"
 horizontal_alignment = 1
 
-[node name="board_texture" type="TextureRect" parent="." unique_id=374220531]
-texture_filter = 1
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -64.0
-offset_right = 64.0
-offset_bottom = 64.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_s07tm")
-metadata/_edit_lock_ = true
-
-[node name="king_of_the_hill_coloring" type="ColorRect" parent="." unique_id=2095535336]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -16.0
-offset_top = -16.0
-offset_right = 16.0
-offset_bottom = 16.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 1, 0, 0.25490198)
-metadata/_edit_lock_ = true
-
-[node name="racing_kings_coloring" type="ColorRect" parent="." unique_id=1661434192]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -64.0
-offset_right = 64.0
-offset_bottom = -48.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(1, 1, 0, 0.25490198)
-metadata/_edit_lock_ = true
-
-[node name="move_marker_textures" type="Control" parent="." unique_id=1638250089]
+[node name="marker_textures" type="Control" parent="." unique_id=1638250089]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -599,26 +603,6 @@ offset_right = -64.0
 offset_bottom = -64.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_lock_ = true
-
-[node name="board_border_texture" type="NinePatchRect" parent="." unique_id=260779980]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = -70.0
-offset_right = 70.0
-offset_bottom = 70.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_gptsx")
-patch_margin_left = 9
-patch_margin_top = 7
-patch_margin_right = 7
-patch_margin_bottom = 7
 metadata/_edit_lock_ = true
 
 [node name="piece_textures" type="Control" parent="." unique_id=1331294321]

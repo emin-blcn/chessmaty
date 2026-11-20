@@ -10,7 +10,7 @@ use godot::classes::Os;
 use crate::enums::GameMode;
 
 // Engine binary is embedded at compile time and extracted to the user data folder for runtime use.
-#[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+#[cfg(all(target_arch = "x86_64", target_os = "linux"))]
 mod engine_file
 {
     pub const BMI2_NAME: &str = "fairy-stockfish_x86-64-bmi2";
@@ -23,7 +23,7 @@ mod engine_file
     pub const X86_64_BYTES: &[u8] = include_bytes!("../../bin/fairy-stockfish_x86-64");
 }
 
-#[cfg(all(target_os = "windows", target_arch = "x86_64"))]
+#[cfg(all(target_arch = "x86_64", target_os = "windows"))]
 mod engine_file
 {
     pub const BMI2_NAME: &str = "fairy-stockfish_x86-64-bmi2.exe";
@@ -47,7 +47,7 @@ pub struct ChessAI
     fen_string: String,
     time_per_side: i64,
     time_increment: i64,
-    stop_ai_thinking: Mutex<bool>
+    stop_ai_thinking_mutex: Mutex<bool>
 }
 
 
@@ -56,11 +56,15 @@ impl ChessAI
     pub fn new(game_mode: GameMode, fen_string: String, ai_skill_level: i64, time_per_side: i64, time_increment: i64) -> Self
     {
         let (engine_file_name, engine_file_bytes) = {
-            if is_x86_feature_detected!("bmi2") && is_x86_feature_detected!("avx2") && is_x86_feature_detected!("sse4.1") && is_x86_feature_detected!("popcnt"){
-                (engine_file::BMI2_NAME, engine_file::BMI2_BYTES) // see also https://github.com/fairy-stockfish/Fairy-Stockfish/blob/4e3d0147d5b8da1b780a29f0b3e1d24311d028fa/src/Makefile#L202
+            let modern_features = is_x86_feature_detected!("sse4.1") && is_x86_feature_detected!("popcnt");
+            // see https://github.com/fairy-stockfish/Fairy-Stockfish/blob/4e3d0147d5b8da1b780a29f0b3e1d24311d028fa/src/Makefile#L185
+            let bmi2_features = is_x86_feature_detected!("bmi2") && is_x86_feature_detected!("avx2") && modern_features;
+            // see https://github.com/fairy-stockfish/Fairy-Stockfish/blob/4e3d0147d5b8da1b780a29f0b3e1d24311d028fa/src/Makefile#L202
+            if bmi2_features {
+                (engine_file::BMI2_NAME, engine_file::BMI2_BYTES)
             }
-            else if is_x86_feature_detected!("sse4.1") && is_x86_feature_detected!("popcnt") {
-                (engine_file::MODERN_NAME, engine_file::MODERN_BYTES) // see also https://github.com/fairy-stockfish/Fairy-Stockfish/blob/4e3d0147d5b8da1b780a29f0b3e1d24311d028fa/src/Makefile#L185
+            else if modern_features {
+                (engine_file::MODERN_NAME, engine_file::MODERN_BYTES) 
             }
             else {
                 (engine_file::X86_64_NAME, engine_file::X86_64_BYTES)
@@ -148,8 +152,8 @@ impl ChessAI
         }
 
         let mut child_process = Command::new(exist_engine_file_path_string).stdin(Stdio::piped()).stdout(Stdio::piped()).spawn().unwrap();
-        let mut writer = child_process.stdin.take().unwrap();
         let mut reader = BufReader::new(child_process.stdout.take().unwrap());
+        let mut writer = child_process.stdin.take().unwrap();
 
         writer.write_all("uci\n".as_bytes()).unwrap();
         let _ = writer.flush();
@@ -166,18 +170,21 @@ impl ChessAI
             }
         }
 
-        match game_mode {
-            GameMode::Standard
-            | GameMode::Chess960 =>    writer.write_all("setoption name UCI_Variant value chess\n".as_bytes()),
-            GameMode::KingOfTheHill => writer.write_all("setoption name UCI_Variant value kingofthehill\n".as_bytes()),
-            GameMode::ThreeCheck =>    writer.write_all("setoption name UCI_Variant value 3check\n".as_bytes()),
-            GameMode::CrazyHouse =>    writer.write_all("setoption name UCI_Variant value crazyhouse\n".as_bytes()),
-            GameMode::AntiChess =>     writer.write_all("setoption name UCI_Variant value antichess\n".as_bytes()),
-            GameMode::Atomic =>        writer.write_all("setoption name UCI_Variant value atomic\n".as_bytes()),
-            GameMode::Horde =>         writer.write_all("setoption name UCI_Variant value horde\n".as_bytes()),
-            GameMode::RacingKings =>   writer.write_all("setoption name UCI_Variant value racingkings\n".as_bytes())
-        }.unwrap();
-
+        writer.write_all(
+            format!(
+                "setoption name UCI_Variant value {}\n",
+                match game_mode {
+                    GameMode::Standard | GameMode::Chess960 => "chess",
+                    GameMode::KingOfTheHill => "kingofthehill",
+                    GameMode::ThreeCheck => "3check",
+                    GameMode::CrazyHouse => "crazyhouse",
+                    GameMode::Antichess => "antichess",
+                    GameMode::Atomic => "atomic",
+                    GameMode::Horde => "horde",
+                    GameMode::RacingKings =>  "racingkings"
+                }
+            ).as_bytes()
+        ).unwrap();
         writer.write_all("setoption name UCI_Chess960 value true\n".as_bytes()).unwrap();
         writer.write_all(format!("setoption name Skill Level value {}\n", ai_skill_level).as_bytes()).unwrap();
         writer.write_all("ucinewgame\n".as_bytes()).unwrap();
@@ -203,7 +210,7 @@ impl ChessAI
             fen_string,
             time_per_side,
             time_increment,
-            stop_ai_thinking: Mutex::<bool>::new(false)
+            stop_ai_thinking_mutex: Mutex::<bool>::new(false)
         }
     }
 
@@ -226,11 +233,11 @@ impl ChessAI
             {
                 if move_history.is_empty()
                 {// move list is empty, AI will make first move
-                    writer_mutex_guard.write_all(format!("position fen {}\n", self.fen_string).as_bytes()).unwrap();
+                    (*writer_mutex_guard).write_all(format!("position fen {}\n", self.fen_string).as_bytes()).unwrap();
                 }
                 else
                 {// move list is not empty, AI will make next move
-                    writer_mutex_guard.write_all(
+                    (*writer_mutex_guard).write_all(
                         format!(
                             "position fen {} moves {}\n",
                             self.fen_string,
@@ -243,24 +250,24 @@ impl ChessAI
             {
                 if move_history.is_empty()
                 {// move list is empty, AI will make first move
-                    writer_mutex_guard.write_all("position startpos\n".as_bytes()).unwrap();
+                    (*writer_mutex_guard).write_all("position startpos\n".as_bytes()).unwrap();
                     
                 }
                 else
                 {// move list is not empty, AI will make next move
-                    writer_mutex_guard.write_all(format!("position startpos moves {}\n", uci_moves_string).as_bytes()).unwrap();
+                    (*writer_mutex_guard).write_all(format!("position startpos moves {}\n", uci_moves_string).as_bytes()).unwrap();
                 }
             }
-            let _ = writer_mutex_guard.flush();
+            let _ = (*writer_mutex_guard).flush();
             
             //no time limit if time limit value == -1 minute (-60000 ms)
             if self.time_per_side == -60_000
             {
-                writer_mutex_guard.write_all("go movetime 1000\n".as_bytes()).unwrap();
+                (*writer_mutex_guard).write_all("go movetime 1000\n".as_bytes()).unwrap();
             }
             else
             {
-                writer_mutex_guard.write_all(
+                (*writer_mutex_guard).write_all(
                     format!(
                         "go wtime {} btime {} winc {} binc {}\n",
                         white_time_left_ms,
@@ -270,7 +277,7 @@ impl ChessAI
                     ).as_bytes()
                 ).unwrap();
             }
-            let _ = writer_mutex_guard.flush();
+            let _ = (*writer_mutex_guard).flush();
         }
 
         let mut reader_mutex_guard = self.reader_mutex.lock().unwrap();
@@ -279,14 +286,14 @@ impl ChessAI
         loop
         {
             line.clear();
-            match reader_mutex_guard.read_line(&mut line)
+            match (*reader_mutex_guard).read_line(&mut line)
             {
                 Ok(0) => break,
                 Ok(_) =>
                 {
                     if line.starts_with("bestmove")
                     {
-                        let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking.lock().unwrap();
+                        let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking_mutex.lock().unwrap();
                         if *stop_ai_thinking_mutex_guard
                         {
                             *stop_ai_thinking_mutex_guard = false;
@@ -311,12 +318,12 @@ impl ChessAI
 
     pub fn stop_ai_thinking(&self)
     {
-        let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking.lock().unwrap();
+        let mut stop_ai_thinking_mutex_guard = self.stop_ai_thinking_mutex.lock().unwrap();
         *stop_ai_thinking_mutex_guard = true;
 
         let mut writer_mutex_guard = self.writer_mutex.lock().unwrap();
-        writer_mutex_guard.write_all("stop\n".as_bytes()).unwrap();
-        let _ = writer_mutex_guard.flush();
+        (*writer_mutex_guard).write_all("stop\n".as_bytes()).unwrap();
+        let _ = (*writer_mutex_guard).flush();
     }
 }
 
@@ -327,13 +334,13 @@ impl Drop for ChessAI
     {
         if let Ok(mut writer_mutex_guard) = self.writer_mutex.lock()
         {
-            writer_mutex_guard.write_all("quit\n".as_bytes()).unwrap();
-            let _ = writer_mutex_guard.flush();
+            (*writer_mutex_guard).write_all("quit\n".as_bytes()).unwrap();
+            let _ = (*writer_mutex_guard).flush();
         }
         if let Ok(mut process_mutex_guard) = self.process_mutex.lock()
         {
-            let _ = process_mutex_guard.kill();
-            let _ = process_mutex_guard.wait();
+            let _ = (*process_mutex_guard).kill();
+            let _ = (*process_mutex_guard).wait();
         }
     }
 }

@@ -246,19 +246,19 @@ func send_move_msg_to_lan_opponent(move_type: Enums.MoveType, from: String, to: 
 
 
 func _on_move_applied(_move_type: Enums.MoveType, _from: String, _to: String) -> void:
-	set_active_turn(chess_logic.active_turn() as Enums.ChessColor)
+	set_active_turn(chess_logic.active_turn())
 
 
 func _on_promotion_piece_updated(_from: String, _to: String, _role: Enums.PieceRole) -> void:
-	set_active_turn(chess_logic.active_turn() as Enums.ChessColor)
+	set_active_turn(chess_logic.active_turn())
 
 
 func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
-	set_active_turn(chess_logic.active_turn() as Enums.ChessColor)
+	set_active_turn(chess_logic.active_turn())
 
 
 func _on_undo_last_move_applied(_double_undo: bool) -> void:
-	set_active_turn(chess_logic.active_turn() as Enums.ChessColor)
+	set_active_turn(chess_logic.active_turn())
 
 	if get_position_history_count() <= 0:
 		hud_elements_node.hide_undo_button()
@@ -325,29 +325,6 @@ func _on_promotion_move_played_by_ai(from: String, to: String, role: Enums.Piece
 	apply_promotion_move()
 
 
-func _on_white_times_up() -> void:
-	match_finished(Enums.MatchFinishedState.BLACK_WON)
-
-
-func _on_black_times_up() -> void:
-	match_finished(Enums.MatchFinishedState.WHITE_WON)
-
-
-func match_finished(finished_state: Enums.MatchFinishedState) -> void:
-	Sound.finish.play()
-	if promotion_selection_node.visible:
-		promotion_selection_node.hide()
-
-	match finished_state:
-		Enums.MatchFinishedState.FINISHED_DRAW:
-			match_finished_node.get_node("Label").text = "Game Drawn"
-		Enums.MatchFinishedState.WHITE_WON:
-			match_finished_node.get_node("Label").text = "White Wins"
-		Enums.MatchFinishedState.BLACK_WON:
-			match_finished_node.get_node("Label").text = "Black Wins"
-	match_finished_node.show()
-
-
 func get_active_turn() -> Enums.ChessColor:
 	return active_turn
 
@@ -358,6 +335,7 @@ func set_active_turn(value: Enums.ChessColor) -> void:
 
 func get_active_board_fen() -> String:
 	return chess_logic.active_board_fen()
+
 
 func get_piece_role_from_square(square: String) -> Enums.PieceRole:
 	return chess_logic.piece_role_from_square(square) as Enums.PieceRole
@@ -441,6 +419,29 @@ func undo_last_move() -> void:
 
 func send_undo_request_msg_to_lan_opponent() -> void:
 	lan_stream.send_undo_request_msg_to_opponent()
+
+
+func _on_white_times_up() -> void:
+	match_finished(Enums.MatchFinishedState.BLACK_WON)
+
+
+func _on_black_times_up() -> void:
+	match_finished(Enums.MatchFinishedState.WHITE_WON)
+
+
+func match_finished(finished_state: Enums.MatchFinishedState) -> void:
+	Sound.finish.play()
+	if promotion_selection_node.visible:
+		promotion_selection_node.hide()
+
+	match finished_state:
+		Enums.MatchFinishedState.FINISHED_DRAW:
+			match_finished_node.get_node("Label").text = "Drawn"
+		Enums.MatchFinishedState.WHITE_WON:
+			match_finished_node.get_node("Label").text = "White Won"
+		Enums.MatchFinishedState.BLACK_WON:
+			match_finished_node.get_node("Label").text = "Black Won"
+	match_finished_node.show()
 
 
 func exit_to_menu() -> void:

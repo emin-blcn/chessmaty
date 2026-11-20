@@ -1,5 +1,12 @@
 use godot::prelude::*;
 
+#[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
+#[godot(via = i32)]
+pub enum ChessColor
+{
+    White,
+    Black
+}
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
 #[godot(via = i32)]
@@ -26,18 +33,10 @@ pub enum GameMode
     KingOfTheHill,
     ThreeCheck,
     CrazyHouse,
-    AntiChess,
+    Antichess,
     Atomic,
     Horde,
     RacingKings
-}
-
-#[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]
-#[godot(via = i32)]
-pub enum ChessColor
-{
-    White,
-    Black
 }
 
 #[derive(GodotConvert, Var, Export, Clone, Copy, PartialEq, Eq, Debug)]

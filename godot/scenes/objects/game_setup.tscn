@@ -252,12 +252,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
 offset_top = 3.0
-offset_right = -2.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/tab_separation = 54
+theme_override_constants/tab_separation = 58
 theme_override_font_sizes/font_size = 8
 tab_alignment = 2
 current_tab = 0
@@ -272,7 +270,7 @@ metadata/_tab_name = "      Join Match      "
 [node name="refresh_host_list_button" type="Button" parent="game_setup_lan/TabContainer/join" unique_id=839904746]
 layout_mode = 1
 offset_top = 3.0
-offset_right = 29.0
+offset_right = 31.0
 offset_bottom = 16.0
 text = "Refresh"
 
@@ -307,7 +305,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = -1.0
+offset_right = -2.0
 offset_bottom = -2.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -319,27 +317,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 4
 
-[node name="element_instance" type="ColorRect" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements" unique_id=43642470]
+[node name="instance_element" type="Panel" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements" unique_id=54533270]
 visible = false
-custom_minimum_size = Vector2(0, 26)
-custom_maximum_size = Vector2(184, -1)
+custom_minimum_size = Vector2(0, 28)
+custom_maximum_size = Vector2(186, -1)
 layout_mode = 2
-color = Color(0.3046875, 0.3046875, 0.3046875, 1)
+metadata/_edit_group_ = true
 
-[node name="ColorRect" type="ColorRect" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1143175702]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = 1.0
-offset_right = -1.0
-offset_bottom = -1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.21484375, 0.21484375, 0.21484375, 1)
-
-[node name="host_name_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1082131988]
+[node name="host_name_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element" unique_id=1082131988]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -352,64 +337,69 @@ grow_horizontal = 2
 text = "New Match"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1995366011]
+[node name="HBoxContainer" type="HBoxContainer" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element" unique_id=1995366011]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = -15.0
+offset_left = 3.0
+offset_top = -17.0
 offset_right = -31.0
-offset_bottom = -8.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="game_mode_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=1987499188]
+[node name="game_mode_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element/HBoxContainer" unique_id=1987499188]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "game mode (Standard)"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="player_color_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer" unique_id=551357716]
+[node name="player_color_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element/HBoxContainer" unique_id=551357716]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Player side (white)"
 horizontal_alignment = 1
 vertical_alignment = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1910146153]
+[node name="HBoxContainer2" type="HBoxContainer" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element" unique_id=1910146153]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = -8.0
-offset_bottom = -1.0
+offset_left = 3.0
+offset_top = -10.0
+offset_right = -15.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="minute_per_side_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer2" unique_id=407790859]
+[node name="minute_per_side_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element/HBoxContainer2" unique_id=407790859]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "minute per side (0.75)"
 vertical_alignment = 2
 
-[node name="increment_second_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance/HBoxContainer2" unique_id=1544586484]
+[node name="increment_second_label" type="Label" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element/HBoxContainer2" unique_id=1544586484]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "increment in seconds (180)"
 vertical_alignment = 2
 
-[node name="join_button" type="Button" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/element_instance" unique_id=1626295457]
+[node name="join_button" type="Button" parent="game_setup_lan/TabContainer/join/ColorRect/ScrollContainer/elements/instance_element" unique_id=1626295457]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -31.0
-offset_top = 2.0
+offset_left = -30.0
+offset_top = 3.0
 offset_right = -2.0
-offset_bottom = 16.0
+offset_bottom = 17.0
 grow_horizontal = 0
 text = "Join"
 
@@ -547,17 +537,16 @@ text = "Create"
 [node name="game_mode_color_rect" type="ColorRect" parent="game_setup_lan/TabContainer/create/create_host_setup" unique_id=842788173]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -65.0
-offset_top = -45.0
-offset_right = 65.0
-offset_bottom = 9.0
+anchors_preset = -1
+anchor_left = -0.32474226
+anchor_top = -0.36
+anchor_right = 1.3247423
+anchor_bottom = 1.08
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.627451)
 metadata/_edit_group_ = true
+metadata/_edit_use_anchors_ = true
 
 [node name="game_mode_item_list" type="ItemList" parent="game_setup_lan/TabContainer/create/create_host_setup/game_mode_color_rect" unique_id=987650195]
 layout_mode = 1
@@ -589,9 +578,9 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -65.0
+offset_left = -63.0
 offset_top = -45.0
-offset_right = 65.0
+offset_right = 63.0
 offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -643,6 +632,7 @@ text = "Cancel"
 [connection signal="pressed" from="game_setup_local/start_button" to="game_setup_local" method="_on_start_button_pressed"]
 [connection signal="item_clicked" from="game_setup_local/game_mode_color_rect/game_mode_item_list" to="game_setup_local" method="_on_game_mode_item_list_item_clicked"]
 [connection signal="pressed" from="game_setup_lan/back_button" to="game_setup_lan" method="_on_back_button_pressed"]
+[connection signal="tab_changed" from="game_setup_lan/TabContainer" to="game_setup_lan" method="_on_tab_container_tab_changed"]
 [connection signal="pressed" from="game_setup_lan/TabContainer/join/refresh_host_list_button" to="game_setup_lan" method="_on_refresh_host_list_button_pressed"]
 [connection signal="pressed" from="game_setup_lan/TabContainer/create/create_host_setup/player_color_button" to="game_setup_lan" method="_on_player_color_button_pressed"]
 [connection signal="pressed" from="game_setup_lan/TabContainer/create/create_host_setup/game_mode_button" to="game_setup_lan" method="_on_game_mode_button_pressed"]

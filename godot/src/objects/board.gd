@@ -4,39 +4,43 @@ signal move_animation_finished()
 signal promotion_selection_required()
 
 const MOVE_ANIMATION_DURATION: float = 0.3
-const PIECE_TEXTURES: Dictionary[Vector2i, CompressedTexture2D] = {
-	Vector2i(Enums.PieceRole.KING, Enums.ChessColor.WHITE): preload("uid://cags18jbwmm0d"),
-	Vector2i(Enums.PieceRole.KING, Enums.ChessColor.BLACK): preload("uid://dioyjnoc4d7vu"),
-	Vector2i(Enums.PieceRole.QUEEN, Enums.ChessColor.WHITE): preload("uid://cfi88xmcwl8xv"),
-	Vector2i(Enums.PieceRole.QUEEN, Enums.ChessColor.BLACK): preload("uid://cp7h3f6nl280m"),
-	Vector2i(Enums.PieceRole.BISHOP, Enums.ChessColor.WHITE): preload("uid://cnkaj6a1nvawt"),
-	Vector2i(Enums.PieceRole.BISHOP, Enums.ChessColor.BLACK): preload("uid://dnip4r75iln63"),
-	Vector2i(Enums.PieceRole.KNIGHT, Enums.ChessColor.WHITE): preload("uid://bb6wpbdxlg4jl"),
-	Vector2i(Enums.PieceRole.KNIGHT, Enums.ChessColor.BLACK): preload("uid://b1qiry1fgwq7y"),
-	Vector2i(Enums.PieceRole.ROOK, Enums.ChessColor.WHITE): preload("uid://b43npdubwnbj"),
-	Vector2i(Enums.PieceRole.ROOK, Enums.ChessColor.BLACK): preload("uid://cdw8mxfjy7wn3"),
-	Vector2i(Enums.PieceRole.PAWN, Enums.ChessColor.WHITE): preload("uid://dcolfenoo2rm8"),
-	Vector2i(Enums.PieceRole.PAWN, Enums.ChessColor.BLACK): preload("uid://ccn6a7hxwydu")}
+const PIECE_TEXTURES: Dictionary[Enums.ChessColor, Dictionary ] = {
+	Enums.ChessColor.WHITE: {
+		Enums.PieceRole.KING: preload("uid://cags18jbwmm0d"),
+		Enums.PieceRole.QUEEN: preload("uid://cfi88xmcwl8xv"),
+		Enums.PieceRole.BISHOP: preload("uid://cnkaj6a1nvawt"),
+		Enums.PieceRole.KNIGHT: preload("uid://bb6wpbdxlg4jl"),
+		Enums.PieceRole.ROOK: preload("uid://b43npdubwnbj"),
+		Enums.PieceRole.PAWN: preload("uid://dcolfenoo2rm8")
+	},
+	Enums.ChessColor.BLACK: {
+		Enums.PieceRole.KING: preload("uid://dioyjnoc4d7vu"),
+		Enums.PieceRole.QUEEN: preload("uid://cp7h3f6nl280m"),
+		Enums.PieceRole.BISHOP: preload("uid://dnip4r75iln63"),
+		Enums.PieceRole.KNIGHT: preload("uid://b1qiry1fgwq7y"),
+		Enums.PieceRole.ROOK: preload("uid://cdw8mxfjy7wn3"),
+		Enums.PieceRole.PAWN: preload("uid://ccn6a7hxwydu")
+	}
+}
 const MOVE_MARKER_TEXTURES: Dictionary[String, CompressedTexture2D] = {
 	"white": preload("uid://cy6eriq3qj3nw"),
 	"green": preload("uid://dffcgne8d5luw"),
 	"yellow": preload("uid://b1r2lw2861tk8"),
-	"red": preload("uid://cwiw00cwqqit2")}
-const CASTLING_MOVE_KINGS_TARGET_SQUARES: Dictionary[Enums.ChessColor, PackedStringArray] = {
-	Enums.ChessColor.WHITE: ["c1", "g1"],
-	Enums.ChessColor.BLACK: ["c8", "g8"]}
+	"red": preload("uid://cwiw00cwqqit2")
+}
 
 var player_color: Enums.ChessColor
 var game_mode: Enums.GameMode
 var connection_type: Enums.ConnectionType
 var local_opponent: Enums.LocalOpponent
-var active_square: String
-var any_piece_selected: bool
-var legal_moves: Dictionary[String, Enums.MoveType]
-var legal_put_moves: PackedStringArray
-var king_in_danger_square: String
-var move_animation_tween: Tween
-var is_move_animation_playing: bool
+var active_square: String = ""
+var king_in_danger_square: String = ""
+var legal_moves: Dictionary[String, Enums.MoveType] = {}
+var legal_put_moves: PackedStringArray = []
+var move_animation_tween: Tween = null
+var any_piece_selected: bool = false
+var is_move_animation_playing: bool = false
+var is_white_side: bool = false
 var selected_put_piece_role: Enums.PieceRole = Enums.PieceRole.EMPTY
 var piece_nodes_on_board: Dictionary[String, TextureRect] = {
 	"a8": null, "b8": null, "c8": null, "d8": null, "e8": null, "f8": null, "g8": null, "h8": null,
@@ -50,7 +54,7 @@ var piece_nodes_on_board: Dictionary[String, TextureRect] = {
 
 @onready var master_scene: Control = get_tree().current_scene
 @onready var piece_textures_node: Control = $piece_textures
-@onready var move_marker_textures_node: Control = $move_marker_textures
+@onready var marker_textures_node: Control = $marker_textures
 @onready var input_control_node: Control = $input_control
 
 
@@ -64,18 +68,19 @@ func setup(data: Dictionary[String, Variant]) -> void:
 	connection_type = data.get("connection_type")
 	if connection_type == Enums.ConnectionType.LOCAL:
 		local_opponent = data.get("local_opponent")
+	is_white_side = player_color == Enums.ChessColor.WHITE or game_mode == Enums.GameMode.RACING_KINGS
 
 	if game_mode != Enums.GameMode.KING_OF_THE_HILL:
-		$king_of_the_hill_coloring.queue_free()
+		$board_texture/king_of_the_hill_coloring.queue_free()
 
 	if game_mode != Enums.GameMode.RACING_KINGS:
-		$racing_kings_coloring.queue_free()
+		$board_texture/racing_kings_coloring.queue_free()
 
 	if player_color == Enums.ChessColor.WHITE or (connection_type == Enums.ConnectionType.LOCAL and local_opponent == Enums.LocalOpponent.HUMAN):
 		enable_board_input()
 
 	# reverse numbers and letters if player color is black (and game mode is not "Racing Kings")
-	if player_color == Enums.ChessColor.BLACK and game_mode != Enums.GameMode.RACING_KINGS:
+	if !is_white_side:
 		for i in range(0, 8):
 			$numbers_left.get_child(i).text = "12345678"[i]
 			$numbers_right.get_child(i).text = "12345678"[i]
@@ -86,7 +91,7 @@ func setup(data: Dictionary[String, Variant]) -> void:
 
 
 func update_all_pieces() -> void:
-	# synchronize Godot all board with Rust
+	# synchronize Godot all board pieces with Rust
 	var active_board_fen: String = ""
 	for fen_char in master_scene.get_active_board_fen():
 		match fen_char:
@@ -128,7 +133,7 @@ func update_all_pieces() -> void:
 					piece_node_on_board.queue_free()
 			else:
 				if piece_node_on_board != null:
-					piece_node_on_board.texture = PIECE_TEXTURES.get(Vector2i(piece_role, piece_color))
+					piece_node_on_board.texture = PIECE_TEXTURES.get(piece_color).get(piece_role)
 				else:
 					var new_piece_node_instance: TextureRect = new_piece_node(piece_role, piece_color, square)
 					piece_nodes_on_board.set(square, new_piece_node_instance)
@@ -141,7 +146,7 @@ func new_piece_node(role: Enums.PieceRole, color: Enums.ChessColor, square: Stri
 	new_node.offset_transform_enabled = true
 	new_node.offset_transform_position.y = -19
 	new_node.position = square_to_position(square)
-	new_node.texture = PIECE_TEXTURES.get(Vector2i(role, color))
+	new_node.texture = PIECE_TEXTURES.get(color).get(role)
 	return new_node
 
 
@@ -166,7 +171,7 @@ func _on_input_conrol_mouse_exited() -> void:
 	if any_piece_selected:
 		return
 
-	var old_marker_node: TextureRect = move_marker_textures_node.get_node_or_null(active_square)
+	var old_marker_node: TextureRect = marker_textures_node.get_node_or_null(active_square)
 	if old_marker_node != null:
 		if active_square == king_in_danger_square:
 			old_marker_node.texture = MOVE_MARKER_TEXTURES.get("red")
@@ -183,7 +188,7 @@ func hovering_on_board_event(new_square: String) -> void:
 	or (game_mode == Enums.GameMode.CRAZY_HOUSE and selected_put_piece_role != Enums.PieceRole.EMPTY)):
 		return
 
-	var old_marker_node: TextureRect = move_marker_textures_node.get_node_or_null(active_square)
+	var old_marker_node: TextureRect = marker_textures_node.get_node_or_null(active_square)
 	if old_marker_node != null:
 		if active_square == king_in_danger_square:
 			old_marker_node.texture = MOVE_MARKER_TEXTURES.get("red")
@@ -194,7 +199,7 @@ func hovering_on_board_event(new_square: String) -> void:
 		var piece_color: Enums.ChessColor = master_scene.get_piece_color_from_square(new_square)
 		if piece_color == master_scene.get_active_turn():
 			if new_square == king_in_danger_square:
-				move_marker_textures_node.get_node(new_square).texture = MOVE_MARKER_TEXTURES.get("white")
+				marker_textures_node.get_node(new_square).texture = MOVE_MARKER_TEXTURES.get("white")
 			else:
 				add_move_marker(new_square, "white")
 
@@ -208,7 +213,7 @@ func square_select_event(new_square: String) -> void:
 		master_scene.apply_put_move(selected_put_piece_role, new_square)
 		legal_put_moves.clear()
 		selected_put_piece_role = Enums.PieceRole.EMPTY
-		clear_move_markers()
+		clear_markers()
 		return
 
 	if !any_piece_selected:
@@ -225,7 +230,7 @@ func square_select_event(new_square: String) -> void:
 	else:
 		# cancel selection if selected piece clicked again
 		if new_square == active_square:
-			clear_move_markers(true)
+			clear_markers(true)
 			legal_moves.clear()
 			any_piece_selected = false
 		else:
@@ -233,7 +238,7 @@ func square_select_event(new_square: String) -> void:
 			if legal_moves.has(new_square):
 				disable_board_input()
 				set_move_animation_playing(true)
-				clear_move_markers()
+				clear_markers()
 				match legal_moves.get(new_square):
 					Enums.MoveType.NORMAL:
 						master_scene.apply_normal_move(active_square, new_square)
@@ -252,7 +257,7 @@ func square_select_event(new_square: String) -> void:
 				if legal_moves.has(chess960_format_castling_move) and legal_moves.get(chess960_format_castling_move) == Enums.MoveType.CASTLING:
 					disable_board_input()
 					set_move_animation_playing(true)
-					clear_move_markers()
+					clear_markers()
 					master_scene.apply_castling_move(active_square, chess960_format_castling_move)
 					legal_moves.clear()
 					return
@@ -266,17 +271,28 @@ func square_select_event(new_square: String) -> void:
 							any_piece_selected = true
 							active_square = new_square
 							legal_moves = master_scene.get_legal_moves_from_square(new_square)
-							clear_move_markers()
+							clear_markers()
 							add_move_marker(new_square, "white")
 							add_legal_move_markers()
 
 
 func get_chess960_format_castling_move(target_square: String) -> String:
-	if !CASTLING_MOVE_KINGS_TARGET_SQUARES.get(master_scene.get_active_turn()).has(target_square):
+	# return empty if castling move is not exist game mode
+	if game_mode == Enums.GameMode.RACING_KINGS or game_mode == Enums.GameMode.ANTICHESS:
 		return ""
 
-	if master_scene.get_piece_role_from_square(active_square) != Enums.PieceRole.KING:
+	# return empty if selected piece is not a king
+	if piece_nodes_on_board.get(active_square).texture != PIECE_TEXTURES.get(master_scene.get_active_turn()).get(Enums.PieceRole.KING):
 		return ""
+
+	# return empty if target_square is not any king's possible target squares in castling move
+	match master_scene.get_active_turn():
+		Enums.ChessColor.WHITE:
+			if target_square != "c1" and target_square != "g1":
+				return ""
+		Enums.ChessColor.BLACK:
+			if target_square != "c8" and target_square != "g8":
+				return ""
 
 	if game_mode == Enums.GameMode.CHESS960:
 		var number: String = target_square[1]
@@ -284,9 +300,10 @@ func get_chess960_format_castling_move(target_square: String) -> String:
 			var square: String = letter + number
 			var piece_node_on_board: TextureRect = piece_nodes_on_board.get(square)
 			if piece_node_on_board != null:
-				if piece_node_on_board.texture == PIECE_TEXTURES.get(Vector2i(Enums.PieceRole.ROOK, master_scene.get_active_turn())):
+				if piece_node_on_board.texture == PIECE_TEXTURES.get(master_scene.get_active_turn()).get(Enums.PieceRole.ROOK):
 					return letter + number
 
+	# find castle's square from king's target if gamemode is not chess960
 	match target_square:
 		"c1": return "a1"
 		"c8": return "a8"
@@ -461,7 +478,7 @@ func _on_promotion_piece_updated(_from: String, to: String, role: Enums.PieceRol
 		"8": color = Enums.ChessColor.WHITE
 		"1": color = Enums.ChessColor.BLACK
 
-	piece_nodes_on_board.get(to).texture = PIECE_TEXTURES.get(Vector2i(role, color))
+	piece_nodes_on_board.get(to).texture = PIECE_TEXTURES.get(color).get(role)
 
 	update_king_in_danger_square()
 	move_animation_finished.emit()
@@ -470,13 +487,13 @@ func _on_promotion_piece_updated(_from: String, to: String, role: Enums.PieceRol
 func _on_put_piece_selected(role: Enums.PieceRole) -> void:
 	selected_put_piece_role = role
 	legal_put_moves = master_scene.get_legal_put_moves_from_role(role)
-	clear_move_markers()
+	clear_markers()
 	add_legal_put_move_markers()
 
 
 func _on_put_piece_unselected() -> void:
 	selected_put_piece_role = Enums.PieceRole.EMPTY
-	clear_move_markers()
+	clear_markers()
 
 
 func _on_put_move_applied(role: Enums.PieceRole, to: String) -> void:
@@ -492,7 +509,7 @@ func _on_put_move_applied(role: Enums.PieceRole, to: String) -> void:
 
 
 func _on_undo_last_move_applied(_double_undo: bool) -> void:
-	clear_move_markers()
+	clear_markers()
 	update_all_pieces()
 
 	update_king_in_danger_square()
@@ -502,7 +519,7 @@ func _on_undo_last_move_applied(_double_undo: bool) -> void:
 func update_king_in_danger_square():
 	var new_king_in_danger_square: String = master_scene.get_king_in_danger_square()
 	if new_king_in_danger_square.is_empty():
-		var king_in_danger_marker_node: TextureRect = move_marker_textures_node.get_node_or_null(king_in_danger_square)
+		var king_in_danger_marker_node: TextureRect = marker_textures_node.get_node_or_null(king_in_danger_square)
 		if king_in_danger_marker_node != null:
 			king_in_danger_marker_node.queue_free()
 
@@ -536,9 +553,9 @@ func enable_board_input() -> void:
 
 func add_legal_move_markers() -> void:
 	if active_square == king_in_danger_square:
-		move_marker_textures_node.get_node(active_square).texture = MOVE_MARKER_TEXTURES.get("white")
+		marker_textures_node.get_node(active_square).texture = MOVE_MARKER_TEXTURES.get("white")
 	else:
-		if move_marker_textures_node.get_node_or_null(active_square) == null:
+		if marker_textures_node.get_node_or_null(active_square) == null:
 			add_move_marker(active_square, "white")
 
 	for legal_move_square: String in legal_moves.keys():
@@ -570,11 +587,11 @@ func add_move_marker(square: String, color: String) -> void:
 	new_node.size = Vector2(16.0, 16.0)
 	new_node.position = square_to_position(square)
 	new_node.texture = MOVE_MARKER_TEXTURES.get(color)
-	move_marker_textures_node.add_child(new_node)
+	marker_textures_node.add_child(new_node)
 
 
-func clear_move_markers(keep_selected_piece_marker: bool = false) -> void:
-	for child: TextureRect in move_marker_textures_node.get_children():
+func clear_markers(keep_selected_piece_marker: bool = false) -> void:
+	for child: TextureRect in marker_textures_node.get_children():
 		if child.name == king_in_danger_square:
 			if active_square != king_in_danger_square:
 				child.texture = MOVE_MARKER_TEXTURES.get("red")
@@ -587,12 +604,14 @@ func clear_move_markers(keep_selected_piece_marker: bool = false) -> void:
 
 func position_to_square(input_position: Vector2) -> String:
 	var square_vector: Vector2i = input_position.clamp(Vector2.ZERO, Vector2(127.0, 127.0)) / 16.0
-	var letters: String = "abcdefgh" if player_color == Enums.ChessColor.WHITE or game_mode == Enums.GameMode.RACING_KINGS else "hgfedcba"
-	var numbers: String = "87654321" if player_color == Enums.ChessColor.WHITE or game_mode == Enums.GameMode.RACING_KINGS else "12345678"
+	var letters: String = "abcdefgh" if is_white_side else "hgfedcba"
+	var numbers: String = "87654321" if is_white_side else "12345678"
+
 	return letters[square_vector.x] + numbers[square_vector.y]
 
 
 func square_to_position(square: String) -> Vector2:
-	var letters: String = "abcdefgh" if player_color == Enums.ChessColor.WHITE or game_mode == Enums.GameMode.RACING_KINGS else "hgfedcba"
-	var numbers: String = "87654321" if player_color == Enums.ChessColor.WHITE or game_mode == Enums.GameMode.RACING_KINGS else "12345678"
+	var letters: String = "abcdefgh" if is_white_side else "hgfedcba"
+	var numbers: String = "87654321" if is_white_side else "12345678"
+
 	return Vector2(letters.find(square[0]) * 16.0, numbers.find(square[1]) * 16.0)

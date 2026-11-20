@@ -2,10 +2,14 @@ extends Control
 
 signal setup_finished(data: Dictionary[String, Variant])
 
-const time_per_side_minute_values: PackedFloat64Array = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
-	13.0, 14.0, 15.0, 16.0, 17.0,18.0, 19.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 60.0, 75.0, 90.0, 105.0, 120.0, 135.0, 150.0, 165.0, 180.0, -1.0]
-const time_increment_second_values: PackedInt64Array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-	10, 11, 12, 13, 14, 15, 16,17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 90, 120, 150, 180]
+const time_per_side_minute_values: PackedFloat64Array = [
+	0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0,
+	18.0, 19.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0, 60.0, 75.0, 90.0, 105.0, 120.0, 135.0, 150.0, 165.0, 180.0, -1.0
+]
+const time_increment_second_values: PackedInt64Array = [
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+	17, 18, 19, 20, 25, 30, 35, 40, 45, 60, 90, 120, 150, 180
+]
 
 var data: Dictionary[String, Variant] = {
 	"host_name": "New Match",
@@ -14,10 +18,10 @@ var data: Dictionary[String, Variant] = {
 	"connection_type": Enums.ConnectionType.LAN,
 	"fen_string": "-",
 	"time_per_side": -60_000,
-	"time_increment": 0}
+	"time_increment": 0
+}
 var lan_host: LanHost = LanHost.new()
 var lan_peer: LanPeer = LanPeer.new()
-var is_discovering_hosts: bool = false
 var is_waiting_for_peer: bool = false
 
 @onready var master_scene: Control = get_tree().current_scene
@@ -30,15 +34,23 @@ var is_waiting_for_peer: bool = false
 @onready var time_increment_slider: HSlider = $TabContainer/create/create_host_setup/time_increment_slider
 @onready var time_increment_label: Label = $TabContainer/create/create_host_setup/time_increment_slider/time_increment_label
 @onready var wait_for_peer_node: Control = $TabContainer/create/wait_for_peer
-@onready var cancel_waiting_for_peer_button: Button = $TabContainer/create/wait_for_peer/cancel_waiting_for_peer_button
 @onready var refresh_host_list_button: Button = $TabContainer/join/refresh_host_list_button
 @onready var elements_node: VBoxContainer = $TabContainer/join/ColorRect/ScrollContainer/elements
-@onready var element_instance_node: ColorRect = $TabContainer/join/ColorRect/ScrollContainer/elements/element_instance
+@onready var instance_element_node: Panel = $TabContainer/join/ColorRect/ScrollContainer/elements/instance_element
+
+
+func _ready() -> void:
+	$TabContainer/create/create_host_setup/game_mode_color_rect/game_mode_item_list.select(0)
 
 
 func _on_game_setup_tab_changed(tab: int) -> void:
+	Sound.button_tick.play()
 	if tab == 1:
 		discover_hosts()
+
+
+func _on_tab_container_tab_changed(_tab: int) -> void:
+	Sound.button_tick.play()
 
 
 func _on_refresh_host_list_button_pressed() -> void:
@@ -47,14 +59,10 @@ func _on_refresh_host_list_button_pressed() -> void:
 
 
 func discover_hosts() -> void:
-	if is_discovering_hosts:
-		return
-	is_discovering_hosts = true
 	refresh_host_list_button.disabled = true
-	cancel_waiting_for_peer_button.hide()
 
-	for element: ColorRect in elements_node.get_children():
-		if element != element_instance_node:
+	for element: Panel in elements_node.get_children():
+		if element != instance_element_node:
 			element.queue_free()
 
 	WorkerThreadPool.add_task(_discover_hosts)
@@ -77,7 +85,7 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 			"time_increment": int(received_params.get("time_increment"))
 		}
 
-		var new_element_node: ColorRect = element_instance_node.duplicate()
+		var new_element_node: Panel = instance_element_node.duplicate()
 		var join_button: Button = new_element_node.get_node("join_button")
 
 		join_button.pressed.connect(_on_join_button_pressed.bind(host_ip, host_data))
@@ -91,7 +99,7 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 			Enums.GameMode.KING_OF_THE_HILL: game_mode_label_text = "King Of The Hill"
 			Enums.GameMode.THREE_CHECK: game_mode_label_text = "Three-Check"
 			Enums.GameMode.CRAZY_HOUSE: game_mode_label_text = "Crazyhouse"
-			Enums.GameMode.ANTI_CHESS: game_mode_label_text = "Antichess"
+			Enums.GameMode.ANTICHESS: game_mode_label_text = "Antichess"
 			Enums.GameMode.ATOMIC: game_mode_label_text = "Atomic"
 			Enums.GameMode.HORDE: game_mode_label_text = "Horde"
 			Enums.GameMode.RACING_KINGS: game_mode_label_text = "Racing Kings"
@@ -125,8 +133,6 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 		new_element_node.show()
 
 	refresh_host_list_button.disabled = false
-	cancel_waiting_for_peer_button.show()
-	is_discovering_hosts = false
 
 
 func _on_join_button_pressed(host_ip: String, host_data: Dictionary[String, Variant]) -> void:
@@ -176,7 +182,7 @@ func _on_game_mode_item_list_item_clicked(index: int, _at_position: Vector2, mou
 		Enums.GameMode.KING_OF_THE_HILL: game_mode_button.text = "Game mode: King Of The Hill"
 		Enums.GameMode.THREE_CHECK: game_mode_button.text = "Game mode: Three-Check"
 		Enums.GameMode.CRAZY_HOUSE: game_mode_button.text = "Game mode: Crazyhouse"
-		Enums.GameMode.ANTI_CHESS: game_mode_button.text = "Game mode: Antichess"
+		Enums.GameMode.ANTICHESS: game_mode_button.text = "Game mode: Antichess"
 		Enums.GameMode.ATOMIC: game_mode_button.text = "Game mode: Atomic"
 		Enums.GameMode.HORDE: game_mode_button.text = "Game mode: Horde"
 		Enums.GameMode.RACING_KINGS: game_mode_button.text = "Game mode: Racing Kings"

@@ -3,7 +3,6 @@ extends Control
 signal white_times_up()
 signal black_times_up()
 
-var player_color: Enums.ChessColor
 var time_per_side: int
 var time_increment: int
 var white_time_left: int = 0 # in milliseconds
@@ -21,7 +20,6 @@ var time_left_history: Array[Vector2i] = []
 
 
 func setup(data: Dictionary[String, Variant]) -> void:
-	player_color = data.get("player_color")
 	time_per_side = data.get("time_per_side")
 	time_increment = data.get("time_increment")
 
@@ -34,7 +32,7 @@ func setup(data: Dictionary[String, Variant]) -> void:
 	black_time_left = time_per_side
 
 	# reverse vertical gui elements if player side is black (default order is white)
-	if player_color == Enums.ChessColor.BLACK:
+	if data.get("player_color") == Enums.ChessColor.BLACK:
 		black_time_message_label.position.y = 152.0
 		white_time_message_label.position.y = 2.0
 

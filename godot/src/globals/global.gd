@@ -8,7 +8,8 @@ var user_data_file_dir: String = OS.get_user_data_dir().path_join("user_data.bin
 var user_data: Dictionary[String, Variant] = {
 	"fullscreen": true,
 	"window_size": DisplayServer.screen_get_size().x / BASE_WINDOW_SIZE.x,
-	"sfx_volume": 1.0}
+	"sfx_volume": 1.0
+}
 
 
 func _ready() -> void:

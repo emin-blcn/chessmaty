@@ -77,7 +77,7 @@ func _on_undo_last_move_applied(_double_undo: bool):
 
 
 func update_gui() -> void:
-	for element_vector: Vector3i in master_scene.get_crazyhouse_pockets(): # x = color, y = role, z = value
+	for element_vector: Vector3i in master_scene.get_crazyhouse_pockets(): # x = color, y = role, z = count value
 		var color_string: String
 		match element_vector.x as Enums.ChessColor:
 			Enums.ChessColor.WHITE: color_string = "white"
@@ -93,11 +93,11 @@ func update_gui() -> void:
 
 		var button: Button = get_node(color_string + "/" + piece_role_string + "_button")
 		var label: Label = get_node(color_string + "/" + piece_role_string + "_label")
-		var value: int = element_vector.z
+		var count_value: int = element_vector.z
 
-		label.text = str(value)
+		label.text = str(count_value)
 
-		if value <= 0:
+		if count_value <= 0:
 			button.disabled = true
 		else:
 			button.disabled = false

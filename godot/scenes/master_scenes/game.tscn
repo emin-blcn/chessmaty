@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ccx66rc44ejbv"]
 
 [ext_resource type="Script" uid="uid://cmwwvuydl32bg" path="res://src/master_scenes/game.gd" id="1_873yf"]
-[ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/background_tile.png" id="2_nm604"]
+[ext_resource type="Texture2D" uid="uid://ctj5c7x1gkfh5" path="res://assets/graphics/gui/background.png" id="2_nm604"]
 [ext_resource type="PackedScene" uid="uid://c8liaimbtivw6" path="res://scenes/objects/board.tscn" id="3_3ucld"]
 [ext_resource type="Script" uid="uid://8pf2sw6qi5a1" path="res://src/objects/hud_elements/hud_elements.gd" id="4_lkrtx"]
 [ext_resource type="Theme" uid="uid://cgbuy1gkp5af3" path="res://assets/graphics/gui/theme/theme.tres" id="4_opn41"]
@@ -426,6 +426,7 @@ texture = SubResource("GradientTexture2D_5xl1b")
 layout_mode = 1
 offset_top = -87.0
 offset_bottom = 87.0
+metadata/_edit_lock_ = true
 
 [connection signal="mouse_entered" from="game_content/hud_elements/Control/undo_button" to="game_content/hud_elements" method="_on_undo_button_mouse_entered"]
 [connection signal="mouse_exited" from="game_content/hud_elements/Control/undo_button" to="game_content/hud_elements" method="_on_undo_button_mouse_exited"]
