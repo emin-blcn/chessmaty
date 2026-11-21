@@ -70,5 +70,6 @@ pub enum MatchFinishedState
     NotFinished,
     WhiteWon,
     BlackWon,
-    FinishedDraw
+    FinishedDraw,
+    OpponentLeft
 }

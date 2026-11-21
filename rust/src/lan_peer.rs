@@ -137,7 +137,8 @@ impl LanPeer
         let mut buffer = [0u8; 512];
         loop
         {
-            match udp_socket.recv_from(&mut buffer)
+            let received = udp_socket.recv_from(&mut buffer);
+            match received
             {
                 Err(_) => return false,
                 Ok((received_bytes_len, received_socket_addr)) =>

@@ -22,7 +22,6 @@ var data: Dictionary[String, Variant] = {
 }
 var lan_host: LanHost = LanHost.new()
 var lan_peer: LanPeer = LanPeer.new()
-var is_waiting_for_peer: bool = false
 
 @onready var master_scene: Control = get_tree().current_scene
 @onready var create_host_setup_node: Control = $TabContainer/create/create_host_setup
@@ -70,7 +69,7 @@ func discover_hosts() -> void:
 
 func _discover_hosts() -> void:
 	var discovered_hosts: Dictionary[String, String] = lan_peer.discover_all_hosts()
-	call_deferred("_on_discovered_all_hosts", discovered_hosts)
+	call_deferred(&"_on_discovered_all_hosts", discovered_hosts)
 
 
 func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> void:
@@ -86,11 +85,11 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 		}
 
 		var new_element_node: Panel = instance_element_node.duplicate()
-		var join_button: Button = new_element_node.get_node("join_button")
+		var join_button: Button = new_element_node.get_node(^"join_button")
 
 		join_button.pressed.connect(_on_join_button_pressed.bind(host_ip, host_data))
 
-		new_element_node.get_node("host_name_label").text = host_data.get("host_name")
+		new_element_node.get_node(^"host_name_label").text = host_data.get("host_name")
 
 		var game_mode_label_text: String
 		match host_data.get("game_mode"):
@@ -104,29 +103,29 @@ func _on_discovered_all_hosts(discovered_hosts: Dictionary[String, String]) -> v
 			Enums.GameMode.HORDE: game_mode_label_text = "Horde"
 			Enums.GameMode.RACING_KINGS: game_mode_label_text = "Racing Kings"
 
-		new_element_node.get_node("HBoxContainer/game_mode_label").text = "game mode (" + game_mode_label_text + ")"
+		new_element_node.get_node(^"HBoxContainer/game_mode_label").text = "game mode (" + game_mode_label_text + ")"
 
 		match host_data.get("player_color"):
 			Enums.ChessColor.WHITE:
-				new_element_node.get_node("HBoxContainer/player_color_label").text = "Player side (white)"
+				new_element_node.get_node(^"HBoxContainer/player_color_label").text = "Player side (white)"
 			Enums.ChessColor.BLACK:
-				new_element_node.get_node("HBoxContainer/player_color_label").text = "Player side (black)"
+				new_element_node.get_node(^"HBoxContainer/player_color_label").text = "Player side (black)"
 
 		if host_data.get("time_per_side") == -60_000:
-			new_element_node.get_node("HBoxContainer2/minute_per_side_label").text = "no time limit"
-			new_element_node.get_node("HBoxContainer2/increment_second_label").hide()
+			new_element_node.get_node(^"HBoxContainer2/minute_per_side_label").text = "no time limit"
+			new_element_node.get_node(^"HBoxContainer2/increment_second_label").hide()
 		else:
 			@warning_ignore_start("integer_division")
 			var minute_per_side: float = float(host_data.get("time_per_side")) / 60.0 / 1000.0
 			if str(minute_per_side).split(".").get(1) == "0":
-				new_element_node.get_node("HBoxContainer2/minute_per_side_label").text = "minute per side (" + str(int(host_data.get("time_per_side")) / 60 / 1000) + ")"
+				new_element_node.get_node(^"HBoxContainer2/minute_per_side_label").text = "minute per side (" + str(int(host_data.get("time_per_side")) / 60 / 1000) + ")"
 			else:
-				new_element_node.get_node("HBoxContainer2/minute_per_side_label").text = "minute per side (" + str(host_data.get("time_per_side") / 60 / 1000) + ")"
+				new_element_node.get_node(^"HBoxContainer2/minute_per_side_label").text = "minute per side (" + str(host_data.get("time_per_side") / 60 / 1000) + ")"
 
 			if host_data.get("time_increment") == 0:
-				new_element_node.get_node("HBoxContainer2/increment_second_label").text = "no time increment"
+				new_element_node.get_node(^"HBoxContainer2/increment_second_label").text = "no time increment"
 			else:
-				new_element_node.get_node("HBoxContainer2/increment_second_label").text = "increment in seconds (" + str(host_data.get("time_increment") / 1000) + ")"
+				new_element_node.get_node(^"HBoxContainer2/increment_second_label").text = "increment in seconds (" + str(host_data.get("time_increment") / 1000) + ")"
 			@warning_ignore_restore("integer_division")
 
 		elements_node.add_child(new_element_node)
@@ -219,10 +218,6 @@ func _on_crate_host_button_pressed() -> void:
 
 
 func wait_for_peer() -> void:
-	if is_waiting_for_peer:
-		return
-	is_waiting_for_peer = true
-
 	create_host_setup_node.hide()
 	wait_for_peer_node.show()
 
@@ -235,9 +230,13 @@ func _wait_for_peer() -> void:
 		data.set("fen_string", ChessLogic.random_fen())
 
 	var peer_joined: bool = lan_host.wait_for_peer(data)
-	if peer_joined:
-		Sound.peer_joined.call_deferred("play")
-		call_deferred("_on_join_request_received_from_peer")
+	match peer_joined:
+		true:
+			Sound.peer_joined.call_deferred(&"play")
+			call_deferred(&"_on_join_request_received_from_peer")
+		false: # waiting is cancelled.
+			wait_for_peer_node.call_deferred(&"hide")
+			create_host_setup_node.call_deferred(&"show")
 
 
 func _on_join_request_received_from_peer() -> void:
@@ -253,13 +252,8 @@ func _on_cancel_waiting_for_peer_button_pressed() -> void:
 
 func cancel_waiting_for_peer() -> void:
 	lan_host.cancel_waiting_for_peer()
-	wait_for_peer_node.hide()
-	create_host_setup_node.show()
-	is_waiting_for_peer = false
 
 
 func _on_back_button_pressed() -> void:
 	Sound.button_tick.play()
-	if is_waiting_for_peer:
-		cancel_waiting_for_peer()
 	get_tree().change_scene_to_file("uid://dwnbfraut6h7t")

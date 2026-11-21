@@ -44,7 +44,7 @@ impl LanHost
     #[func]
     fn wait_for_peer(&self, config_data: Dictionary<GString, Variant>) -> bool
     {
-        let mut outgoing_msg = lan_protocol::msg::DISCOVERY_PONG;
+        let outgoing_msg = lan_protocol::msg::DISCOVERY_PONG;
         let mut outgoing_params = Map::<String, Value>::new();
         outgoing_params.insert(String::from("host_name"), Value::String(config_data.get("host_name").unwrap().to::<String>()));
         outgoing_params.insert(String::from("player_color"), Value::Number(config_data.get("player_color").unwrap().to::<i32>().into()));
@@ -53,7 +53,7 @@ impl LanHost
         outgoing_params.insert(String::from("fen_string"), Value::String(config_data.get("fen_string").unwrap().to::<String>()));
         outgoing_params.insert(String::from("time_per_side"), Value::Number(config_data.get("time_per_side").unwrap().to::<i64>().into()));
         outgoing_params.insert(String::from("time_increment"), Value::Number(config_data.get("time_increment").unwrap().to::<i64>().into()));
-        let mut outgoing_text = Self::build_outgoing_text(outgoing_msg, Some(outgoing_params));
+        let outgoing_text = Self::build_outgoing_text(outgoing_msg, Some(outgoing_params));
 
         let udp_socket = UdpSocket::bind(
             SocketAddr::new(
@@ -62,12 +62,13 @@ impl LanHost
             )
         ).unwrap();
         udp_socket.join_multicast_v4(&lan_protocol::MULTICAST_IP, &Ipv4Addr::new(0, 0, 0, 0)).unwrap();
-        udp_socket.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
+        udp_socket.set_read_timeout(Some(Duration::from_millis(500))).unwrap();
 
         let mut buffer = [0u8; 512];
         loop
         {
-            match udp_socket.recv_from(&mut buffer)
+            let received = udp_socket.recv_from(&mut buffer);
+            match received
             {
                 Err(error) =>
                 {
@@ -126,18 +127,24 @@ impl LanHost
                         }
                         lan_protocol::msg::JOIN_PING =>
                         {
-                            outgoing_msg = lan_protocol::msg::JOIN_PONG;
-                            outgoing_text = Self::build_outgoing_text(outgoing_msg, None);
+                            let tcp_listener = TcpListener::bind(
+                                SocketAddr::new(
+                                    IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)),
+                                    lan_protocol::PORT
+                                )
+                            ).unwrap();
+                            
+                            let outgoing_msg = lan_protocol::msg::JOIN_PONG;
+                            let outgoing_text = Self::build_outgoing_text(outgoing_msg, None);
                             udp_socket.send_to(outgoing_text.as_bytes(), received_socket_addr).unwrap();
 
-                            let tcp_listener = TcpListener::bind(("0.0.0.0", lan_protocol::PORT)).unwrap();
-                            let tcp_stream = tcp_listener.accept().unwrap().0;
+                            let new_tcp_stream = tcp_listener.accept().unwrap().0;
 
                             let mut tcp_bufreader_mutex_guard = self.tcp_bufreader_mutex.lock().unwrap();
-                            *tcp_bufreader_mutex_guard = Some(BufReader::with_capacity(512, tcp_stream.try_clone().unwrap()));
+                            *tcp_bufreader_mutex_guard = Some(BufReader::with_capacity(512, new_tcp_stream.try_clone().unwrap()));
 
                             let mut tcp_stream_mutex_guard = self.tcp_stream_mutex.lock().unwrap();
-                            *tcp_stream_mutex_guard = Some(tcp_stream);
+                            *tcp_stream_mutex_guard = Some(new_tcp_stream);
 
                             return true;
                         }

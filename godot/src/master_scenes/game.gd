@@ -27,14 +27,13 @@ var promotion_move_data: Dictionary[String, Variant] = {"from": "", "to": "", "r
 @onready var crazy_house_node: Control = $game_content/hud_elements/crazy_house
 @onready var promotion_selection_node: TextureRect = $game_content/hud_elements/promotion_selection
 @onready var received_undo_request_node: TextureRect = $game_content/hud_elements/received_undo_request
-@onready var opponent_left_node: TextureRect = $game_content/hud_elements/opponent_left
 @onready var match_finished_node: Control = $game_content/hud_elements/match_finished
 @onready var game_setup_node: TabContainer = $game_setup
 
 
 func _ready() -> void:
-	game_setup_node.get_node("game_setup_local").setup_finished.connect(_on_setup_finished)
-	game_setup_node.get_node("game_setup_lan").setup_finished.connect(_on_setup_finished)
+	game_setup_node.get_node(^"game_setup_local").setup_finished.connect(_on_setup_finished)
+	game_setup_node.get_node(^"game_setup_lan").setup_finished.connect(_on_setup_finished)
 
 	chess_logic.move_applied.connect(_on_move_applied)
 	chess_logic.move_applied.connect(board_node._on_move_applied)
@@ -93,7 +92,6 @@ func _on_setup_finished(data: Dictionary[String, Variant]) -> void:
 
 	match connection_type:
 		Enums.ConnectionType.LOCAL:
-			opponent_left_node.queue_free()
 			if local_opponent == Enums.LocalOpponent.AI and player_color == Enums.ChessColor.BLACK:
 				play_ai_move()
 		Enums.ConnectionType.LAN:
@@ -113,7 +111,7 @@ func wait_for_lan_opponent_msg() -> void:
 	while true:
 		var received_text: String = lan_stream.wait_for_opponent_msg()
 		if received_text.is_empty():
-			call_deferred("_on_received_leave_msg_from_lan_opponent")
+			call_deferred(&"_on_received_leave_msg_from_lan_opponent")
 			break
 
 		var received_json_data: Dictionary = JSON.parse_string(received_text)
@@ -126,17 +124,16 @@ func wait_for_lan_opponent_msg() -> void:
 				var from: String = received_params.get("from")
 				var to: String = received_params.get("to")
 				var promotion_or_put_role: Enums.PieceRole = int(received_params.get("promotion_or_put_role")) as Enums.PieceRole
-				call_deferred("_on_received_move_msg_from_lan_opponent", move_type, from, to, promotion_or_put_role)
+				call_deferred(&"_on_received_move_msg_from_lan_opponent", move_type, from, to, promotion_or_put_role)
 			UNDO_REQUEST_MSG:
-				call_deferred("_on_received_undo_request_msg_from_lan_opponent")
+				call_deferred(&"_on_received_undo_request_msg_from_lan_opponent")
 			UNDO_RESPONSE_MSG:
 				var response: bool = received_params.get("response")
-				call_deferred("_on_received_undo_response_msg_from_lan_opponent", response)
+				call_deferred(&"_on_received_undo_response_msg_from_lan_opponent", response)
 
 
 func _on_received_leave_msg_from_lan_opponent() -> void:
-	if !match_finished_node.visible:
-		opponent_left_node.show()
+	match_finished(Enums.MatchFinishedState.OPPONENT_LEFT)
 
 
 func _on_received_undo_request_msg_from_lan_opponent() -> void:
@@ -309,7 +306,7 @@ func play_ai_move() -> void:
 
 func calculate_best_ai_move_in_thread(white_time: int, black_time: int) -> void:
 	var best_ai_move: String = chess_logic.best_ai_move(white_time, black_time)
-	call_deferred("_on_ai_move_ready", best_ai_move)
+	call_deferred(&"_on_ai_move_ready", best_ai_move)
 
 
 func _on_ai_move_ready(best_ai_move: String) -> void:
@@ -436,11 +433,13 @@ func match_finished(finished_state: Enums.MatchFinishedState) -> void:
 
 	match finished_state:
 		Enums.MatchFinishedState.FINISHED_DRAW:
-			match_finished_node.get_node("Label").text = "Drawn"
+			match_finished_node.get_node(^"Label").text = "Drawn"
 		Enums.MatchFinishedState.WHITE_WON:
-			match_finished_node.get_node("Label").text = "White Won"
+			match_finished_node.get_node(^"Label").text = "White Won"
 		Enums.MatchFinishedState.BLACK_WON:
-			match_finished_node.get_node("Label").text = "Black Won"
+			match_finished_node.get_node(^"Label").text = "Black Won"
+		Enums.MatchFinishedState.OPPONENT_LEFT:
+			match_finished_node.get_node(^"Label").text = "Opponent has left the game"
 	match_finished_node.show()
 
 
