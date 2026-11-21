@@ -348,7 +348,7 @@ func _on_move_applied(move_type: Enums.MoveType, from: String, to: String) -> vo
 func apply_normal_move_and_play_animation(from_square: String, to_square: String) -> void:
 	var from_piece_node: TextureRect = piece_nodes_on_board.get(from_square)
 	piece_nodes_on_board.set(from_square, null)
-	move_animation_tween.tween_property(from_piece_node, "position", square_to_position(to_square), MOVE_ANIMATION_DURATION)
+	move_animation_tween.tween_property(from_piece_node, ^":position", square_to_position(to_square), MOVE_ANIMATION_DURATION)
 
 	# remove enemy piece if target square contains an enemy piece
 	var to_piece_node: TextureRect = piece_nodes_on_board.get(to_square)
@@ -357,12 +357,12 @@ func apply_normal_move_and_play_animation(from_square: String, to_square: String
 		piece_nodes_on_board.set(to_square, from_piece_node)
 	else:
 		move_animation_tween.finished.connect(Sound.capture.play)
-		move_animation_tween.tween_property(to_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
+		move_animation_tween.tween_property(to_piece_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 		move_animation_tween.finished.connect(to_piece_node.queue_free)
 
 		if game_mode == Enums.GameMode.ATOMIC:
 			piece_nodes_on_board.set(to_square, null)
-			move_animation_tween.tween_property(from_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION)
+			move_animation_tween.tween_property(from_piece_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION)
 			move_animation_tween.finished.connect(from_piece_node.queue_free)
 			explode_3x3_area_in_atomic_mode(to_square)
 		else:
@@ -372,10 +372,10 @@ func apply_normal_move_and_play_animation(from_square: String, to_square: String
 func apply_en_passant_move_and_play_animation(pawn_from_square: String, pawn_to_square: String) -> void:
 	var from_pawn_node: TextureRect = piece_nodes_on_board.get(pawn_from_square)
 	piece_nodes_on_board.set(pawn_from_square, null)
-	move_animation_tween.tween_property(from_pawn_node, "position", square_to_position(pawn_to_square), MOVE_ANIMATION_DURATION)
+	move_animation_tween.tween_property(from_pawn_node, ^":position", square_to_position(pawn_to_square), MOVE_ANIMATION_DURATION)
 
 	if game_mode == Enums.GameMode.ATOMIC:
-		move_animation_tween.tween_property(from_pawn_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION)
+		move_animation_tween.tween_property(from_pawn_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION)
 		move_animation_tween.finished.connect(from_pawn_node.queue_free)
 		explode_3x3_area_in_atomic_mode(pawn_to_square)
 	else:
@@ -386,7 +386,7 @@ func apply_en_passant_move_and_play_animation(pawn_from_square: String, pawn_to_
 	var captured_pawn_node: TextureRect = piece_nodes_on_board.get(captured_pawn_square)
 	piece_nodes_on_board.set(captured_pawn_square, null)
 
-	move_animation_tween.tween_property(captured_pawn_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
+	move_animation_tween.tween_property(captured_pawn_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 	move_animation_tween.finished.connect(captured_pawn_node.queue_free)
 	move_animation_tween.finished.connect(Sound.capture.play)
 
@@ -403,8 +403,8 @@ func apply_castling_move_and_play_animation(king_from_square: String, rook_from_
 	piece_nodes_on_board.set(king_to_square, king_node)
 	piece_nodes_on_board.set(rook_to_square, rook_node)
 
-	move_animation_tween.tween_property(king_node, "position", square_to_position(king_to_square), MOVE_ANIMATION_DURATION)
-	move_animation_tween.tween_property(rook_node, "position", square_to_position(rook_to_square), MOVE_ANIMATION_DURATION)
+	move_animation_tween.tween_property(king_node, ^":position", square_to_position(king_to_square), MOVE_ANIMATION_DURATION)
+	move_animation_tween.tween_property(rook_node, ^":position", square_to_position(rook_to_square), MOVE_ANIMATION_DURATION)
 	move_animation_tween.finished.connect(Sound.move.play)
 
 
@@ -414,7 +414,7 @@ func apply_promotion_move_and_play_animation(pawn_from_square: String, pawn_to_s
 
 	var from_pawn_node: TextureRect = piece_nodes_on_board.get(pawn_from_square)
 	piece_nodes_on_board.set(pawn_from_square, null)
-	move_animation_tween.tween_property(from_pawn_node, "position", square_to_position(pawn_to_square), MOVE_ANIMATION_DURATION)
+	move_animation_tween.tween_property(from_pawn_node, ^":position", square_to_position(pawn_to_square), MOVE_ANIMATION_DURATION)
 
 	# remove enemy piece if target square contains an enemy piece
 	var to_piece_node: TextureRect = piece_nodes_on_board[pawn_to_square]
@@ -423,13 +423,13 @@ func apply_promotion_move_and_play_animation(pawn_from_square: String, pawn_to_s
 		piece_nodes_on_board.set(pawn_to_square, from_pawn_node)
 	else:
 		move_animation_tween.finished.connect(Sound.capture.play)
-		move_animation_tween.tween_property(to_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
+		move_animation_tween.tween_property(to_piece_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 		move_animation_tween.finished.connect(to_piece_node.queue_free)
 
 		# don't send promotion piece selection request if game mode is atomic, because our pawn captured too
 		if game_mode == Enums.GameMode.ATOMIC:
 			piece_nodes_on_board.set(pawn_to_square, null)
-			move_animation_tween.tween_property(from_pawn_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION)
+			move_animation_tween.tween_property(from_pawn_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION)
 			move_animation_tween.finished.connect(from_pawn_node.queue_free)
 			explode_3x3_area_in_atomic_mode(pawn_to_square)
 		else:
@@ -465,7 +465,7 @@ func explode_3x3_area_in_atomic_mode(square: String) -> void:
 		var target_piece_node: TextureRect = piece_nodes_on_board.get(target_square)
 		if target_piece_node != null:
 			piece_nodes_on_board.set(target_square, null)
-			move_animation_tween.tween_property(target_piece_node, "modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
+			move_animation_tween.tween_property(target_piece_node, ^":modulate:a", 0.0, MOVE_ANIMATION_DURATION / 2.0)
 			move_animation_tween.finished.connect(target_piece_node.queue_free)
 
 

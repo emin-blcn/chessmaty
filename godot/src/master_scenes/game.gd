@@ -243,19 +243,19 @@ func send_move_msg_to_lan_opponent(move_type: Enums.MoveType, from: String, to: 
 
 
 func _on_move_applied(_move_type: Enums.MoveType, _from: String, _to: String) -> void:
-	set_active_turn(chess_logic.active_turn())
+	update_active_turn()
 
 
 func _on_promotion_piece_updated(_from: String, _to: String, _role: Enums.PieceRole) -> void:
-	set_active_turn(chess_logic.active_turn())
+	update_active_turn()
 
 
 func _on_put_move_applied(_role: Enums.PieceRole, _to: String) -> void:
-	set_active_turn(chess_logic.active_turn())
+	update_active_turn()
 
 
 func _on_undo_last_move_applied(_double_undo: bool) -> void:
-	set_active_turn(chess_logic.active_turn())
+	update_active_turn()
 
 	if get_position_history_count() <= 0:
 		hud_elements_node.hide_undo_button()
@@ -326,8 +326,8 @@ func get_active_turn() -> Enums.ChessColor:
 	return active_turn
 
 
-func set_active_turn(value: Enums.ChessColor) -> void:
-	active_turn = value
+func update_active_turn() -> void:
+	active_turn = chess_logic.active_turn() as Enums.ChessColor
 
 
 func get_active_board_fen() -> String:
@@ -427,6 +427,9 @@ func _on_black_times_up() -> void:
 
 
 func match_finished(finished_state: Enums.MatchFinishedState) -> void:
+	if match_finished_node.visible:
+		return
+
 	Sound.finish.play()
 	if promotion_selection_node.visible:
 		promotion_selection_node.hide()
