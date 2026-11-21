@@ -1,4 +1,4 @@
-[![Release](https://img.shields.io/badge/Release-v1.0.2-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.2)
+[![Release](https://img.shields.io/badge/Release-v1.0.3-blue)](https://github.com/emin-blcn/chessmaty/releases/tag/v1.0.3)
 [![License](https://img.shields.io/badge/License-GPL--3.0-green)](https://opensource.org/license/gpl-3.0)
 
 
