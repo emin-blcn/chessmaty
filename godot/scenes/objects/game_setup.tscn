@@ -575,16 +575,15 @@ item_8/text = "Racing Kings"
 [node name="wait_for_peer" type="ColorRect" parent="game_setup_lan/TabContainer/create" unique_id=24407122]
 visible = false
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -63.0
-offset_top = -45.0
-offset_right = 63.0
-offset_bottom = 10.0
+anchors_preset = -1
+anchor_left = -0.32474226
+anchor_top = -0.36
+anchor_right = 1.3247423
+anchor_bottom = 1.08
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.627451)
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="game_setup_lan/TabContainer/create/wait_for_peer" unique_id=57534270]
 layout_mode = 1
@@ -593,18 +592,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -69.0
-offset_top = -7.75
-offset_right = 77.0
-offset_bottom = 7.75
+offset_left = -62.5
+offset_top = -16.75
+offset_right = 82.5
+offset_bottom = -1.25
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 16
 text = "Waiting for opponent"
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="game_setup_lan/TabContainer/create/wait_for_peer" unique_id=1842939198]
-libraries/ = SubResource("AnimationLibrary_iuo5w")
-autoplay = &"default"
 
 [node name="cancel_waiting_for_peer_button" type="Button" parent="game_setup_lan/TabContainer/create/wait_for_peer" unique_id=1917933332]
 layout_mode = 1
@@ -614,12 +609,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -33.0
-offset_top = 19.0
+offset_top = 3.5
 offset_right = 33.0
-offset_bottom = 32.0
+offset_bottom = 16.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Cancel"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="game_setup_lan/TabContainer/create/wait_for_peer" unique_id=1842939198]
+libraries/ = SubResource("AnimationLibrary_iuo5w")
+autoplay = &"default"
 
 [connection signal="tab_changed" from="." to="game_setup_lan" method="_on_game_setup_tab_changed"]
 [connection signal="pressed" from="game_setup_local/back_button" to="game_setup_local" method="_on_back_button_pressed"]

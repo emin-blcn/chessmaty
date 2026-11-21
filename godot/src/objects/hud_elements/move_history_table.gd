@@ -15,13 +15,13 @@ func _on_move_applied(_move_type: Enums.MoveType, from: String, to: String) -> v
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
 			var new_element_node: NinePatchRect = instance_element.duplicate()
-			new_element_node.get_node("move_number_label").text = str(full_move_number) + "."
-			new_element_node.get_node("white_texture_rect/white_move_label").text = from + "-" + to
+			new_element_node.get_node(^"move_number_label").text = str(full_move_number) + "."
+			new_element_node.get_node(^"white_texture_rect/white_move_label").text = from + "-" + to
 			elements_node.add_child(new_element_node)
 			new_element_node.show()
 			update_scroll_container_value()
 		Enums.ChessColor.BLACK:
-			elements_node.get_child(elements_node.get_child_count() - 1).get_node("black_texture_rect/black_move_label").text = from + "-" + to
+			elements_node.get_child(elements_node.get_child_count() - 1).get_node(^"black_texture_rect/black_move_label").text = from + "-" + to
 
 
 func _on_promotion_piece_updated(from: String, to: String, role: Enums.PieceRole) -> void:
@@ -37,13 +37,13 @@ func _on_promotion_piece_updated(from: String, to: String, role: Enums.PieceRole
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
 			var new_element_node: NinePatchRect = instance_element.duplicate()
-			new_element_node.get_node("move_number_label").text = str(full_move_number) + "."
-			new_element_node.get_node("white_texture_rect/white_move_label").text = from + "-" + to
+			new_element_node.get_node(^"move_number_label").text = str(full_move_number) + "."
+			new_element_node.get_node(^"white_texture_rect/white_move_label").text = from + "-" + to
 			elements_node.add_child(new_element_node)
 			new_element_node.show()
 			update_scroll_container_value()
 		Enums.ChessColor.BLACK:
-			elements_node.get_child(elements_node.get_child_count() - 1).get_node("black_texture_rect/black_move_label").text = from + "-" + to
+			elements_node.get_child(elements_node.get_child_count() - 1).get_node(^"black_texture_rect/black_move_label").text = from + "-" + to
 
 
 func _on_put_move_applied(_role: Enums.PieceRole, to: String) -> void:
@@ -59,19 +59,19 @@ func _on_put_move_applied(_role: Enums.PieceRole, to: String) -> void:
 		Enums.ChessColor.WHITE:
 			full_move_number += 1
 			var new_element_node: NinePatchRect = instance_element.duplicate()
-			new_element_node.get_node("move_number_label").text = str(full_move_number) + "."
-			new_element_node.get_node("white_texture_rect/white_move_label").text = to
+			new_element_node.get_node(^"move_number_label").text = str(full_move_number) + "."
+			new_element_node.get_node(^"white_texture_rect/white_move_label").text = to
 			elements_node.add_child(new_element_node)
 			new_element_node.show()
 			update_scroll_container_value()
 		Enums.ChessColor.BLACK:
-			elements_node.get_child(elements_node.get_child_count() - 1).get_node("black_texture_rect/black_move_label").text = to
+			elements_node.get_child(elements_node.get_child_count() - 1).get_node(^"black_texture_rect/black_move_label").text = to
 
 
 func _on_undo_last_move_applied(double_undo: bool):
 	for _i in range(2):
 		var last_element_instance: NinePatchRect = elements_node.get_child(elements_node.get_child_count() - 1)
-		var last_element_instance_black_label: Label = last_element_instance.get_node("black_texture_rect/black_move_label")
+		var last_element_instance_black_label: Label = last_element_instance.get_node(^"black_texture_rect/black_move_label")
 
 		if last_element_instance_black_label.text == "...":
 			full_move_number -= 1
