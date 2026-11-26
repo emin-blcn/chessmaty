@@ -1,11 +1,8 @@
-bin/*
-godot/lib/*
-
-!bin/get_engine_files.sh
-!bin/README.md
-!godot/lib/.gitkeep
-
-godot/.godot/
 rust/target/
+godot/.godot/
 
-godot/.editorconfig
+bin/fairy-stockfish*
+
+godot/lib/*.so
+godot/lib/*.dll
+godot/lib/*.dylib

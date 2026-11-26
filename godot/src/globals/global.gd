@@ -31,7 +31,7 @@ func load_user_data() -> void:
 
 	# save again default data if file content is broken
 	if loaded_data == null:
-		push_error("User data file is founded, but data is broken or was changed. \nWill write again from default values.")
+		push_error("User data file is found, but data is broken or was changed. \nWill write again with default values.")
 		save_user_data()
 		return
 
