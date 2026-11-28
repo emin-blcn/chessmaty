@@ -39,7 +39,7 @@ The Rust crate is compiled into a dynamic C library (.dll and .so) and Godot use
 
 ## Game Variants
 
-Chessmaty supports 9 different chess variants (inspired by [Lichess](https://lichess.org/)):
+Chessmaty supports 9 different chess variants (inspired by Lichess):
 
 - **Standard:** Classic chess rules and setup.
 - **Chess960:** Starting piece positions are randomized.
@@ -122,14 +122,14 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 - **Debug Build:**
   - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/debug/libchessmaty_rust.so`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_linux_x86_64_debug.so`
+  - **Move to:** `PROJECT_ROOT/godot/lib/libchessmaty_rust_linux_x86_64_debug.so`
 
 
 
 - **Release Build:**
   - **Source:** `PROJECT_ROOT/rust/target/x86_64-unknown-linux-gnu/release/libchessmaty_rust.so`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_linux_x86_64_release.so`
+  - **Move to:** `PROJECT_ROOT/godot/lib/libchessmaty_rust_linux_x86_64_release.so`
 
 <br>
 
@@ -138,14 +138,14 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 - **Debug Build:**
   - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/debug/chessmaty_rust.dll`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_windows_x86_64_debug.dll`
+  - **Move to:** `PROJECT_ROOT/godot/lib/libchessmaty_rust_windows_x86_64_debug.dll`
 
 <br>
 
 - **Release Build:**
   - **Source:** `PROJECT_ROOT/rust/target/x86_64-pc-windows-msvc/release/chessmaty_rust.dll`
 
-  - **Move to:** `PROJECT_ROOT/godot/lib/chessmaty_rust_windows_x86_64_release.dll`
+  - **Move to:** `PROJECT_ROOT/godot/lib/libchessmaty_rust_windows_x86_64_release.dll`
 
 <br>
 
@@ -166,6 +166,5 @@ To ensure GDExtension bindings and library paths match correctly, please follow 
 <br>
 
 ## A Note on UI & Design
-I built this project to master Rust and GDExtension integration in Godot 4, so most of my effort went into the backend engine rather than a pixel-perfect UI layout—mostly because I'm not very good at creating visual interfaces. The interface is currently very simple and basic.
-
-If you have ideas to polish the UI, improve the board feel, or fix layout issues or anything else feel free to open an issue or submit a Pull Request!
+Most of my effort went into the backend engine rather than a pixel-perfect UI layout—mostly because I'm not very good at creating visual interfaces.
+The interface is currently very simple and basic.
